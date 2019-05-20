@@ -1,2 +1,3 @@
-include ':transformer', ':backends:Java'
-
+include ':codeview', ':backend:java-backend'
+include ':client:cli-client', ':frontend:pulm-frontend'
+include ':datasource:filesystem-datasource'
