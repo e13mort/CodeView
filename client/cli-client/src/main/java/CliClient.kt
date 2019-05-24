@@ -7,7 +7,8 @@ fun main() {
     val transformer = CodeView(
         FileSystemDataSource(),
         PulmFrontend(),
-        JavaBackend()
+        JavaBackend(),
+        SimpleFileOutput()
     )
     transformer.run()
 }

@@ -1,13 +1,11 @@
 package com.github.e13mort.codeview
 
-import java.io.OutputStream
-
 typealias SourceFiles = List<SourceFile>
 
 typealias CVClasses = List<CVClass>
 
 interface StoredObject {
-    fun save(): OutputStream
+    fun asString(): String
 }
 
 interface Backend {
@@ -15,7 +13,7 @@ interface Backend {
 
 }
 interface Frontend {
-    fun save(classes: CVClasses): StoredObject
+    fun generate(classes: CVClasses): StoredObject
 }
 
 interface CVClass {
