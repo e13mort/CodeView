@@ -6,11 +6,31 @@ import com.github.e13mort.codeview.StoredObject
 
 class PulmFrontend: Frontend {
     override fun generate(classes: CVClasses): StoredObject {
-        return object: StoredObject {
-            override fun asString(): String {
-                return "stub!"
+        return SampleStoredObject(classes)
+    }
+
+    private class SampleStoredObject(private val classes: CVClasses) : StoredObject {
+        override fun asString(): String {
+            val builder = StringBuilder()
+            builder.append("@startuml\n")
+
+            classes.forEach {
+                builder.append("class ${it.name()} {\n")
+
+                it.fields().forEach {
+                    builder.append("${it.type().simpleName()} ${it.name()}\n")
+                }
+
+                it.methods().forEach {
+                    builder.append("${it.returnType().simpleName()} ${it.name()} ()\n")
+                }
+
+                builder.append("}\n")
             }
 
+            builder.append("@enduml\n")
+            return builder.toString()
         }
+
     }
 }
