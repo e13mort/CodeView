@@ -5,6 +5,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.14.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'commons-io:commons-io:2.6'
     implementation project(':codeview')
 }
 

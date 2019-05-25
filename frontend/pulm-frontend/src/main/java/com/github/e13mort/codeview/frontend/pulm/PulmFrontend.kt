@@ -22,7 +22,15 @@ class PulmFrontend: Frontend {
                 }
 
                 it.methods().forEach {
-                    builder.append("${it.returnType().simpleName()} ${it.name()} ()\n")
+                    builder.append("${it.returnType().simpleName()} ${it.name()}(")
+                    val parameters = it.parameters()
+                    for ((index, it) in parameters.withIndex()) {
+                        builder.append("${it.type().simpleName()} ${it.name()}")
+                        if (index < parameters.size - 1) {
+                            builder.append(", ")
+                        }
+                    }
+                    builder.append(")\n")
                 }
 
                 builder.append("}\n")
