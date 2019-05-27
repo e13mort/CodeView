@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.CVClasses
+import com.github.e13mort.codeview.ClassProperty
 import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.StoredObject
 
@@ -15,7 +16,11 @@ class PulmFrontend: Frontend {
             builder.append("@startuml\n")
 
             classes.forEach {
-                builder.append("class ${it.name()} {\n")
+                when {
+                    it.has(ClassProperty.INTERFACE) -> builder.append("interface")
+                    else -> builder.append("class")
+                }
+                builder.append(" ${it.name()} {\n")
 
                 it.fields().forEach {
                     builder.append("${it.type().simpleName()} ${it.name()}\n")

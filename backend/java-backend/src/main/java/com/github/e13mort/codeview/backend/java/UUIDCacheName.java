@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
-class UUIDCacheName implements TemporarySourceSet.CacheName {
+class UUIDCacheName implements CacheName {
     @NotNull
     @Override
     public String createDirName() {

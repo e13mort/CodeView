@@ -22,6 +22,8 @@ interface CVClass {
     fun fields(): List<CVClassField>
 
     fun methods(): List<CVMethod>
+
+    fun has(property: ClassProperty): Boolean
 }
 
 interface CVClassField {
@@ -54,6 +56,10 @@ interface CVType {
 
 enum class CVVisibility {
     PUBLIC, PROTECTED, PRIVATE
+}
+
+enum class ClassProperty {
+    INTERFACE
 }
 
 //java|kotlin|cpp -> CodeViewAST -> PULMCode

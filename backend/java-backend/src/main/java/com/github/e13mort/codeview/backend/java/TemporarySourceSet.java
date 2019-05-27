@@ -37,14 +37,6 @@ class TemporarySourceSet {
         return cacheDir;
     }
 
-    interface CacheName {
-        @NotNull
-        String createDirName();
-
-        @NotNull
-        String createFileName();
-    }
-
     static class TemporarySources implements AutoCloseable {
 
         private Path path;
