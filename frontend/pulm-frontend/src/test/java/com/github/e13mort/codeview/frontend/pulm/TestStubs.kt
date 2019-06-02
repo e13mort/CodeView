@@ -30,13 +30,16 @@ class StubMethod(private val name: String = TODO(),
     fun asList() : List<StubMethod> = Collections.singletonList(this)
 }
 
-open class StubField : CVClassField {
-    override fun name(): String = TODO()
+class StubField(private val name: String = TODO(),
+                private val type: CVType = TODO(),
+                private val visibilityModifier: CVVisibility = TODO()) : CVClassField {
+    override fun name(): String = name
 
-    override fun type(): CVType = TODO()
+    override fun type(): CVType = type
 
-    override fun visibilityModificator(): CVVisibility = TODO()
+    override fun visibilityModificator(): CVVisibility = visibilityModifier
 
+    fun asList(): List<CVClassField> = Collections.singletonList(this)
 }
 
 class StubType(private val simpleName: String = TODO(),

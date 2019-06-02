@@ -10,6 +10,8 @@ fun ClassDiagram.name(entityIndex: Int = 0): String = ArrayList(leafsvalues)[ent
 
 fun ClassDiagram.methods(entityIndex: Int = 0): List<Member> = ArrayList(leafsvalues)[entityIndex].bodier.methodsToDisplay
 
+fun ClassDiagram.fields(entityIndex: Int = 0): List<Member> = ArrayList(leafsvalues)[entityIndex].bodier.fieldsToDisplay
+
 fun Member.type() : String = getDisplay(false).split(" ")[0]
 
 fun Member.name() : String = getDisplay(false).split(" ")[1]
