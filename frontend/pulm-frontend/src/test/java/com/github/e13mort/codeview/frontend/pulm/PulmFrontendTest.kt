@@ -11,7 +11,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.util.*
-import kotlin.collections.ArrayList
 
 class PulmFrontendTest {
 
@@ -40,40 +39,32 @@ class PulmFrontendTest {
                     }
                 }
             ))
-            diagram = SourceStringReader(storedObject.asString()).blocks[0].diagram as ClassDiagram
+            diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
         }
 
         @Test
         internal fun thereIsOneMethod() {
-            assertEquals(1, methods().size)
+            assertEquals(1, diagram.methods().size)
         }
 
         @Test
         internal fun methodHasCorrectName() {
-            assertEquals("sampleMethod()", methodName())
+            assertEquals("sampleMethod()", diagram.methods()[0].name())
         }
 
         @Test
         internal fun methodHasCorrectType() {
-            assertEquals("SampleReturnType", methodType())
+            assertEquals("SampleReturnType", diagram.methods()[0].type())
         }
 
         @Test
         internal fun methodHasUnspecifiedVisibilityModifier() {
-            assertNull(methods()[0].visibilityModifier)
+            assertNull(diagram.methods()[0].visibilityModifier)
         }
 
         @Test
         internal fun classHasValidName() {
-            assertEquals("TestClass", className())
+            assertEquals("TestClass", diagram.name())
         }
-
-        private fun methods() = ArrayList(diagram.leafsvalues)[0].bodier.methodsToDisplay
-
-        private fun methodType() = methods()[0].getDisplay(false).split(" ")[0]
-
-        private fun methodName() = methods()[0].getDisplay(false).split(" ")[1]
-
-        private fun className() = ArrayList(diagram.leafsvalues)[0].code.fullName
     }
 }
