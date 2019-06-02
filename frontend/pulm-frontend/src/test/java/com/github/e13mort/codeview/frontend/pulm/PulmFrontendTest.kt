@@ -1,8 +1,5 @@
 package com.github.e13mort.codeview.frontend.pulm
 
-import com.github.e13mort.codeview.CVMethod
-import com.github.e13mort.codeview.CVType
-import com.github.e13mort.codeview.ClassProperty
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,30 +12,37 @@ import java.util.*
 class PulmFrontendTest {
 
     @Nested
+    inner class ClassParsingTest {
+        private lateinit var diagram: ClassDiagram
+
+        @BeforeEach
+        internal fun setUp() {
+            val storedObject = PulmFrontend().generate(Arrays.asList(StubClass("TestClass")))
+            diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
+        }
+
+        @Test
+        internal fun classHasValidName() {
+            assertEquals("TestClass", diagram.name())
+        }
+    }
+
+    @Nested
     inner class MethodParsingTest {
 
         private lateinit var diagram: ClassDiagram
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = PulmFrontend().generate(Arrays.asList(
-                object : StubClass() {
-
-                    override fun methods(): List<CVMethod> = Arrays.asList(object : StubMethod() {
-                        override fun name(): String = "sampleMethod"
-
-                        override fun returnType(): CVType = object : StubType() {
-                            override fun simpleName(): String = "SampleReturnType"
-                        }
-                    })
-
-                    override fun name(): String = "TestClass"
-
-                    override fun has(property: ClassProperty): Boolean {
-                        return property != ClassProperty.INTERFACE
-                    }
-                }
-            ))
+            val storedObject = PulmFrontend().generate(
+                StubClass(
+                    methods = StubMethod(
+                        "sampleMethod",
+                        StubType("SampleReturnType", "com.sample.SampleReturnType")
+                    ).asList()
+                )
+                    .asList()
+            )
             diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
         }
 
@@ -60,11 +64,6 @@ class PulmFrontendTest {
         @Test
         internal fun methodHasUnspecifiedVisibilityModifier() {
             assertNull(diagram.methods()[0].visibilityModifier)
-        }
-
-        @Test
-        internal fun classHasValidName() {
-            assertEquals("TestClass", diagram.name())
         }
     }
 }

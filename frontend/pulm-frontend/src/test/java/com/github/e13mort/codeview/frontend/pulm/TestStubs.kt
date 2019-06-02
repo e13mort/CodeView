@@ -1,23 +1,33 @@
 package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.*
+import java.util.*
 
-open class StubClass : CVClass {
-    override fun fields(): List<CVClassField> = emptyList()
+class StubClass(private val name: String = "Test",
+                private val property: ClassProperty? = null,
+                private val methods: List<CVMethod> = Collections.emptyList(),
+                private val fields: List<CVClassField> = Collections.emptyList()) : CVClass {
+    override fun fields(): List<CVClassField> = fields
 
-    override fun methods(): List<CVMethod> = emptyList()
+    override fun methods(): List<CVMethod> = methods
 
-    override fun has(property: ClassProperty): Boolean = TODO()
+    override fun has(property: ClassProperty): Boolean = this.property == property
 
-    override fun name(): String = TODO()
+    override fun name(): String = name
+
+    fun asList() : List<StubClass> = Collections.singletonList(this)
 }
 
-open class StubMethod : CVMethod {
-    override fun name(): String = TODO()
+class StubMethod(private val name: String = TODO(),
+                 private val returnType: CVType = TODO(),
+                 private val parameters: List<CVMethodParameter> = Collections.emptyList()) : CVMethod {
+    override fun name(): String = name
 
-    override fun returnType(): CVType = TODO()
+    override fun returnType(): CVType = returnType
 
-    override fun parameters(): List<CVMethodParameter> = emptyList()
+    override fun parameters(): List<CVMethodParameter> = parameters
+
+    fun asList() : List<StubMethod> = Collections.singletonList(this)
 }
 
 open class StubField : CVClassField {
@@ -29,8 +39,9 @@ open class StubField : CVClassField {
 
 }
 
-open class StubType : CVType {
-    override fun simpleName(): String = TODO()
+class StubType(private val simpleName: String = TODO(),
+               private val fullName: String = TODO()) : CVType {
+    override fun simpleName(): String = simpleName
 
-    override fun fullName(): String = TODO()
+    override fun fullName(): String = fullName
 }
