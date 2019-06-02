@@ -11,13 +11,20 @@ import java.util.*
 
 class PulmFrontendTest {
 
+    lateinit var frontend: PulmFrontend
+
+    @BeforeEach
+    internal fun setUp() {
+        frontend = PulmFrontend()
+    }
+
     @Nested
     inner class ClassParsingTest {
         private lateinit var diagram: ClassDiagram
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = PulmFrontend().generate(Arrays.asList(StubClass("TestClass")))
+            val storedObject = frontend.generate(Arrays.asList(StubClass("TestClass")))
             diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
         }
 
@@ -34,7 +41,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = PulmFrontend().generate(
+            val storedObject = frontend.generate(
                 StubClass(
                     methods = StubMethod(
                         "sampleMethod",
