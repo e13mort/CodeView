@@ -1,0 +1,47 @@
+buildscript {
+    ext.kotlin_version = '1.3.31'
+    ext.ktor_version = '1.2.1'
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+plugins {
+    id 'java'
+    id 'kotlin'
+    id 'application'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = "8"
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+mainClassName = 'com.github.e13mort.codeview.client.ktor.CVKtorClient'
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation project(':codeview')
+    implementation project(':backend:java-backend')
+    implementation project(':frontend:pulm-frontend')
+    implementation project(':datasource:filesystem-datasource')
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
