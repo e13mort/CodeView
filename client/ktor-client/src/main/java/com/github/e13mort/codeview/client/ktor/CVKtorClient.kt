@@ -39,7 +39,7 @@ class SampleBackend : Backend {
     override fun transformSourcesToCVClasses(files: SourceFiles): CVClasses {
         return listOf(
             object : CVClass {
-                override fun name(): String = "TestClass"
+                override fun name(): String = "TestCVClass"
 
                 override fun fields(): List<CVClassField> = emptyList()
 
