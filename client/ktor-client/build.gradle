@@ -2,6 +2,7 @@ buildscript {
     ext.kotlin_version = '1.3.31'
     ext.ktor_version = '1.2.1'
     repositories {
+        jcenter()
         mavenCentral()
     }
     dependencies {
@@ -12,6 +13,7 @@ plugins {
     id 'java'
     id 'kotlin'
     id 'application'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 sourceCompatibility = 1.8
@@ -34,7 +36,7 @@ kotlin {
     }
 }
 
-mainClassName = 'com.github.e13mort.codeview.client.ktor.CVKtorClient'
+mainClassName = 'io.ktor.server.netty.DevelopmentEngine'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
@@ -43,5 +45,12 @@ dependencies {
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:filesystem-datasource')
     implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "ch.qos.logback:logback-classic:1.2.3"
     testImplementation group: 'junit', name: 'junit', version: '4.12'
+}
+
+shadowJar {
+    baseName = 'code-view-application'
+    classifier = null
+    version = null
 }
