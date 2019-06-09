@@ -19,10 +19,11 @@ COPY ./build/libs/code-view-application.jar /app/code-view-application.jar
 WORKDIR /app
 
 # We launch java to execute the jar, with good defauls intended for containers.
-CMD ["java", "-server",
-    "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap",
-    "-XX:InitialRAMFraction=2", "-XX:MinRAMFraction=2", "-XX:MaxRAMFraction=2",
-    "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100",
-    "-XX:+UseStringDeduplication",
-    "-port=$port",
-    "-jar", "code-view-application.jar"]
+CMD ["java", "-server", \
+    "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", \
+    "-XX:InitialRAMFraction=2", "-XX:MinRAMFraction=2", "-XX:MaxRAMFraction=2", \
+    "-XX:+UseG1GC", "-XX:MaxGCPauseMillis=100", \
+    "-XX:+UseStringDeduplication", \
+    "-port=$port", \
+    "-jar", "code-view-application.jar" \
+    ]
