@@ -5,9 +5,14 @@ FROM openjdk:8-jre-alpine
 ENV APPLICATION_USER CodeView
 
 ENV port 8000
+ENV sslPort 8001
+ENV keyStore key.jks
+ENV keyAlias mykey
+ENV keyStorePassword password
+ENV privateKeyPassword password
 
 # Then we add the user, create the /app folder and give permissions to our user.
-RUN adduser -D -g '' $APPLICATION_USER
+RUN adduser -D  $APPLICATION_USER
 RUN mkdir /app
 RUN chown -R $APPLICATION_USER /app
 
@@ -18,8 +23,6 @@ USER $APPLICATION_USER
 COPY ./build/libs/code-view-application.jar /app/code-view-application.jar
 WORKDIR /app
 
-RUN echo port: "${port}"
-
 # We launch java to execute the jar, with good defauls intended for containers.
 CMD ["sh", "-c", "java -server \
     -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap \
@@ -27,4 +30,6 @@ CMD ["sh", "-c", "java -server \
     -XX:+UseG1GC -XX:MaxGCPauseMillis=100 \
     -XX:+UseStringDeduplication \
     -jar code-view-application.jar \
-    -port=$port"]
+    -port=$port -sslPort=$sslPort -P:ktor.security.ssl.keyStore=$keyStore\
+    -P:ktor.security.ssl.keyAlias=$keyAlias -P:ktor.security.ssl.keyStorePassword=$keyStorePassword \
+    -P:ktor.security.ssl.privateKeyPassword=$privateKeyPassword" ]
