@@ -11,6 +11,8 @@ ENV keyAlias mykey
 ENV keyStorePassword password
 ENV privateKeyPassword password
 
+RUN apk add --update --no-cache ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family graphviz 
+
 # Then we add the user, create the /app folder and give permissions to our user.
 RUN adduser -D  $APPLICATION_USER
 RUN mkdir /app
