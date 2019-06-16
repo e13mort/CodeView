@@ -40,11 +40,9 @@ class CodeViewFactory : NoRunCliktCommand() {
 
     private fun createFrontend() = PulmFrontend()
 
-    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output {
-        return when (outputFormat) {
-            OutputFormat.PUML -> SimpleFileOutput(outputFileName)
-            OutputFormat.PNG -> PNGPumlFileOutput(outputFileName)
-        }
+    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output = when (outputFormat) {
+        OutputFormat.PUML -> SimpleFileOutput(outputFileName)
+        OutputFormat.PNG -> PNGPumlFileOutput(outputFileName)
     }
 
     private fun createDataSource(packagePath: String) = FileSystemDataSource(packagePath)
