@@ -1,9 +1,11 @@
 import com.github.e13mort.codeview.Output
 import java.io.FileWriter
 
-class SimpleFileOutput: Output {
+class SimpleFileOutput(private val name: String): Output {
+    private val ext = "pulm"
+
     override fun save(data: String) {
-        val fileWriter = FileWriter("test.pulm")
+        val fileWriter = FileWriter("$name.$ext")
         fileWriter.write(data)
         fileWriter.flush()
         fileWriter.close()

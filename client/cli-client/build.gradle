@@ -10,6 +10,11 @@ buildscript {
 plugins {
     id 'java'
     id 'kotlin'
+    id 'application'
+}
+
+application {
+    mainClassName = 'CliClientKt'
 }
 
 sourceCompatibility = 1.8
@@ -31,5 +36,6 @@ dependencies {
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:filesystem-datasource')
+    implementation 'com.github.ajalt:clikt:2.0.0'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
