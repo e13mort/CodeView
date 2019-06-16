@@ -17,6 +17,8 @@ application {
     mainClassName = 'CliClientKt'
 }
 
+applicationName = 'codeview'
+
 sourceCompatibility = 1.8
 targetCompatibility = "8"
 compileKotlin {
