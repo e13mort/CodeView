@@ -38,5 +38,6 @@ dependencies {
     implementation project(':datasource:filesystem-datasource')
     implementation project(':datasource:github-datasource')
     implementation 'com.github.ajalt:clikt:2.0.0'
+    implementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

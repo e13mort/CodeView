@@ -5,6 +5,7 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.e13mort.codeview.CodeView
+import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.datasource.filesystem.FileSystemDataSource
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
@@ -24,7 +25,7 @@ class CodeViewFactory : NoRunCliktCommand() {
 
     private val outputFormat: OutputFormat by argument("format", help = "Output format")
         .choice(OutputFormat.PNG.name.toLowerCase() to OutputFormat.PNG, OutputFormat.PUML.name.toLowerCase() to OutputFormat.PUML)
-        .default(OutputFormat.PUML)
+        .default(OutputFormat.PNG)
 
     fun createCodeView(): CodeView {
         return CodeView(
@@ -39,10 +40,10 @@ class CodeViewFactory : NoRunCliktCommand() {
 
     private fun createFrontend() = PulmFrontend()
 
-    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): SimpleFileOutput {
+    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output {
         return when (outputFormat) {
             OutputFormat.PUML -> SimpleFileOutput(outputFileName)
-            OutputFormat.PNG -> TODO()
+            OutputFormat.PNG -> PNGPumlFileOutput(outputFileName)
         }
     }
 
