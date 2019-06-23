@@ -1,4 +1,5 @@
 import com.github.ajalt.clikt.core.NoRunCliktCommand
+import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.default
@@ -22,6 +23,12 @@ class CliClientFactory : NoRunCliktCommand(
     name = BuildConfig.APP_NAME
 ) {
 
+    init {
+        context {
+            autoEnvvarPrefix = BuildConfig.APP_NAME.toUpperCase()
+        }
+    }
+
     private enum class OutputFormat {PUML, PNG}
 
     private val sourcesPath: String by argument("sources", help = "Path to sources root").default(BuildConfig.DEFAULT_SOURCE_ROOT_PATH)
@@ -31,6 +38,8 @@ class CliClientFactory : NoRunCliktCommand(
     private val outputFormat: OutputFormat by argument("format", help = "Output format")
         .choice(OutputFormat.PNG.name.toLowerCase() to OutputFormat.PNG, OutputFormat.PUML.name.toLowerCase() to OutputFormat.PUML)
         .default(OutputFormat.PNG)
+
+    private val githubKey by option()
 
     fun createCodeView(): CodeView {
         return CodeView(
