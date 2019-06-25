@@ -6,11 +6,17 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.e13mort.codeview.CodeView
+import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.datasource.filesystem.FileSystemDataSource
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
 import com.github.e13mort.codeview.cli.BuildConfig
+import com.github.e13mort.codeview.datasource.github.GithubDataSource
+import com.github.e13mort.githuburl.GithubUrl
+import com.github.e13mort.githuburl.GithubUrl.PathDescription.*
+import com.github.e13mort.githuburl.GithubUrlImpl
+import java.lang.IllegalArgumentException
 
 fun main(params: Array<String>) {
     val factory = CliClientFactory()
@@ -59,6 +65,36 @@ class CliClientFactory : NoRunCliktCommand(
         OutputFormat.PNG -> PNGPumlFileOutput(outputFileName)
     }
 
-    private fun createDataSource(packagePath: String) = FileSystemDataSource(packagePath)
+    private fun createDataSource(packagePath: String): DataSource {
+        val githubUrl = GithubUrlImpl(packagePath)
+        githubUrl.parse()?.let {
+            return githubDataSource(it, packagePath)
+        }
+        return FileSystemDataSource(packagePath)
+    }
+
+    private fun githubDataSource(
+        pathDescription: GithubUrl.PathDescription,
+        packagePath: String
+    ): GithubDataSource {
+        val key = githubKey ?: throw IllegalStateException("Github key is null")
+        if (pathDescription.hasPart(
+                Kind.USER_NAME,
+                Kind.PROJECT_NAME,
+                Kind.BRANCH,
+                Kind.PATH
+            )
+        ) return GithubDataSource(
+            GithubDataSource.DataSourceConfig(
+                key,
+                fileExtension = "java",
+                userName = pathDescription.readPart(Kind.USER_NAME),
+                projectName = pathDescription.readPart(Kind.PROJECT_NAME),
+                path = pathDescription.readPart(Kind.PATH),
+                branch = pathDescription.readPart(Kind.BRANCH)
+            )
+        )
+        throw IllegalArgumentException("Invalid github path $packagePath")
+    }
 }
 
