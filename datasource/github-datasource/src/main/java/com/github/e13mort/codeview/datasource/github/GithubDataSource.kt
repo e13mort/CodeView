@@ -7,7 +7,9 @@ import com.jcabi.github.Coordinates
 import com.jcabi.github.RtGithub
 import java.io.InputStream
 
-class GithubDataSource : DataSource {
+class GithubDataSource(
+    private val config: DataSourceConfig) : DataSource {
+
     override fun name(): String {
         return "github"
     }
@@ -15,19 +17,32 @@ class GithubDataSource : DataSource {
     override fun sources(): List<SourceFile> {
         val mutableListOf = mutableListOf<SourceFile>()
 
-        RtGithub().repos().get(object: Coordinates {
-            override fun user(): String = TODO()
-
-            override fun compareTo(other: Coordinates?): Int = 0
-
-            override fun repo(): String = TODO()
-
-        }).contents().iterate(TODO(), TODO()).forEach {
-            mutableListOf.add(GithubSourceFile(it))
+        val github = RtGithub(config.key)
+        github.repos().get(Coordinates.Simple(config.userName, config.projectName))
+            .contents().iterate(config.path, config.branch).forEach {
+                addFiles(it, mutableListOf)
         }
 
         return mutableListOf
     }
+
+    private fun addFiles(
+        it: Content,
+        mutableListOf: MutableList<SourceFile>
+    ) {
+        if (isItemFits(it)) {
+            mutableListOf.add(GithubSourceFile(it))
+        }
+    }
+
+    private fun isItemFits(it: Content) = it.path().endsWith(".${config.fileExtension}")
+
+    data class DataSourceConfig(val key: String,
+                                val fileExtension: String,
+                                val userName: String,
+                                val projectName: String,
+                                val path: String,
+                                val branch: String)
 }
 
 private class GithubSourceFile(private val githubContent: Content) : SourceFile {
