@@ -18,7 +18,7 @@ class ResolversPathDescriptionImplTest {
     @EnumSource(Kind.class)
     void allKindsAreInvalidForEmptyResolvers(Kind kind) {
         ResolversPathDescriptionImpl pathDescription = new ResolversPathDescriptionImpl("github.com", Collections.emptyMap());
-        assertNull(pathDescription.readPart(kind));
+        assertEquals(GithubUrl.PathDescription.EMPTY_PART, pathDescription.readPart(kind));
         assertFalse(pathDescription.hasPart(kind));
     }
 

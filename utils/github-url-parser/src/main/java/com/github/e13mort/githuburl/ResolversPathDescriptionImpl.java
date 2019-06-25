@@ -1,7 +1,6 @@
 package com.github.e13mort.githuburl;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -17,15 +16,19 @@ class ResolversPathDescriptionImpl implements GithubUrl.PathDescription {
         this.path = path;
     }
 
-    @Nullable
+    @NotNull
     @Override
     public String readPart(@NotNull Kind kind) {
-        return resolver(kind).resolve(path);
+        String resolve = resolver(kind).resolve(path);
+        return resolve != null ? resolve : EMPTY_PART;
     }
 
     @Override
-    public boolean hasPart(@NotNull Kind kind) {
-        return resolver(kind).canResolve(path);
+    public boolean hasPart(@NotNull Kind... kinds) {
+        for (Kind kind : kinds) {
+            if (!resolver(kind).canResolve(path)) return false;
+        }
+        return true;
     }
 
     private PathResolver resolver(@NotNull Kind kind) {

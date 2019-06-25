@@ -13,9 +13,11 @@ public interface GithubUrl {
             PROJECT_NAME, USER_NAME, BRANCH, PATH
         }
 
-        @Nullable
+        String EMPTY_PART = "";
+
+        @NotNull
         String readPart(@NotNull Kind kind);
 
-        boolean hasPart(@NotNull Kind kind);
+        boolean hasPart(@NotNull Kind... kind);
     }
 }
