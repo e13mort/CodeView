@@ -1,6 +1,8 @@
 package com.github.e13mort.codeview
 
-class CodeView (
+import javax.inject.Inject
+
+class CodeView @Inject constructor (
     private val source: DataSource,
     private val frontend: Frontend,
     private val backend: Backend,
