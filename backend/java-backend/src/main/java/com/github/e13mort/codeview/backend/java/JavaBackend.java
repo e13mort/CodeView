@@ -6,6 +6,7 @@ import com.github.e13mort.codeview.ClassProperty;
 import com.github.e13mort.codeview.SourceFile;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
@@ -62,7 +63,9 @@ public class JavaBackend implements Backend {
         Optional<CompilationUnit> optional = compilationUnitParseResult.getResult();
         if (!optional.isPresent()) return null;
         CompilationUnit unit = optional.get();
-        TypeDeclaration<?> declaration = unit.getTypes().get(0);
+        NodeList<TypeDeclaration<?>> types = unit.getTypes();
+        if (types.isEmpty()) return null;
+        TypeDeclaration<?> declaration = types.get(0);
         String className = declaration.getNameAsString();
 
         List<ClassProperty> properties = new ArrayList<>();
