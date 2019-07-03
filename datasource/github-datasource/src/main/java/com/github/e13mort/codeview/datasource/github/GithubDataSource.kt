@@ -5,6 +5,7 @@ import com.github.e13mort.codeview.SourceFile
 import com.jcabi.github.Content
 import com.jcabi.github.Coordinates
 import com.jcabi.github.RtGithub
+import io.reactivex.Observable
 import java.io.InputStream
 
 class GithubDataSource(
@@ -14,25 +15,13 @@ class GithubDataSource(
         return "github"
     }
 
-    override fun sources(): List<SourceFile> {
-        val mutableListOf = mutableListOf<SourceFile>()
+    override fun sources(): Observable<SourceFile> {
 
         val github = RtGithub(config.key)
-        github.repos().get(Coordinates.Simple(config.userName, config.projectName))
-            .contents().iterate(config.path, config.branch).forEach {
-                addFiles(it, mutableListOf)
-        }
-
-        return mutableListOf
-    }
-
-    private fun addFiles(
-        it: Content,
-        mutableListOf: MutableList<SourceFile>
-    ) {
-        if (isItemFits(it)) {
-            mutableListOf.add(GithubSourceFile(it))
-        }
+        return Observable.fromIterable(github.repos().get(Coordinates.Simple(config.userName, config.projectName))
+            .contents().iterate(config.path, config.branch))
+            .filter { isItemFits(it) }
+            .map { GithubSourceFile(it) }
     }
 
     private fun isItemFits(it: Content) = it.path().endsWith(".${config.fileExtension}")

@@ -12,7 +12,7 @@ class CodeView @Inject constructor (
         output.save(
             frontend.generate(
                 backend.transformSourcesToCVClasses(
-                    source.sources()
+                    source.sources().toList().blockingGet()
                 )
             ).asString()
         )

@@ -2,6 +2,7 @@ package com.github.e13mort.codeview.datasource.filesystem
 
 import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.SourceFile
+import io.reactivex.Observable
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.*
@@ -12,14 +13,12 @@ class FileSystemDataSource(private val root: String): DataSource {
         return "filesystem"
     }
 
-    override fun sources(): List<SourceFile> {
+    override fun sources(): Observable<SourceFile> {
         val javaFileVisitor = ExtensionBasedFileVisitor("java")
         Files.walkFileTree(Paths.get(root), javaFileVisitor)
-        val files = javaFileVisitor.files
 
-        return files.map<Path, SourceFile> {
-            PathSourceFile(it)
-        }
+        return Observable.fromIterable(javaFileVisitor.files)
+            .map { PathSourceFile(it) }
     }
 
     class PathSourceFile(private val path: Path): SourceFile {
