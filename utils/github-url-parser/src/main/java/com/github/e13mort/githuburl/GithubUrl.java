@@ -8,6 +8,8 @@ public interface GithubUrl {
     @Nullable
     PathDescription parse();
 
+    boolean canParse(@NotNull String path);
+
     interface PathDescription {
         enum Kind {
             PROJECT_NAME, USER_NAME, BRANCH, PATH

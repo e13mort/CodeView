@@ -22,6 +22,11 @@ public class GithubUrlImpl implements GithubUrl {
         return isValidGithubPath(path) ? new ResolversPathDescriptionImpl(path, createResolvers()) : null;
     }
 
+    @Override
+    public boolean canParse(@NotNull String path) {
+        return isValidGithubPath(path);
+    }
+
     @NotNull
     private Map<Kind, PathResolver> createResolvers() {
         Map<Kind, PathResolver> map = new HashMap<>();
@@ -36,4 +41,10 @@ public class GithubUrlImpl implements GithubUrl {
         return path.startsWith("https://github.com");
     }
 
+    @Override
+    public String toString() {
+        return "GithubUrlImpl{" +
+                "path='" + path + '\'' +
+                '}';
+    }
 }

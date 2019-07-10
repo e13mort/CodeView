@@ -5,14 +5,14 @@ import di.PredefinedModule
 import factory.LaunchCommand
 
 fun main(params: Array<String>) {
-    val factory = LaunchCommand()
-    factory.main(params)
+    val launchCommand = LaunchCommand()
+    launchCommand.main(params)
 
     DaggerCliComponent.builder()
         .predefinedModule(PredefinedModule())
-        .dataSourceModule(DataSourceModule(factory))
-        .outputModule(OutputModule(factory))
+        .dataSourceModule(DataSourceModule(launchCommand))
+        .outputModule(OutputModule(launchCommand))
         .build()
         .codeView()
-        .run()
+        .run(launchCommand.sourcesPath)
 }

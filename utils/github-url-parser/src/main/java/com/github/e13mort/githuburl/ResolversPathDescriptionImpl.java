@@ -35,4 +35,11 @@ class ResolversPathDescriptionImpl implements GithubUrl.PathDescription {
         PathResolver resolver = resolverMap.get(kind);
         return resolver != null ? resolver : PathResolver.EMPTY;
     }
+
+    @Override
+    public String toString() {
+        return "ResolversPathDescriptionImpl{" +
+                "path='" + path + '\'' +
+                '}';
+    }
 }

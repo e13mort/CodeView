@@ -7,13 +7,13 @@ interface DataSource {
     object EMPTY : DataSource {
         override fun name(): String = "Empty data source"
 
-        override fun sources(): Observable<SourceFile> = Observable.empty()
+        override fun sources(path: SourcePath): Observable<SourceFile> = Observable.empty()
 
     }
 
     fun name(): String
 
-    fun sources(): Observable<SourceFile>
+    fun sources(path: SourcePath): Observable<SourceFile>
 }
 
 interface SourceFile {

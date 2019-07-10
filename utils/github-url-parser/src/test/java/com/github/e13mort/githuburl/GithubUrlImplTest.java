@@ -1,5 +1,7 @@
 package com.github.e13mort.githuburl;
 
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -7,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class GithubUrlImplTest {
 
@@ -15,6 +18,12 @@ class GithubUrlImplTest {
     void urlParsing(String path, AssertVariant assertVariant) {
         GithubUrlImpl githubUrl = new GithubUrlImpl(path);
         assertVariant.performAssertion(githubUrl.parse());
+    }
+
+    @Disabled
+    @Test
+    void canParse() {
+        fail("Implement");
     }
 
     private static Stream<Arguments> args() {
