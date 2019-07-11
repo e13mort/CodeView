@@ -26,7 +26,7 @@ class PulmFrontendTest {
         @BeforeEach
         internal fun setUp() {
             val storedObject = frontend.generate(Arrays.asList(StubClass("TestClass")))
-            diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -51,7 +51,7 @@ class PulmFrontendTest {
                 )
                     .asList()
             )
-            diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -90,7 +90,7 @@ class PulmFrontendTest {
                     ).asList()
                 ).asList()
             )
-            diagram = SourceStringReader(storedObject.asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
 
         @Test

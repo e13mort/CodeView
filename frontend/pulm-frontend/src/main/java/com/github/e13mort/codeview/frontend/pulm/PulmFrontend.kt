@@ -4,10 +4,11 @@ import com.github.e13mort.codeview.CVClasses
 import com.github.e13mort.codeview.ClassProperty
 import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.StoredObject
+import io.reactivex.Single
 
 class PulmFrontend: Frontend {
-    override fun generate(classes: CVClasses): StoredObject {
-        return SampleStoredObject(classes)
+    override fun generate(classes: CVClasses): Single<StoredObject> {
+        return Single.fromCallable { SampleStoredObject(classes) }
     }
 
     private class SampleStoredObject(private val classes: CVClasses) : StoredObject {

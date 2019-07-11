@@ -15,7 +15,7 @@ interface Backend {
 
 }
 interface Frontend {
-    fun generate(classes: CVClasses): StoredObject
+    fun generate(classes: CVClasses): Single<StoredObject>
 }
 
 interface CVClass {
