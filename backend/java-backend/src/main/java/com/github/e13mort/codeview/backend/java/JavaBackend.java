@@ -12,13 +12,13 @@ import com.github.javaparser.ast.body.TypeDeclaration;
 import com.github.javaparser.symbolsolver.utils.SymbolSolverCollectionStrategy;
 import com.github.javaparser.utils.ProjectRoot;
 import com.github.javaparser.utils.SourceRoot;
+import io.reactivex.Single;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +29,14 @@ public class JavaBackend implements Backend {
 
     @NotNull
     @Override
-    public List<CVClass> transformSourcesToCVClasses(@NotNull List<? extends SourceFile> files) {
-        try (TemporarySourceSet.TemporarySources sources = temporarySourceSet.cacheFiles(files)) {
-            Path path = sources.files();
-            return performTransformation(path);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return Collections.emptyList();
+    public Single<List<CVClass>> transformSourcesToCVClasses(@NotNull List<? extends SourceFile> files) {
+        return Single.fromCallable(() -> {
+            try (TemporarySourceSet.TemporarySources sources = temporarySourceSet.cacheFiles(files)) {
+                Path path = sources.files();
+                return performTransformation(path);
+            }
+        });
+
     }
 
     @NotNull

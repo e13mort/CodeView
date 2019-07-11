@@ -1,5 +1,7 @@
 package com.github.e13mort.codeview
 
+import io.reactivex.Single
+
 typealias SourceFiles = List<SourceFile>
 
 typealias CVClasses = List<CVClass>
@@ -9,7 +11,7 @@ interface StoredObject {
 }
 
 interface Backend {
-    fun transformSourcesToCVClasses(files: SourceFiles): CVClasses
+    fun transformSourcesToCVClasses(files: SourceFiles): Single<CVClasses>
 
 }
 interface Frontend {

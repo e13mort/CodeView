@@ -13,9 +13,11 @@ class CodeView @Inject constructor (
     fun run(parameters: SourcePath = "") {
         output.save(
             frontend.generate(
-                backend.transformSourcesToCVClasses(
-                    source.sources(parameters).toList().blockingGet()
-                )
+                source.sources(parameters).toList()
+                    .flatMap {
+                        backend.transformSourcesToCVClasses(it)
+                    }
+                    .blockingGet()
             ).asString()
         )
     }

@@ -1,10 +1,11 @@
 package com.github.e13mort.codeview.client.ktor
 
 import com.github.e13mort.codeview.*
+import io.reactivex.Single
 
 class SampleBackend : Backend {
-    override fun transformSourcesToCVClasses(files: SourceFiles): CVClasses {
-        return listOf(
+    override fun transformSourcesToCVClasses(files: SourceFiles): Single<CVClasses> {
+        return Single.just(listOf(
             object : CVClass {
                 override fun name(): String = "TestCVClass"
 
@@ -15,7 +16,7 @@ class SampleBackend : Backend {
                 override fun has(property: ClassProperty): Boolean = false
 
             }
-        )
+        ))
     }
 
 }
