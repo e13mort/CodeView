@@ -11,14 +11,11 @@ class CodeView @Inject constructor (
     private val output: Output) {
 
     fun run(parameters: SourcePath = "") {
-        output.save(
-            source.sources(parameters).toList()
-                .flatMap {
-                    backend.transformSourcesToCVClasses(it)
-                }.flatMap {
-                    frontend.generate(it)
-                }
-                .blockingGet().asString()
-        )
+        source.sources(parameters).toList()
+            .flatMap { backend.transformSourcesToCVClasses(it) }
+            .flatMap { frontend.generate(it) }
+            .map { it.asString() }
+            .flatMapCompletable { output.save(it) }
+            .subscribe()
     }
 }

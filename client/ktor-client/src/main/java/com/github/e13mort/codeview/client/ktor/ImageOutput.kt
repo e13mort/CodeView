@@ -5,6 +5,7 @@ import io.ktor.application.ApplicationCall
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondOutputStream
+import io.reactivex.Completable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import net.sourceforge.plantuml.SourceStringReader
@@ -14,8 +15,10 @@ class ImageOutput(
     private val call: ApplicationCall
 ) : Output {
 
-    override fun save(data: String) {
-        pipelineContext.launch { writeDiagramToResponse(data) }
+    override fun save(data: String) : Completable {
+        return Completable.fromAction {
+            pipelineContext.launch { writeDiagramToResponse(data) }
+        }
     }
 
     private suspend fun writeDiagramToResponse(data: String) {
