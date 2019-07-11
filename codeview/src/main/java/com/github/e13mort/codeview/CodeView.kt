@@ -1,5 +1,6 @@
 package com.github.e13mort.codeview
 
+import io.reactivex.Completable
 import javax.inject.Inject
 
 typealias SourcePath = String
@@ -10,12 +11,11 @@ class CodeView @Inject constructor (
     private val backend: Backend,
     private val output: Output) {
 
-    fun run(parameters: SourcePath = "") {
-        source.sources(parameters).toList()
+    fun run(parameters: SourcePath = ""): Completable {
+        return source.sources(parameters).toList()
             .flatMap { backend.transformSourcesToCVClasses(it) }
             .flatMap { frontend.generate(it) }
             .map { it.asString() }
             .flatMapCompletable { output.save(it) }
-            .subscribe()
     }
 }

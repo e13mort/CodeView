@@ -20,8 +20,9 @@ fun Application.main() { init(this) }
 fun init(app: Application) {
     app.routing {
         get("/") {
-            CodeView(DataSource.EMPTY,
-                PulmFrontend(), SampleBackend(), ImageOutput(this, call)).run()
+            CodeView(DataSource.EMPTY, PulmFrontend(), SampleBackend(), ImageOutput(this, call))
+                .run()
+                .subscribe()
         }
     }
 }

@@ -15,4 +15,5 @@ fun main(params: Array<String>) {
         .build()
         .codeView()
         .run(launchCommand.sourcesPath)
+        .subscribe()
 }
