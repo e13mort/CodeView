@@ -14,11 +14,11 @@ import factory.LaunchCommand.OutputFormat.PUML
 class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
-    fun output() : Output {
+    fun output() : Output<String> {
         return createOutput(factory.outputFileName, factory.outputFormat)
     }
 
-    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output = when (outputFormat) {
+    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output<String> = when (outputFormat) {
         PUML -> SimpleFileOutput(outputFileName)
         PNG -> PNGPumlFileOutput(outputFileName)
     }

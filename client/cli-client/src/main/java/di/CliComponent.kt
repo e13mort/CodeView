@@ -5,5 +5,5 @@ import dagger.Component
 
 @Component(modules = [PredefinedModule::class, OutputModule::class, DataSourceModule::class])
 interface CliComponent {
-    fun codeView() : CodeView
+    fun codeView() : CodeView<String>
 }

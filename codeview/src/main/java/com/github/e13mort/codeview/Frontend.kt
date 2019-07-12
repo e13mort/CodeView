@@ -1,7 +1,7 @@
 package com.github.e13mort.codeview
 
-import io.reactivex.Completable
+import io.reactivex.Single
 
-interface Output {
-    fun save(data: String): Completable
+interface Output<T> {
+    fun save(data: String): Single<T>
 }
