@@ -79,6 +79,12 @@ class GithubDataSource(
 }
 
 private class GithubSourceFile(private val githubContent: Content) : SourceFile {
+    override fun fileInfo(): SourceFile.FileInfo {
+        return object : SourceFile.FileInfo {
+            override fun lastModifiedDate(): Long = 0
+        }
+    }
+
     override fun name(): String {
         return githubContent.path()
     }

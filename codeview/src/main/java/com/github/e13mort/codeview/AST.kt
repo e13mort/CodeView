@@ -1,8 +1,7 @@
 package com.github.e13mort.codeview
 
 import io.reactivex.Single
-
-typealias SourceFiles = List<SourceFile>
+import java.nio.file.Path
 
 typealias CVClasses = List<CVClass>
 
@@ -11,9 +10,9 @@ interface StoredObject {
 }
 
 interface Backend {
-    fun transformSourcesToCVClasses(files: SourceFiles): Single<CVClasses>
-
+    fun transformSourcesToCVClasses(path: Path) : Single<CVClasses>
 }
+
 interface Frontend {
     fun generate(classes: CVClasses): Single<StoredObject>
 }

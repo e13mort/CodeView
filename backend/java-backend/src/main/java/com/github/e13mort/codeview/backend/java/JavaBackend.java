@@ -1,9 +1,6 @@
 package com.github.e13mort.codeview.backend.java;
 
-import com.github.e13mort.codeview.Backend;
-import com.github.e13mort.codeview.CVClass;
-import com.github.e13mort.codeview.ClassProperty;
-import com.github.e13mort.codeview.SourceFile;
+import com.github.e13mort.codeview.*;
 import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -25,18 +22,9 @@ import java.util.Optional;
 public class JavaBackend implements Backend {
 
     @NotNull
-    private TemporarySourceSet temporarySourceSet = new TemporarySourceSet(new UUIDCacheName());
-
-    @NotNull
     @Override
-    public Single<List<CVClass>> transformSourcesToCVClasses(@NotNull List<? extends SourceFile> files) {
-        return Single.fromCallable(() -> {
-            try (TemporarySourceSet.TemporarySources sources = temporarySourceSet.cacheFiles(files)) {
-                Path path = sources.files();
-                return performTransformation(path);
-            }
-        });
-
+    public Single<List<CVClass>> transformSourcesToCVClasses(@NotNull Path path) {
+        return Single.fromCallable(() -> performTransformation(path));
     }
 
     @NotNull

@@ -20,4 +20,10 @@ interface SourceFile {
     fun name(): String
 
     fun read(): InputStream
+
+    fun fileInfo(): FileInfo
+
+    interface FileInfo {
+        fun lastModifiedDate() : Long
+    }
 }

@@ -1,6 +1,8 @@
 package com.github.e13mort.codeview.backend.java;
 
+import com.github.e13mort.codeview.CacheRepository;
 import com.github.e13mort.codeview.SourceFile;
+import io.reactivex.Single;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,16 +12,22 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-class TemporarySourceSet {
+public class TmpDirBasedCacheRepository implements CacheRepository {
 
     @NotNull
     private final CacheName cacheName;
 
-    TemporarySourceSet(@NotNull CacheName cacheName) {
+    public TmpDirBasedCacheRepository(@NotNull CacheName cacheName) {
         this.cacheName = cacheName;
     }
 
-    TemporarySources cacheFiles(@NotNull List<? extends SourceFile> files) {
+    @NotNull
+    @Override
+    public Single<TemporarySources> cacheSources(@NotNull List<? extends SourceFile> sources) {
+        return Single.fromCallable(() -> cacheFiles(sources));
+    }
+
+    private TemporarySources cacheFiles(@NotNull List<? extends SourceFile> files) {
         File cacheDir = prepareCacheDir();
         for (SourceFile file : files) {
             try {
@@ -28,7 +36,7 @@ class TemporarySourceSet {
                 e.printStackTrace();
             }
         }
-        return new TemporarySources(Paths.get(cacheDir.toURI()), cacheDir);
+        return new TemporarySourcesImpl(Paths.get(cacheDir.toURI()));
     }
 
     private File prepareCacheDir() {
@@ -37,31 +45,27 @@ class TemporarySourceSet {
         return cacheDir;
     }
 
-    static class TemporarySources implements AutoCloseable {
+    @Override
+    public void clear() {
+        try {
+            // TODO: 2019-07-26 store cache name
+            FileUtils.deleteDirectory(new File(cacheName.createDirName()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static class TemporarySourcesImpl implements TemporarySources {
 
         private Path path;
-        private final File cacheDir;
 
-        TemporarySources(Path path, File cacheDir) {
+        TemporarySourcesImpl(Path path) {
             this.path = path;
-            this.cacheDir = cacheDir;
         }
 
-        Path files() {
+        @NotNull
+        public Path files() {
             return path;
-        }
-
-        @Override
-        public void close() {
-            clearCache();
-        }
-
-        private void clearCache() {
-            try {
-                FileUtils.deleteDirectory(cacheDir);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

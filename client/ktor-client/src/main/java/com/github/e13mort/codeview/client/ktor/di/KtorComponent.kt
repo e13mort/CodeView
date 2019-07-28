@@ -10,7 +10,8 @@ import javax.inject.Singleton
         KtorDataSourceModule::class,
         KtorFrontendModule::class,
         KtorBackendModule::class,
-        KtorImageOutputModule::class
+        KtorImageOutputModule::class,
+        KtorCacheModule::class
     ]
 )
 interface KtorComponent {

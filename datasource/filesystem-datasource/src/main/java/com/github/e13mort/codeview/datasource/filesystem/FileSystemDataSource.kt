@@ -28,6 +28,13 @@ class FileSystemDataSource: DataSource {
     }
 
     class PathSourceFile(private val path: Path): SourceFile {
+        override fun fileInfo(): SourceFile.FileInfo {
+            return object : SourceFile.FileInfo {
+                override fun lastModifiedDate(): Long = 0
+
+            }
+        }
+
         override fun name(): String {
             return path.fileName.toString()
         }
