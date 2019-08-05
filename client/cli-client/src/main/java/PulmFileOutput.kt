@@ -4,7 +4,7 @@ import io.reactivex.Single
 import java.io.File
 import java.io.FileWriter
 
-class SimpleFileOutput(private val name: String): Output<String> {
+class PulmFileOutput(private val name: String): Output<String> {
     private val ext = "pulm"
 
     override fun save(data: StoredObject): Single<String> {

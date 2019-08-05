@@ -2,7 +2,7 @@ package di
 
 import factory.LaunchCommand
 import PNGPumlFileOutput
-import SimpleFileOutput
+import PulmFileOutput
 import com.github.e13mort.codeview.Output
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
     }
 
     private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output<String> = when (outputFormat) {
-        PUML -> SimpleFileOutput(outputFileName)
+        PUML -> PulmFileOutput(outputFileName)
         PNG -> PNGPumlFileOutput(outputFileName)
     }
 }
