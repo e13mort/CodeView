@@ -1,5 +1,5 @@
 import com.github.e13mort.codeview.Output
-import io.reactivex.Completable
+import com.github.e13mort.codeview.StoredObject
 import io.reactivex.Single
 import java.io.File
 import java.io.FileWriter
@@ -7,11 +7,11 @@ import java.io.FileWriter
 class SimpleFileOutput(private val name: String): Output<String> {
     private val ext = "pulm"
 
-    override fun save(data: String): Single<String> {
+    override fun save(data: StoredObject): Single<String> {
         return Single.fromCallable {
             val file = File("$name.$ext")
             val fileWriter = FileWriter(file)
-            fileWriter.write(data)
+            fileWriter.write(data.asString())
             fileWriter.flush()
             fileWriter.close()
             file.absolutePath

@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.Output
+import com.github.e13mort.codeview.StoredObject
 import dagger.Module
 import dagger.Provides
 import io.reactivex.Single
@@ -16,10 +17,10 @@ class KtorImageOutputModule(private val dataCache: DataCache) {
 }
 
 class CachedOutput(private val dataCache: DataCache) : Output<DataCache.CacheItem> {
-    override fun save(data: String): Single<DataCache.CacheItem> {
+    override fun save(data: StoredObject): Single<DataCache.CacheItem> {
         return Single.just(dataCache.createCacheItem())
             .doOnEvent { item, _ ->
-                SourceStringReader(data).outputImage(item.write())
+                SourceStringReader(data.asString()).outputImage(item.write())
             }.map {
                 it as DataCache.CacheItem
             }

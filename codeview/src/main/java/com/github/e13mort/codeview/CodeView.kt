@@ -17,7 +17,6 @@ class CodeView<T> @Inject constructor (
             .flatMap { cacheRepository.cacheSources(it) }
             .flatMap { backend.transformSourcesToCVClasses(it.files()) }
             .flatMap { frontend.generate(it) }
-            .map { it.asString() }
             .flatMap { output.save(it) }
             .doFinally { cacheRepository.clear() }
     }
