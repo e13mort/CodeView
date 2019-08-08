@@ -1,8 +1,8 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.Cache
-import com.github.e13mort.codeview.backend.java.TmpDirBasedCache
-import com.github.e13mort.codeview.backend.java.UUIDCacheName
+import com.github.e13mort.codeview.cache.TmpDirBasedCache
+import com.github.e13mort.codeview.cache.UUIDCacheName
 import dagger.Module
 import dagger.Provides
 

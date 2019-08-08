@@ -1,4 +1,4 @@
-package com.github.e13mort.codeview.backend.java;
+package com.github.e13mort.codeview.cache;
 
 import com.github.e13mort.codeview.Cache;
 import com.github.e13mort.codeview.SourceFile;
