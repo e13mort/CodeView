@@ -3,7 +3,7 @@ package com.github.e13mort.codeview
 import io.reactivex.Single
 import java.nio.file.Path
 
-interface CacheRepository {
+interface Cache {
 
     interface TemporarySources {
         fun files() : Path

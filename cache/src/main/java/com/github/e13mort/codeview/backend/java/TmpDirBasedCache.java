@@ -1,6 +1,6 @@
 package com.github.e13mort.codeview.backend.java;
 
-import com.github.e13mort.codeview.CacheRepository;
+import com.github.e13mort.codeview.Cache;
 import com.github.e13mort.codeview.SourceFile;
 import io.reactivex.Single;
 import org.apache.commons.io.FileUtils;
@@ -12,13 +12,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class TmpDirBasedCacheRepository implements CacheRepository {
+public class TmpDirBasedCache implements Cache {
 
     @NotNull
     private final CacheName cacheName;
     private final String dirName;
 
-    public TmpDirBasedCacheRepository(@NotNull CacheName cacheName, @NotNull String cacheDirName) {
+    public TmpDirBasedCache(@NotNull CacheName cacheName, @NotNull String cacheDirName) {
         this.cacheName = cacheName;
         this.dirName = cacheDirName;
     }
