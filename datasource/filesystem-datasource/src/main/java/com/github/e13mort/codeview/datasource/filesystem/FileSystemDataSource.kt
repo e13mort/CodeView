@@ -3,11 +3,14 @@ package com.github.e13mort.codeview.datasource.filesystem
 import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.SourcePath
 import com.github.e13mort.codeview.SourceFile
+import com.github.e13mort.codeview.Sources
 import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.FileInputStream
 import java.io.InputStream
 import java.nio.file.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 class FileSystemDataSource: DataSource {
 
@@ -19,15 +22,30 @@ class FileSystemDataSource: DataSource {
         return "filesystem"
     }
 
-    override fun sources(path: SourcePath): Observable<SourceFile> {
-        val javaFileVisitor = ExtensionBasedFileVisitor("java")
-        Files.walkFileTree(Paths.get(path), EnumSet.noneOf(FileVisitOption::class.java), MAX_DEPTH, javaFileVisitor)
+    override fun sources(path: SourcePath): Single<Sources> {
+        return Single.fromCallable {
+            val javaFileVisitor = ExtensionBasedFileVisitor("java")
+            Files.walkFileTree(Paths.get(path), EnumSet.noneOf(FileVisitOption::class.java), MAX_DEPTH, javaFileVisitor)
 
-        return Observable.fromIterable(javaFileVisitor.files)
-            .map { PathSourceFile(it) }
+            FileSystemSources(path, javaFileVisitor.files)
+        }
     }
 
-    class PathSourceFile(private val path: Path): SourceFile {
+    private class FileSystemSources(private val path: SourcePath, private val files: ArrayList<Path>) : Sources {
+
+        override fun name(): String {
+            return path
+        }
+
+        override fun sources(): Observable<SourceFile> {
+            return Observable.fromIterable(files).map {
+                PathSourceFile(it)
+            }
+        }
+
+    }
+
+    private class PathSourceFile(private val path: Path): SourceFile {
         override fun fileInfo(): SourceFile.FileInfo {
             return object : SourceFile.FileInfo {
                 override fun lastModifiedDate(): Long = 0

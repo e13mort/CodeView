@@ -13,7 +13,7 @@ class CodeView<T> @Inject constructor (
     private val output: Output<T>) {
 
     fun run(parameters: SourcePath = ""): Single<T> {
-        return source.sources(parameters).toList()
+        return source.sources(parameters)
             .flatMap { cache.cacheSources(it) }
             .flatMap { backend.transformSourcesToCVClasses(it.files()) }
             .flatMap { frontend.generate(it) }

@@ -1,8 +1,10 @@
 package com.github.e13mort.codeview.datasource.github
 
+import com.github.e13mort.codeview.SourceFile
 import com.jcabi.github.Contents
 import com.jcabi.github.Repos
 import com.jcabi.github.mock.MkGithub
+import io.reactivex.Observable
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -20,7 +22,7 @@ class GithubDataSourceTest {
         @Test
         internal fun onItemEmitted() {
             val dataSource = GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareSingleItem())
-            val test = dataSource.sources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = dataSource.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
             test.assertValueCount(1)
         }
 
@@ -28,7 +30,7 @@ class GithubDataSourceTest {
         @Test
         internal fun correctName() {
             val dataSource = GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareSingleItem())
-            val test = dataSource.sources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = dataSource.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
             test.assertValue { it.name() == "src/test.java" }
         }
 
@@ -41,7 +43,7 @@ class GithubDataSourceTest {
         internal fun multipleJavaItems() {
             val source =
                 GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeItem())
-            val test = source.sources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = source.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
             test.assertValueCount(3)
         }
     }
@@ -53,7 +55,7 @@ class GithubDataSourceTest {
         internal fun multipleJavaItems() {
             val source =
                 GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeJavaItem())
-            val test = source.sources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = source.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
             test.assertValueCount(3)
         }
     }
@@ -104,4 +106,8 @@ class GithubDataSourceTest {
             .add("content", content)
             .add("message", "test message")
     }
+}
+
+fun GithubDataSource.testSources(path: String): Observable<SourceFile> {
+    return this.sources(path).blockingGet().sources()
 }

@@ -2,6 +2,7 @@ package com.github.e13mort.codeview.backend.java;
 
 import com.github.e13mort.codeview.Cache;
 import com.github.e13mort.codeview.SourceFile;
+import com.github.e13mort.codeview.Sources;
 import io.reactivex.Single;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
@@ -25,8 +26,8 @@ public class TmpDirBasedCache implements Cache {
 
     @NotNull
     @Override
-    public Single<TemporarySources> cacheSources(@NotNull List<? extends SourceFile> sources) {
-        return Single.fromCallable(() -> cacheFiles(sources));
+    public Single<TemporarySources> cacheSources(@NotNull Sources sources) {
+        return sources.sources().toList().map(this::cacheFiles);
     }
 
     private TemporarySources cacheFiles(@NotNull List<? extends SourceFile> files) {

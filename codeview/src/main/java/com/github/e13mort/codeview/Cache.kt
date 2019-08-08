@@ -9,7 +9,7 @@ interface Cache {
         fun files() : Path
     }
 
-    fun cacheSources(sources: List<SourceFile>): Single<TemporarySources>
+    fun cacheSources(sources: Sources): Single<TemporarySources>
 
     fun clear()
 }
