@@ -10,6 +10,6 @@ import dagger.Provides
 class KtorCacheModule {
     @Provides
     fun cache() : CacheRepository {
-        return TmpDirBasedCacheRepository(UUIDCacheName())
+        return TmpDirBasedCacheRepository(UUIDCacheName(), "tmp")
     }
 }

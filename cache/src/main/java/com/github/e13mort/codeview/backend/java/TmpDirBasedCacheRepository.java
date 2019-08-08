@@ -16,9 +16,11 @@ public class TmpDirBasedCacheRepository implements CacheRepository {
 
     @NotNull
     private final CacheName cacheName;
+    private final String dirName;
 
-    public TmpDirBasedCacheRepository(@NotNull CacheName cacheName) {
+    public TmpDirBasedCacheRepository(@NotNull CacheName cacheName, @NotNull String cacheDirName) {
         this.cacheName = cacheName;
+        this.dirName = cacheDirName;
     }
 
     @NotNull
@@ -40,7 +42,7 @@ public class TmpDirBasedCacheRepository implements CacheRepository {
     }
 
     private File prepareCacheDir() {
-        File cacheDir = new File(cacheName.createDirName());
+        File cacheDir = new File(dirName);
         cacheDir.mkdir();
         return cacheDir;
     }
@@ -48,8 +50,7 @@ public class TmpDirBasedCacheRepository implements CacheRepository {
     @Override
     public void clear() {
         try {
-            // TODO: 2019-07-26 store cache name
-            FileUtils.deleteDirectory(new File(cacheName.createDirName()));
+            FileUtils.deleteDirectory(new File(dirName));
         } catch (IOException e) {
             e.printStackTrace();
         }

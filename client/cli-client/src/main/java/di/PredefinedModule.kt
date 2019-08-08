@@ -25,6 +25,6 @@ class PredefinedModule {
 
     @Provides
     fun cache() : CacheRepository {
-        return TmpDirBasedCacheRepository(UUIDCacheName())
+        return TmpDirBasedCacheRepository(UUIDCacheName(), "tmp")
     }
 }
