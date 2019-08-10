@@ -15,7 +15,7 @@ class MutableClassDescription implements CVClass {
     @NotNull
     private ArrayList<CVMethod> methods = new ArrayList<>();
     @NotNull
-    private ArrayList<CVInterface> implementedInterfaces = new ArrayList<>();
+    private ArrayList<CVClass> implementedInterfaces = new ArrayList<>();
     @NotNull
     private List<ClassProperty> properties;
 
@@ -45,7 +45,7 @@ class MutableClassDescription implements CVClass {
 
     @NotNull
     @Override
-    public List<CVInterface> implemented() {
+    public List<CVClass> implemented() {
         return implementedInterfaces;
     }
 
@@ -62,7 +62,7 @@ class MutableClassDescription implements CVClass {
         this.methods.add(method);
     }
 
-    void addImplementedInterface(@NotNull CVInterface implementedInterface) {
+    void addImplementedInterface(@NotNull CVClass implementedInterface) {
         this.implementedInterfaces.add(implementedInterface);
     }
 

@@ -26,7 +26,7 @@ interface CVClass {
 
     fun has(property: ClassProperty): Boolean
 
-    fun implemented(): List<CVInterface>
+    fun implemented(): List<CVClass>
 }
 
 interface CVClassField {
@@ -49,10 +49,6 @@ interface CVMethodParameter {
     fun name(): String
 
     fun type(): CVType
-}
-
-interface CVInterface {
-    fun name(): String
 }
 
 interface CVType {
