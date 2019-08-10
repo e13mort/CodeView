@@ -21,6 +21,7 @@ class MutableClassDescriptionVisitor extends VoidVisitorAdapter<MutableClassDesc
 
     @Override
     public void visit(ClassOrInterfaceDeclaration n, MutableClassDescription arg) {
+        super.visit(n, arg);
         n.getImplementedTypes().forEach(interfaceDeclaration ->
             arg.addImplementedInterface(
                     new MutableClassDescription(
