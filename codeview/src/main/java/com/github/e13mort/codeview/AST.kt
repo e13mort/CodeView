@@ -49,6 +49,12 @@ interface CVMethodParameter {
     fun type(): CVType
 }
 
+interface CVInterface {
+    fun name(): String
+
+    fun methods(): List<CVMethod>
+}
+
 interface CVType {
     fun simpleName(): String
 
