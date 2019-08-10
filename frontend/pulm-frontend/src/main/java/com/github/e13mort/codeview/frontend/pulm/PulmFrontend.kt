@@ -9,7 +9,11 @@ import io.reactivex.Single
 class PulmFrontend: Frontend {
 
     companion object {
-        const val IMPLEMENTS_ARROW_LEFT = "<|-"
+        private const val IMPLEMENTS_ARROW_LEFT = "<|-"
+        private const val START = "@startuml"
+        private const val END = "@enduml"
+        private const val INTERFACE = "interface"
+        private const val CLASS = "class"
     }
 
     override fun generate(classes: CVClasses): Single<StoredObject> {
@@ -19,12 +23,12 @@ class PulmFrontend: Frontend {
     private class SampleStoredObject(private val classes: CVClasses) : StoredObject {
         override fun asString(): String {
             val builder = StringBuilder()
-            builder.append("@startuml\n")
+            builder.append("$START\n")
 
             classes.forEach {
                 when {
-                    it.has(ClassProperty.INTERFACE) -> builder.append("interface")
-                    else -> builder.append("class")
+                    it.has(ClassProperty.INTERFACE) -> builder.append(INTERFACE)
+                    else -> builder.append(CLASS)
                 }
                 builder.append(" ${it.name()} {\n")
 
@@ -52,7 +56,7 @@ class PulmFrontend: Frontend {
                 }
             }
 
-            builder.append("@enduml\n")
+            builder.append("$END\n")
             return builder.toString()
         }
 
