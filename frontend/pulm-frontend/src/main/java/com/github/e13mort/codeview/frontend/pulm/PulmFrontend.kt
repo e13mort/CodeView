@@ -7,6 +7,11 @@ import com.github.e13mort.codeview.StoredObject
 import io.reactivex.Single
 
 class PulmFrontend: Frontend {
+
+    companion object {
+        const val IMPLEMENTS_ARROW_LEFT = "<|-"
+    }
+
     override fun generate(classes: CVClasses): Single<StoredObject> {
         return Single.fromCallable { SampleStoredObject(classes) }
     }
@@ -39,7 +44,12 @@ class PulmFrontend: Frontend {
                     builder.append(")\n")
                 }
 
+
                 builder.append("}\n")
+
+                it.implemented().forEach {implementedInterface ->
+                    builder.append("${implementedInterface.name()} $IMPLEMENTS_ARROW_LEFT ${it.name()}\n")
+                }
             }
 
             builder.append("@enduml\n")
