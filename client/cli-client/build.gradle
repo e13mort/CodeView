@@ -47,6 +47,11 @@ dependencies {
     implementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
     implementation 'com.google.dagger:dagger:2.23.2'
     kapt 'com.google.dagger:dagger-compiler:2.23.2'
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        implementation 'javax.annotation:javax.annotation-api:1.3.2'
+    }
+    
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
