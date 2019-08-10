@@ -51,8 +51,6 @@ interface CVMethodParameter {
 
 interface CVInterface {
     fun name(): String
-
-    fun methods(): List<CVMethod>
 }
 
 interface CVType {
