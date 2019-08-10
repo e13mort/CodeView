@@ -43,6 +43,12 @@ class MutableClassDescription implements CVClass {
         return methods;
     }
 
+    @NotNull
+    @Override
+    public List<CVInterface> implemented() {
+        return implementedInterfaces;
+    }
+
     @Override
     public boolean has(@NotNull ClassProperty property) {
         return properties.contains(property);
@@ -59,4 +65,5 @@ class MutableClassDescription implements CVClass {
     void addImplementedInterface(@NotNull CVInterface implementedInterface) {
         this.implementedInterfaces.add(implementedInterface);
     }
+
 }

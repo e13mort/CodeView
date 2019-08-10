@@ -6,7 +6,11 @@ import java.util.*
 class StubClass(private val name: String = "Test",
                 private val property: ClassProperty? = null,
                 private val methods: List<CVMethod> = Collections.emptyList(),
-                private val fields: List<CVClassField> = Collections.emptyList()) : CVClass {
+                private val fields: List<CVClassField> = Collections.emptyList(),
+                private val implementedInterfaces: List<CVInterface> = Collections.emptyList()) : CVClass {
+
+    override fun implemented(): List<CVInterface> = implementedInterfaces
+
     override fun fields(): List<CVClassField> = fields
 
     override fun methods(): List<CVMethod> = methods
