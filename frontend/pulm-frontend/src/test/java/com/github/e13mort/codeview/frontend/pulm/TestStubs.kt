@@ -7,9 +7,9 @@ class StubClass(private val name: String = "Test",
                 private val property: ClassProperty? = null,
                 private val methods: List<CVMethod> = Collections.emptyList(),
                 private val fields: List<CVClassField> = Collections.emptyList(),
-                private val implementedInterfaces: List<CVInterface> = Collections.emptyList()) : CVClass {
+                private val implementedInterfaces: List<CVClass> = Collections.emptyList()) : CVClass {
 
-    override fun implemented(): List<CVInterface> = implementedInterfaces
+    override fun implemented(): List<CVClass> = implementedInterfaces
 
     override fun fields(): List<CVClassField> = fields
 
