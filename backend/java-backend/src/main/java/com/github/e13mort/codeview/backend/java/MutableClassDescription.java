@@ -1,9 +1,6 @@
 package com.github.e13mort.codeview.backend.java;
 
-import com.github.e13mort.codeview.CVClass;
-import com.github.e13mort.codeview.CVClassField;
-import com.github.e13mort.codeview.CVMethod;
-import com.github.e13mort.codeview.ClassProperty;
+import com.github.e13mort.codeview.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,7 +15,10 @@ class MutableClassDescription implements CVClass {
     @NotNull
     private ArrayList<CVMethod> methods = new ArrayList<>();
     @NotNull
+    private ArrayList<CVClass> implementedInterfaces = new ArrayList<>();
+    @NotNull
     private List<ClassProperty> properties;
+
 
     MutableClassDescription(@NotNull String className, @NotNull List<ClassProperty> properties) {
         this.className = className;
@@ -43,6 +43,12 @@ class MutableClassDescription implements CVClass {
         return methods;
     }
 
+    @NotNull
+    @Override
+    public List<CVClass> implemented() {
+        return implementedInterfaces;
+    }
+
     @Override
     public boolean has(@NotNull ClassProperty property) {
         return properties.contains(property);
@@ -55,4 +61,9 @@ class MutableClassDescription implements CVClass {
     void addMethod(@NotNull CVMethod method) {
         this.methods.add(method);
     }
+
+    void addImplementedInterface(@NotNull CVClass implementedInterface) {
+        this.implementedInterfaces.add(implementedInterface);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.CVVisibility
+import com.github.e13mort.codeview.ClassProperty
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -102,5 +103,42 @@ class PulmFrontendTest {
         internal fun name() {
             assertEquals("SampleFieldType", diagram.fields()[0].type())
         }
+    }
+
+    @Nested
+    inner class ImplementsParsingTest {
+        private lateinit var diagram: ClassDiagram
+
+        @BeforeEach
+        internal fun setUp() {
+            val storedObject = frontend.generate(
+                StubClass(
+                    name = "TestClass",
+                    implementedInterfaces = listOf(
+                        StubClass(
+                            "TestInterface",
+                            property = ClassProperty.INTERFACE
+                        )
+                    )
+                ).asList()
+            )
+
+            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
+        }
+
+        @Test
+        internal fun hasLinkBetweenClassAndInterface() {
+            val link = diagram.links[0]
+            val firstEntityName = link.entity1.code.fullName
+            val secondLinkEntityName = link.entity2.code.fullName
+            assertEquals("TestInterface", firstEntityName)
+            assertEquals("TestClass", secondLinkEntityName)
+        }
+
+        @Test
+        internal fun onlyOneLinkOnDiagram() {
+            assertEquals(1, diagram.links.size)
+        }
+
     }
 }

@@ -25,6 +25,8 @@ interface CVClass {
     fun methods(): List<CVMethod>
 
     fun has(property: ClassProperty): Boolean
+
+    fun implemented(): List<CVClass>
 }
 
 interface CVClassField {
