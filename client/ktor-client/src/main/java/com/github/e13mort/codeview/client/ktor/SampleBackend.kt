@@ -18,7 +18,7 @@ class SampleBackend : Backend {
 
                 override fun has(property: ClassProperty): Boolean = false
 
-                override fun implemented(): List<CVInterface> = emptyList()
+                override fun implemented(): List<CVClass> = emptyList()
 
             }
         ))
