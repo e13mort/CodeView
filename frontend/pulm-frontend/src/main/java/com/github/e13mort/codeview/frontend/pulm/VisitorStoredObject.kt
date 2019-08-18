@@ -19,18 +19,12 @@ class VisitorStoredObject (private val classes: CVClasses) :
         CVClass.MethodsVisitor,
         CVClass.RelationVisitor {
 
-        override fun onImplementedInterfaceDetected(self: CVClass, implementedInterface: CVClass) {
-            builder.append("${implementedInterface.name()} $IMPLEMENTS_ARROW_LEFT ${self.name()}\n")
-        }
-
         override fun onClassDetected(cls: CVClass) {
-            builder.append(CLASS)
-            process(cls)
-        }
-
-        override fun onInterfaceDetected(cls: CVClass) {
-            builder.append(INTERFACE)
-            process(cls)
+            builder.append("${chooseType(cls)} ${cls.name()} {\n")
+            cls.accept(this as CVClass.FieldsVisitor)
+            cls.accept(this as CVClass.MethodsVisitor)
+            builder.append("}\n")
+            cls.accept(this as CVClass.RelationVisitor)
         }
 
         override fun onMethodDetected(
@@ -52,12 +46,15 @@ class VisitorStoredObject (private val classes: CVClasses) :
             builder.append("${field.type().simpleName()} ${field.name()}\n")
         }
 
-        private fun process(cls: CVClass) {
-            builder.append(" ${cls.name()} {\n")
-            cls.accept(this as CVClass.FieldsVisitor)
-            cls.accept(this as CVClass.MethodsVisitor)
-            builder.append("}\n")
-            cls.accept(this as CVClass.RelationVisitor)
+        override fun onImplementedInterfaceDetected(self: CVClass, implementedInterface: CVClass) {
+            builder.append("${implementedInterface.name()} $IMPLEMENTS_ARROW_LEFT ${self.name()}\n")
+        }
+
+        private fun chooseType(cls: CVClass): String {
+            return when {
+                cls.has(ClassProperty.INTERFACE) -> INTERFACE
+                else -> CLASS
+            }
         }
 
     }

@@ -22,8 +22,6 @@ interface CVClasses {
 
     interface Visitor {
         fun onClassDetected(cls: CVClass)
-
-        fun onInterfaceDetected(cls: CVClass)
     }
 }
 

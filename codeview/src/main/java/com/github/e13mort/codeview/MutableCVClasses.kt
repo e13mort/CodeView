@@ -15,11 +15,7 @@ class MutableCVClasses : CVClasses {
 
     override fun accept(visitor: CVClasses.Visitor) {
         classes.forEach { cvClass ->
-            if (cvClass.has(ClassProperty.INTERFACE)) {
-                visitor.onInterfaceDetected(cvClass)
-            } else {
-                visitor.onClassDetected(cvClass)
-            }
+            visitor.onClassDetected(cvClass)
         }
     }
 
