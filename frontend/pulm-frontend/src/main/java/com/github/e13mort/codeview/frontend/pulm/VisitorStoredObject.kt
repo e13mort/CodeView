@@ -2,7 +2,10 @@ package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.*
 
-class VisitorStoredObject(private val classes: CVClasses) :
+class VisitorStoredObject(
+    private val classes: CVClasses,
+    private val params: Set<Frontend.Params>
+) :
     StoredObject {
 
     override fun asString(): String {
@@ -13,7 +16,8 @@ class VisitorStoredObject(private val classes: CVClasses) :
                 builder,
                 MethodsRenderingVisitor(builder),
                 FieldsRenderingVisitor(builder),
-                ClassRelationsRenderingVisitor(builder)
+                ClassRelationsRenderingVisitor(builder),
+                params
             )
         )
         builder.append("$END\n")
@@ -24,11 +28,13 @@ class VisitorStoredObject(private val classes: CVClasses) :
         private val builder: StringBuilder,
         private val methodsVisitor: CVClass.MethodsVisitor,
         private val fieldsVisitor: CVClass.FieldsVisitor,
-        private val relationsRenderingVisitor: CVClass.RelationVisitor
+        private val relationsRenderingVisitor: CVClass.RelationVisitor,
+        private val params: Set<Frontend.Params>
     ) :
         CVClasses.Visitor {
 
         override fun onClassDetected(cls: CVClass) {
+            //todo: call visitors according to params
             builder.append("${chooseType(cls)} ${cls.name()} {\n")
             cls.accept(fieldsVisitor)
             cls.accept(methodsVisitor)

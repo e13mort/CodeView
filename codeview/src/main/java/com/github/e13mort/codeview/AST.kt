@@ -13,6 +13,16 @@ interface Backend {
 
 interface Frontend {
     fun generate(classes: CVClasses): Single<StoredObject>
+
+    enum class Params {
+        CLASSES, INTERFACES, RELATIONS;
+
+        companion object {
+            fun all(): Set<Params> {
+                return Params.values().toSet()
+            }
+        }
+    }
 }
 
 interface CVClasses {
