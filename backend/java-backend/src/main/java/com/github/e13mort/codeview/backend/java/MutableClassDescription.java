@@ -31,27 +31,30 @@ class MutableClassDescription implements CVClass {
         return className;
     }
 
-    @NotNull
-    @Override
-    public List<CVClassField> fields() {
-        return cvClassFields;
-    }
-
-    @NotNull
-    @Override
-    public List<CVMethod> methods() {
-        return methods;
-    }
-
-    @NotNull
-    @Override
-    public List<CVClass> implemented() {
-        return implementedInterfaces;
-    }
-
     @Override
     public boolean has(@NotNull ClassProperty property) {
         return properties.contains(property);
+    }
+
+    @Override
+    public void accept(@NotNull MethodsVisitor methodsVisitor) {
+        for (CVMethod method : methods) {
+            methodsVisitor.onMethodDetected(this, method);
+        }
+    }
+
+    @Override
+    public void accept(@NotNull FieldsVisitor fieldsVisitor) {
+        for (CVClassField cvClassField : cvClassFields) {
+            fieldsVisitor.onFieldDetected(this, cvClassField);
+        }
+    }
+
+    @Override
+    public void accept(@NotNull RelationVisitor relationVisitor) {
+        for (CVClass implementedInterface : implementedInterfaces) {
+            relationVisitor.onImplementedInterfaceDetected(this, implementedInterface);
+        }
     }
 
     void addField(@NotNull CVClassField field) {
@@ -65,5 +68,4 @@ class MutableClassDescription implements CVClass {
     void addImplementedInterface(@NotNull CVClass implementedInterface) {
         this.implementedInterfaces.add(implementedInterface);
     }
-
 }

@@ -8,18 +8,27 @@ class StubClass(private val name: String = "Test",
                 private val methods: List<CVMethod> = Collections.emptyList(),
                 private val fields: List<CVClassField> = Collections.emptyList(),
                 private val implementedInterfaces: List<CVClass> = Collections.emptyList()) : CVClass {
+    override fun accept(fieldsVisitor: CVClass.FieldsVisitor) {
+        fields.forEach {
+            fieldsVisitor.onFieldDetected(this, it)
+        }
+    }
 
-    override fun implemented(): List<CVClass> = implementedInterfaces
+    override fun accept(relationVisitor: CVClass.RelationVisitor) {
+        implementedInterfaces.forEach {
+            relationVisitor.onImplementedInterfaceDetected(this, it)
+        }
+    }
 
-    override fun fields(): List<CVClassField> = fields
-
-    override fun methods(): List<CVMethod> = methods
+    override fun accept(methodsVisitor: CVClass.MethodsVisitor) {
+        methods.forEach {
+            methodsVisitor.onMethodDetected(this, it)
+        }
+    }
 
     override fun has(property: ClassProperty): Boolean = this.property == property
 
     override fun name(): String = name
-
-    fun asList() : List<StubClass> = Collections.singletonList(this)
 }
 
 class StubMethod(private val name: String = TODO(),

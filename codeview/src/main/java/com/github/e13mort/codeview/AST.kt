@@ -3,8 +3,6 @@ package com.github.e13mort.codeview
 import io.reactivex.Single
 import java.nio.file.Path
 
-typealias CVClasses = List<CVClass>
-
 interface StoredObject {
     fun asString(): String
 }
@@ -17,16 +15,43 @@ interface Frontend {
     fun generate(classes: CVClasses): Single<StoredObject>
 }
 
+interface CVClasses {
+    fun accept(visitor: Visitor)
+
+    fun add(aClass: CVClass)
+
+    interface Visitor {
+        fun onClassDetected(cls: CVClass)
+
+        fun onInterfaceDetected(cls: CVClass)
+    }
+}
+
 interface CVClass {
     fun name(): String
 
-    fun fields(): List<CVClassField>
-
-    fun methods(): List<CVMethod>
-
     fun has(property: ClassProperty): Boolean
 
-    fun implemented(): List<CVClass>
+    fun accept(methodsVisitor: MethodsVisitor)
+
+    fun accept(fieldsVisitor: FieldsVisitor)
+
+    fun accept(relationVisitor: RelationVisitor)
+
+    interface MethodsVisitor {
+        fun onMethodDetected(self: CVClass, method: CVMethod)
+    }
+
+    interface FieldsVisitor {
+        fun onFieldDetected(
+            self: CVClass,
+            field: CVClassField
+        )
+    }
+
+    interface RelationVisitor {
+        fun onImplementedInterfaceDetected(self: CVClass, implementedInterface: CVClass)
+    }
 }
 
 interface CVClassField {

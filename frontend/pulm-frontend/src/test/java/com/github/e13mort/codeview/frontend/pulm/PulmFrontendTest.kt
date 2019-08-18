@@ -1,7 +1,9 @@
 package com.github.e13mort.codeview.frontend.pulm
 
+import com.github.e13mort.codeview.CVClasses
 import com.github.e13mort.codeview.CVVisibility
 import com.github.e13mort.codeview.ClassProperty
+import com.github.e13mort.codeview.MutableCVClasses
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -26,7 +28,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.generate(Arrays.asList(StubClass("TestClass")))
+            val storedObject = frontend.generate(MutableCVClasses.of(StubClass("TestClass")))
             diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
 
@@ -44,13 +46,14 @@ class PulmFrontendTest {
         @BeforeEach
         internal fun setUp() {
             val storedObject = frontend.generate(
-                StubClass(
-                    methods = StubMethod(
-                        "sampleMethod",
-                        StubType("SampleReturnType", "com.sample.SampleReturnType")
-                    ).asList()
+                MutableCVClasses.of(
+                    StubClass(
+                        methods = StubMethod(
+                            "sampleMethod",
+                            StubType("SampleReturnType", "com.sample.SampleReturnType")
+                        ).asList()
+                    )
                 )
-                    .asList()
             )
             diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
@@ -82,14 +85,18 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.generate(
+            val classes = MutableCVClasses.of(
                 StubClass(
                     fields = StubField(
                         "testFieldName",
                         StubType("SampleFieldType", "com.sample.SampleFieldType"),
                         CVVisibility.PUBLIC
                     ).asList()
-                ).asList()
+                )
+            )
+
+            val storedObject = frontend.generate(
+                classes
             )
             diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
         }
@@ -112,15 +119,17 @@ class PulmFrontendTest {
         @BeforeEach
         internal fun setUp() {
             val storedObject = frontend.generate(
-                StubClass(
-                    name = "TestClass",
-                    implementedInterfaces = listOf(
-                        StubClass(
-                            "TestInterface",
-                            property = ClassProperty.INTERFACE
+                MutableCVClasses.of(
+                    StubClass(
+                        name = "TestClass",
+                        implementedInterfaces = listOf(
+                            StubClass(
+                                "TestInterface",
+                                property = ClassProperty.INTERFACE
+                            )
                         )
                     )
-                ).asList()
+                )
             )
 
             diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)

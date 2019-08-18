@@ -23,13 +23,13 @@ public class JavaBackend implements Backend {
 
     @NotNull
     @Override
-    public Single<List<CVClass>> transformSourcesToCVClasses(@NotNull Path path) {
+    public Single<CVClasses> transformSourcesToCVClasses(@NotNull Path path) {
         return Single.fromCallable(() -> performTransformation(path));
     }
 
     @NotNull
-    private List<CVClass> performTransformation(@NotNull Path path) {
-        List<CVClass> result = new ArrayList<>();
+    private CVClasses performTransformation(@NotNull Path path) {
+        CVClasses result = new MutableCVClasses();
         ProjectRoot root = new SymbolSolverCollectionStrategy().collect(path);
         SourceRoot sourceRoot = new SourceRoot(root.getRoot());
         try {

@@ -7,21 +7,18 @@ import java.nio.file.Path
 class SampleBackend : Backend {
 
     override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> {
-        return Single.just(listOf(
-            object : CVClass {
+        val element = object : CVClass {
+            override fun accept(fieldsVisitor: CVClass.FieldsVisitor) = Unit
 
-                override fun name(): String = "TestCVClass"
+            override fun accept(methodsVisitor: CVClass.MethodsVisitor) = Unit
 
-                override fun fields(): List<CVClassField> = emptyList()
+            override fun accept(relationVisitor: CVClass.RelationVisitor) = Unit
 
-                override fun methods(): List<CVMethod> = emptyList()
+            override fun name(): String = "TestCVClass"
 
-                override fun has(property: ClassProperty): Boolean = false
-
-                override fun implemented(): List<CVClass> = emptyList()
-
-            }
-        ))
+            override fun has(property: ClassProperty): Boolean = false
+        }
+        return Single.just(MutableCVClasses.of(element))
     }
 
 }
