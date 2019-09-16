@@ -8,7 +8,7 @@ interface DataSource {
     object EMPTY : DataSource {
         override fun name(): String = "Empty data source"
 
-        override fun sources(path: SourcePath): Single<Sources> = Single.never()
+        override fun sources(path: SourcePath): Single<Sources> = Single.just(Sources.EMPTY)
     }
 
     fun name(): String
@@ -17,6 +17,12 @@ interface DataSource {
 }
 
 interface Sources {
+    object EMPTY : Sources {
+        override fun name(): String = "empty sources"
+
+        override fun sources(): Observable<SourceFile> = Observable.empty()
+    }
+
     fun name(): String
 
     fun sources(): Observable<SourceFile>
