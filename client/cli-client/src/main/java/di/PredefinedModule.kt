@@ -1,8 +1,6 @@
 package di
 
-import com.github.e13mort.codeview.Backend
-import com.github.e13mort.codeview.Cache
-import com.github.e13mort.codeview.Frontend
+import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.cache.TmpDirBasedCache
 import com.github.e13mort.codeview.cache.UUIDCacheName
@@ -26,5 +24,10 @@ class PredefinedModule {
     @Provides
     fun cache() : Cache {
         return TmpDirBasedCache(UUIDCacheName(), "tmp")
+    }
+
+    @Provides
+    fun input(cache: Cache, dataSource: DataSource) : CVInput {
+        return CachedCVInput(cache, dataSource)
     }
 }
