@@ -6,10 +6,8 @@ import java.nio.file.Path
 interface Cache {
 
     interface TemporarySources {
-        fun files() : Path
+        fun files(): Path
     }
 
     fun cacheSources(sources: Sources): Single<TemporarySources>
-
-    fun clear()
 }

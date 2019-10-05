@@ -34,7 +34,9 @@ public class TmpDirBasedCache implements Cache {
         File cacheDir = prepareCacheDir();
         for (SourceFile file : files) {
             try {
-                FileUtils.copyInputStreamToFile(file.read(), new File(cacheDir, cacheName.createFileName()));
+                File destination = new File(cacheDir, cacheName.createFileName());
+                destination.deleteOnExit();
+                FileUtils.copyInputStreamToFile(file.read(), destination);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -45,16 +47,8 @@ public class TmpDirBasedCache implements Cache {
     private File prepareCacheDir() {
         File cacheDir = new File(dirName);
         cacheDir.mkdir();
+        cacheDir.deleteOnExit();
         return cacheDir;
-    }
-
-    @Override
-    public void clear() {
-        try {
-            FileUtils.deleteDirectory(new File(dirName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     static class TemporarySourcesImpl implements TemporarySources {

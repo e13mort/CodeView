@@ -2,6 +2,7 @@ package di
 
 import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.backend.java.JavaBackend
+import com.github.e13mort.codeview.cache.CacheName
 import com.github.e13mort.codeview.cache.TmpDirBasedCache
 import com.github.e13mort.codeview.cache.UUIDCacheName
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
@@ -22,8 +23,13 @@ class PredefinedModule {
     }
 
     @Provides
-    fun cache() : Cache {
-        return TmpDirBasedCache(UUIDCacheName(), "tmp")
+    fun cache(cacheName: CacheName) : Cache {
+        return TmpDirBasedCache(cacheName, "tmp${cacheName.createFileName()}")
+    }
+
+    @Provides
+    fun cacheName(): CacheName {
+        return UUIDCacheName()
     }
 
     @Provides

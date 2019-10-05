@@ -22,7 +22,6 @@ fun Application.main() { init(this) }
 
 fun init(app: Application) {
     val codeView = DaggerKtorComponent.builder()
-        .ktorDataSourceModule(KtorDataSourceModule())
         .ktorBackendModule(KtorBackendModule())
         .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
