@@ -31,12 +31,6 @@ compileTestKotlin {
     }
 }
 
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}
-
 mainClassName = 'io.ktor.server.netty.DevelopmentEngine'
 
 dependencies {
