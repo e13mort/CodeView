@@ -1,5 +1,5 @@
 import di.DaggerCliComponent
-import di.DataSourceModule
+import di.InputModule
 import di.OutputModule
 import di.PredefinedModule
 import factory.LaunchCommand
@@ -10,7 +10,7 @@ fun main(params: Array<String>) {
 
     DaggerCliComponent.builder()
         .predefinedModule(PredefinedModule())
-        .dataSourceModule(DataSourceModule(launchCommand))
+        .inputModule(InputModule(launchCommand))
         .outputModule(OutputModule(launchCommand))
         .build()
         .codeView()

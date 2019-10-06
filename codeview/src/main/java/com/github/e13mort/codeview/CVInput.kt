@@ -21,5 +21,8 @@ class CachedCVInput(private val cache: Cache, private val dataSource: DataSource
             .flatMap { cache.cacheSources(it) }
             .map { it.files() }
     }
+}
 
+class PlainCVInput : CVInput {
+    override fun handleInput(path: SourcePath): Single<Path> = Single.just(Paths.get(path))
 }
