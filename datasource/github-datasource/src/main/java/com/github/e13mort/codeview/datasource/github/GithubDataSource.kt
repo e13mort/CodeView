@@ -21,10 +21,16 @@ class GithubDataSource(
     private lateinit var github: Github
 
     internal constructor(
-        config: DataSourceConfig = DataSourceConfig("", ""),
-        github: Github = RtGithub(config.key)
+        config: DataSourceConfig,
+        github: Github
     ) : this(config) {
         this.github = github
+    }
+
+    init {
+        if (!this::github.isInitialized) {
+            this.github = RtGithub(config.key)
+        }
     }
 
     override fun name(): String {
