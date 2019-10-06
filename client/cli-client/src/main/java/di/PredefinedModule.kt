@@ -24,7 +24,7 @@ class PredefinedModule {
 
     @Provides
     fun cache(cacheName: CacheName) : Cache {
-        return TmpDirBasedCache(cacheName, "tmp${cacheName.createFileName()}")
+        return TmpDirBasedCache(cacheName, createDirName(cacheName))
     }
 
     @Provides
@@ -36,4 +36,6 @@ class PredefinedModule {
     fun input(cache: Cache, dataSource: DataSource) : CVInput {
         return CachedCVInput(cache, dataSource)
     }
+
+    private fun createDirName(cacheName: CacheName) = "tmp${cacheName.createDirName()}"
 }

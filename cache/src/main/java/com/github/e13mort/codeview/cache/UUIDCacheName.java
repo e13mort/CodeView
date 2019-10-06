@@ -11,4 +11,9 @@ public class UUIDCacheName implements CacheName {
     public String createFileName() {
         return UUID.randomUUID().toString() + ".java";
     }
+
+    @Override
+    public String createDirName() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
 }
