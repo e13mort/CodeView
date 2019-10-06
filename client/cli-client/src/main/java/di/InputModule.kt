@@ -1,10 +1,7 @@
 package di
 
 import com.github.e13mort.codeview.*
-import com.github.e13mort.codeview.cache.Cache
-import com.github.e13mort.codeview.cache.CacheName
-import com.github.e13mort.codeview.cache.TmpDirBasedCache
-import com.github.e13mort.codeview.cache.UUIDCacheName
+import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
 import com.github.e13mort.githuburl.GithubUrl
 import com.github.e13mort.githuburl.GithubUrlImpl

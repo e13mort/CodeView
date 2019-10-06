@@ -1,6 +1,8 @@
-package com.github.e13mort.codeview
+package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.cache.Cache
+import com.github.e13mort.codeview.CVInput
+import com.github.e13mort.codeview.DataSource
+import com.github.e13mort.codeview.SourcePath
 import io.reactivex.Single
 import java.nio.file.Path
 
