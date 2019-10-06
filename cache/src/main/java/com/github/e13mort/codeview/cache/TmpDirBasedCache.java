@@ -1,6 +1,5 @@
 package com.github.e13mort.codeview.cache;
 
-import com.github.e13mort.codeview.Cache;
 import com.github.e13mort.codeview.SourceFile;
 import com.github.e13mort.codeview.Sources;
 import io.reactivex.Single;

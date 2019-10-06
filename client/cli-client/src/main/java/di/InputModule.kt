@@ -1,6 +1,7 @@
 package di
 
 import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.cache.Cache
 import com.github.e13mort.codeview.cache.CacheName
 import com.github.e13mort.codeview.cache.TmpDirBasedCache
 import com.github.e13mort.codeview.cache.UUIDCacheName
