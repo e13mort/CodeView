@@ -10,9 +10,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
 
-class PathBasedStorage(private val root: Path, private val registryFileName: String) :
+class PathBasedStorage(
+    private val root: Path,
+    private val registryFileName: String,
+    private val cacheName: CacheName
+) :
     FileStorageBasedCache.FileStorage {
 
     override fun search(key: String): Maybe<FileStorageBasedCache.FileStorage.FileStorageItem> {
@@ -33,37 +36,42 @@ class PathBasedStorage(private val root: Path, private val registryFileName: Str
         sourceFiles: Observable<SourceFile>
     ): Single<FileStorageBasedCache.FileStorage.FileStorageItem> {
 
-        return Observable.combineLatest(
-            sourceFiles,
+        return sourceFiles.withLatestFrom(
             registerCacheFolder(key),
-            BiFunction<SourceFile, Path, Path> { t1, t2 -> copyFileToCache(t1, t2) }
-        )
+            BiFunction<SourceFile, Path, Path> { t1, t2 -> copyFileToCache(t1, t2) })
             .lastOrError()
             .map { PathBasedStorageItem(it) }
     }
 
     private fun copyFileToCache(sourceFile: SourceFile, parent: Path): Path {
-        Files.copy(sourceFile.read(), parent.resolve(randomFolderName()))
+        Files.copy(sourceFile.read(), parent.resolve(cacheName.createFileName()))
         return parent
     }
 
     private fun registerCacheFolder(key: String): Observable<Path> {
-        return Observable.fromPublisher {
-            val folderName = randomFolderName()
-            val map = readMap()
-            map[key] = folderName
-            val path = root.resolve(folderName)
-            Files.createDirectory(path)
-            if (Files.exists(path)) saveMap(map)
-            it.onNext(path)
-            it.onComplete()
+        return Observable.fromPublisher<Path> {
+            try {
+                ensureRootExists()
+                val folderName = cacheName.createDirName()
+                val map = readMap()
+                map[key] = folderName
+                val path = root.resolve(folderName)
+                Files.createDirectory(path)
+                if (Files.exists(path)) saveMap(map)
+                it.onNext(path)
+                it.onComplete()
+            } catch (e: Exception) {
+                it.onError(e)
+            }
         }
+    }
+
+    private fun ensureRootExists() {
+        if (!Files.exists(root)) Files.createDirectory(root)
     }
 
     private fun saveMap(map: MutableMap<String, String>) =
         Files.write(root.resolve(registryFileName), listOf(map.asJson()))
-
-    private fun randomFolderName(): String = UUID.randomUUID().toString()
 
     private fun folderName(key: String): String? {
         return readMap()[key]

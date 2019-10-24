@@ -8,9 +8,14 @@ import com.github.e13mort.githuburl.GithubUrlImpl
 import dagger.Module
 import dagger.Provides
 import factory.LaunchCommand
+import java.nio.file.FileSystems
 
 @Module
 class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
+
+    companion object {
+        const val CACHE_DIR = "cv_cache"
+    }
 
     @Provides
     fun githubURL(): GithubUrl {
@@ -28,7 +33,8 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
     fun cache(cacheName: CacheName) : Cache {
-        return TmpDirBasedCache(cacheName, createDirName(cacheName))
+        val root = FileSystems.getDefault().getPath(System.getProperty("user.home")).resolve(CACHE_DIR)
+        return FileStorageBasedCache(PathBasedStorage(root, "registry.json", cacheName))
     }
 
     @Provides
@@ -42,6 +48,4 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
             GithubDataSource.DataSourceConfig("java", key)
         )
     }
-
-    private fun createDirName(cacheName: CacheName) = "tmp${cacheName.createDirName()}"
 }

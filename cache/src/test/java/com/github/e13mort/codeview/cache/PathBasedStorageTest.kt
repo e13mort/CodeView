@@ -4,6 +4,7 @@ import com.github.e13mort.codeview.SourceFile
 import com.google.common.jimfs.Jimfs
 import io.reactivex.Observable
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
@@ -16,6 +17,7 @@ internal class PathBasedStorageTest {
     private lateinit var memoryFileSystem: FileSystem
     private lateinit var storage: FileStorageBasedCache.FileStorage
     private lateinit var root: Path
+    private val cacheName = UUIDCacheName()
 
     companion object {
         const val REGISTRY_NAME = "reg.json"
@@ -25,7 +27,7 @@ internal class PathBasedStorageTest {
     internal fun setUp() {
         memoryFileSystem = Jimfs.newFileSystem()
         root = memoryFileSystem.getPath(".")
-        storage = PathBasedStorage(root, REGISTRY_NAME)
+        storage = PathBasedStorage(root, REGISTRY_NAME, cacheName)
     }
 
     @Test
@@ -59,7 +61,7 @@ internal class PathBasedStorageTest {
     @Test
     internal fun `item is found on a new file storage`() {
         storage.put("key", MemorySourceFile().asObservable()).test().assertNoErrors()
-        val newStorage = PathBasedStorage(root, REGISTRY_NAME)
+        val newStorage = PathBasedStorage(root, REGISTRY_NAME, cacheName)
         newStorage.search("key").test().assertValueCount(1)
     }
 
@@ -83,6 +85,30 @@ internal class PathBasedStorageTest {
     fun `root folder contains folder with cache`() {
         val item = storage.put("key", MemorySourceFile().asObservable()).blockingGet()
         assertThat(root.resolve(item.path())).exists()
+    }
+
+    @Test
+    internal fun `two files are saved without errors`() {
+        val test = storage.put("key", Observable.just(MemorySourceFile(), MemorySourceFile())).test()
+        test.assertNoErrors().assertComplete()
+    }
+
+    @Test
+    internal fun `two files are exist in cache`() {
+        val item = storage.put("key", Observable.just(MemorySourceFile(), MemorySourceFile())).blockingGet()
+        assertEquals(2, Files.list(item.path()).count())
+    }
+
+    @Test
+    internal fun `storage creates cache dir if one doesn't exists`() {
+        val newStorage = PathBasedStorage(root.resolve("not_existing_dir"), REGISTRY_NAME, cacheName)
+        newStorage.put("key", MemorySourceFile().asObservable()).test().assertComplete().assertNoErrors()
+    }
+
+    @Test
+    internal fun `search returns empty result on not existing cache dir`() {
+        val newStorage = PathBasedStorage(root.resolve("not_existing_dir"), REGISTRY_NAME, cacheName)
+        newStorage.search("key").test().assertComplete().assertNoErrors().assertNoValues()
     }
 
     private class MemorySourceFile : SourceFile {
