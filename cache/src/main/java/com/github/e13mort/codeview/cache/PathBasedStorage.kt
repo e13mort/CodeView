@@ -1,6 +1,6 @@
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.SourceFile
+import com.github.e13mort.codeview.Content
 import io.reactivex.Maybe
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -16,9 +16,9 @@ class PathBasedStorage(
     private val registryFileName: String,
     private val cacheName: CacheName
 ) :
-    FileStorageBasedCache.FileStorage {
+    ContentStorage {
 
-    override fun search(key: String): Maybe<FileStorageBasedCache.FileStorage.FileStorageItem> {
+    override fun search(key: String): Maybe<ContentStorage.ContentStorageItem> {
         return Maybe.create {
             folderName(key)?.apply {
                 val path = root.resolve(this)
@@ -31,20 +31,20 @@ class PathBasedStorage(
         }
     }
 
-    override fun put(
+    override fun <T : Content> put(
         key: String,
-        sourceFiles: Observable<SourceFile>
-    ): Single<FileStorageBasedCache.FileStorage.FileStorageItem> {
+        content: Observable<T>
+    ): Single<ContentStorage.ContentStorageItem> {
 
-        return sourceFiles.withLatestFrom(
+        return content.withLatestFrom(
             registerCacheFolder(key),
-            BiFunction<SourceFile, Path, Path> { t1, t2 -> copyFileToCache(t1, t2) })
+            BiFunction<Content, Path, Path> { t1, t2 -> copyFileToCache(t1, t2) })
             .lastOrError()
             .map { PathBasedStorageItem(it) }
     }
 
-    private fun copyFileToCache(sourceFile: SourceFile, parent: Path): Path {
-        Files.copy(sourceFile.read(), parent.resolve(cacheName.createFileName()))
+    private fun copyFileToCache(content: Content, parent: Path): Path {
+        Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
         return parent
     }
 
@@ -94,7 +94,7 @@ class PathBasedStorage(
     }
 
     private class PathBasedStorageItem(private val path: Path) :
-        FileStorageBasedCache.FileStorage.FileStorageItem {
+        ContentStorage.ContentStorageItem {
         override fun path(): Path = path
     }
 

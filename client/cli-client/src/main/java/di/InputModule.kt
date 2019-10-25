@@ -34,7 +34,7 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
     @Provides
     fun cache(cacheName: CacheName) : Cache {
         val root = FileSystems.getDefault().getPath(System.getProperty("user.home")).resolve(CACHE_DIR)
-        return FileStorageBasedCache(PathBasedStorage(root, "registry.json", cacheName))
+        return ContentStorageBasedCache(PathBasedStorage(root, "registry.json", cacheName))
     }
 
     @Provides

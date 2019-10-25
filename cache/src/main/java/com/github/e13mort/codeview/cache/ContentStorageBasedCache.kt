@@ -1,13 +1,10 @@
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.SourceFile
 import com.github.e13mort.codeview.Sources
-import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.nio.file.Path
 
-class FileStorageBasedCache(private val storage: FileStorage) : Cache {
+class ContentStorageBasedCache(private val storage: ContentStorage) : Cache {
     override fun cacheSources(sources: Sources): Single<Cache.TemporarySources> {
         return storage
             .search(sources.name())
@@ -15,17 +12,7 @@ class FileStorageBasedCache(private val storage: FileStorage) : Cache {
             .map { TemporarySourcesAdapter(it) }
     }
 
-    interface FileStorage {
-        fun search(key: String): Maybe<FileStorageItem>
-
-        fun put(key: String, sourceFiles: Observable<SourceFile>): Single<FileStorageItem>
-
-        interface FileStorageItem {
-            fun path(): Path
-        }
-    }
-
-    internal class TemporarySourcesAdapter(private val storageItem: FileStorage.FileStorageItem) :
+    internal class TemporarySourcesAdapter(private val storageItem: ContentStorage.ContentStorageItem) :
         Cache.TemporarySources {
         override fun files(): Path {
             return storageItem.path()

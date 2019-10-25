@@ -1,6 +1,6 @@
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.SourceFile
+import com.github.e13mort.codeview.Content
 import com.google.common.jimfs.Jimfs
 import io.reactivex.Observable
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +15,7 @@ import java.nio.file.Path
 
 internal class PathBasedStorageTest {
     private lateinit var memoryFileSystem: FileSystem
-    private lateinit var storage: FileStorageBasedCache.FileStorage
+    private lateinit var storage: ContentStorage
     private lateinit var root: Path
     private val cacheName = UUIDCacheName()
 
@@ -37,13 +37,13 @@ internal class PathBasedStorageTest {
 
     @Test
     internal fun `registry file created after the first insertion`() {
-        storage.put("some-key", MemorySourceFile().asObservable()).test().assertNoErrors()
+        storage.put("some-key", MemoryContent().asObservable()).test().assertNoErrors()
         assertThat(memoryFileSystem.getPath(REGISTRY_NAME)).exists()
     }
 
     @Test
     fun `registry file is not empty`() {
-        storage.put("some-key", MemorySourceFile().asObservable()).test().assertNoErrors()
+        storage.put("some-key", MemoryContent().asObservable()).test().assertNoErrors()
         assertThat(Files.readAllLines(memoryFileSystem.getPath(REGISTRY_NAME))).isNotEmpty
     }
 
@@ -54,20 +54,20 @@ internal class PathBasedStorageTest {
 
     @Test
     internal fun `previously created item is found`() {
-        storage.put("key", MemorySourceFile().asObservable()).subscribe()
+        storage.put("key", MemoryContent().asObservable()).subscribe()
         storage.search("key").test().assertValueCount(1)
     }
 
     @Test
     internal fun `item is found on a new file storage`() {
-        storage.put("key", MemorySourceFile().asObservable()).test().assertNoErrors()
+        storage.put("key", MemoryContent().asObservable()).test().assertNoErrors()
         val newStorage = PathBasedStorage(root, REGISTRY_NAME, cacheName)
         newStorage.search("key").test().assertValueCount(1)
     }
 
     @Test
     internal fun `directory created for a cached item`() {
-        storage.put("key", MemorySourceFile().asObservable()).test().assertNoErrors()
+        storage.put("key", MemoryContent().asObservable()).test().assertNoErrors()
         storage.search("key").test().assertValue {
             return@assertValue Files.isDirectory(it.path())
         }
@@ -75,7 +75,7 @@ internal class PathBasedStorageTest {
 
     @Test
     internal fun `source file saved to cache`() {
-        storage.put("key", MemorySourceFile().asObservable()).test().assertNoErrors()
+        storage.put("key", MemoryContent().asObservable()).test().assertNoErrors()
         storage.search("key").test().assertValue {
             return@assertValue Files.list(it.path()).toArray().size == 1
         }
@@ -83,26 +83,26 @@ internal class PathBasedStorageTest {
 
     @Test
     fun `root folder contains folder with cache`() {
-        val item = storage.put("key", MemorySourceFile().asObservable()).blockingGet()
+        val item = storage.put("key", MemoryContent().asObservable()).blockingGet()
         assertThat(root.resolve(item.path())).exists()
     }
 
     @Test
     internal fun `two files are saved without errors`() {
-        val test = storage.put("key", Observable.just(MemorySourceFile(), MemorySourceFile())).test()
+        val test = storage.put("key", Observable.just(MemoryContent(), MemoryContent())).test()
         test.assertNoErrors().assertComplete()
     }
 
     @Test
     internal fun `two files are exist in cache`() {
-        val item = storage.put("key", Observable.just(MemorySourceFile(), MemorySourceFile())).blockingGet()
+        val item = storage.put("key", Observable.just(MemoryContent(), MemoryContent())).blockingGet()
         assertEquals(2, Files.list(item.path()).count())
     }
 
     @Test
     internal fun `storage creates cache dir if one doesn't exists`() {
         val newStorage = PathBasedStorage(root.resolve("not_existing_dir"), REGISTRY_NAME, cacheName)
-        newStorage.put("key", MemorySourceFile().asObservable()).test().assertComplete().assertNoErrors()
+        newStorage.put("key", MemoryContent().asObservable()).test().assertComplete().assertNoErrors()
     }
 
     @Test
@@ -111,13 +111,9 @@ internal class PathBasedStorageTest {
         newStorage.search("key").test().assertComplete().assertNoErrors().assertNoValues()
     }
 
-    private class MemorySourceFile : SourceFile {
+    private class MemoryContent : Content {
         override fun read(): InputStream = ByteArrayInputStream(byteArrayOf())
 
-        override fun fileInfo(): SourceFile.FileInfo = SourceFile.FileInfo.EMPTY
-
-        override fun name(): String = "MemorySourceFile"
-
-        fun asObservable(): Observable<SourceFile> = Observable.just(this)
+        fun asObservable(): Observable<Content> = Observable.just(this)
     }
 }

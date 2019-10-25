@@ -28,10 +28,12 @@ interface Sources {
     fun sources(): Observable<SourceFile>
 }
 
-interface SourceFile {
-    fun name(): String
-
+interface Content {
     fun read(): InputStream
+}
+
+interface SourceFile : Content {
+    fun name(): String
 
     fun fileInfo(): FileInfo
 
