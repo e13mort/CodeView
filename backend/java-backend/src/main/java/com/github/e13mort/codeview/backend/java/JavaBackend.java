@@ -29,7 +29,7 @@ public class JavaBackend implements Backend {
 
     @NotNull
     private CVClasses performTransformation(@NotNull Path path) {
-        CVClasses result = new MutableCVClasses();
+        MutableCVClasses result = new MutableCVClasses();
         ProjectRoot root = new SymbolSolverCollectionStrategy().collect(path);
         SourceRoot sourceRoot = new SourceRoot(root.getRoot());
         try {

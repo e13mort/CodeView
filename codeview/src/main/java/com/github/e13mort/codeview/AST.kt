@@ -28,8 +28,6 @@ interface Frontend {
 interface CVClasses {
     fun accept(visitor: Visitor)
 
-    fun add(aClass: CVClass)
-
     interface Visitor {
         fun onClassDetected(cls: CVClass)
     }

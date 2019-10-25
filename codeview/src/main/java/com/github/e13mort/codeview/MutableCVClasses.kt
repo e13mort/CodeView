@@ -9,15 +9,13 @@ class MutableCVClasses : CVClasses {
         }
     }
 
-    override fun add(aClass: CVClass) {
-        classes.add(aClass)
-    }
-
     override fun accept(visitor: CVClasses.Visitor) {
         classes.forEach { cvClass ->
             visitor.onClassDetected(cvClass)
         }
     }
 
-
+    fun add(aClass: CVClass) {
+        classes.add(aClass)
+    }
 }
