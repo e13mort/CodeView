@@ -1,9 +1,10 @@
 package com.github.e13mort.codeview.frontend.pulm
 
-import com.github.e13mort.codeview.CVClasses
-import com.github.e13mort.codeview.CVVisibility
-import com.github.e13mort.codeview.ClassProperty
-import com.github.e13mort.codeview.MutableCVClasses
+import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.stubs.StubClass
+import com.github.e13mort.codeview.stubs.StubField
+import com.github.e13mort.codeview.stubs.StubMethod
+import com.github.e13mort.codeview.stubs.StubType
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import java.util.*
 
 class PulmFrontendTest {
 
@@ -50,7 +50,10 @@ class PulmFrontendTest {
                     StubClass(
                         methods = StubMethod(
                             "sampleMethod",
-                            StubType("SampleReturnType", "com.sample.SampleReturnType")
+                            StubType(
+                                "SampleReturnType",
+                                "com.sample.SampleReturnType"
+                            )
                         ).asList()
                     )
                 )

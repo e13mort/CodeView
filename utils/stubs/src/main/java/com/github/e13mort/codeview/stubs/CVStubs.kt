@@ -1,4 +1,4 @@
-package com.github.e13mort.codeview.frontend.pulm
+package com.github.e13mort.codeview.stubs
 
 import com.github.e13mort.codeview.*
 import java.util.*
@@ -7,7 +7,8 @@ class StubClass(private val name: String = "Test",
                 private val property: ClassProperty? = null,
                 private val methods: List<CVMethod> = Collections.emptyList(),
                 private val fields: List<CVClassField> = Collections.emptyList(),
-                private val implementedInterfaces: List<CVClass> = Collections.emptyList()) : CVClass {
+                private val implementedInterfaces: List<CVClass> = Collections.emptyList()) :
+    CVClass {
     override fun accept(fieldsVisitor: CVClass.FieldsVisitor) {
         fields.forEach {
             fieldsVisitor.onFieldDetected(this, it)
@@ -33,7 +34,8 @@ class StubClass(private val name: String = "Test",
 
 class StubMethod(private val name: String = TODO(),
                  private val returnType: CVType = TODO(),
-                 private val parameters: List<CVMethodParameter> = Collections.emptyList()) : CVMethod {
+                 private val parameters: List<CVMethodParameter> = Collections.emptyList()) :
+    CVMethod {
     override fun name(): String = name
 
     override fun returnType(): CVType = returnType
@@ -45,7 +47,8 @@ class StubMethod(private val name: String = TODO(),
 
 class StubField(private val name: String = TODO(),
                 private val type: CVType = TODO(),
-                private val visibilityModifier: CVVisibility = TODO()) : CVClassField {
+                private val visibilityModifier: CVVisibility = TODO()) :
+    CVClassField {
     override fun name(): String = name
 
     override fun type(): CVType = type
