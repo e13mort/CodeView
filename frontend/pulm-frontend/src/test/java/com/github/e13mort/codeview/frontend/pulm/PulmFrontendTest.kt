@@ -68,7 +68,7 @@ class PulmFrontendTest {
 
         @Test
         internal fun methodHasCorrectName() {
-            assertEquals("sampleMethod()", diagram.methods()[0].name())
+            assertEquals("sampleMethod", diagram.methods()[0].name())
         }
 
         @Test

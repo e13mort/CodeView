@@ -5,9 +5,9 @@ import java.util.*
 
 class StubClass(private val name: String = "Test",
                 private val property: ClassProperty? = null,
-                private val methods: List<CVMethod> = Collections.emptyList(),
-                private val fields: List<CVClassField> = Collections.emptyList(),
-                private val implementedInterfaces: List<CVClass> = Collections.emptyList()) :
+                private val methods: List<CVMethod> = listOf(StubMethod()),
+                private val fields: List<CVClassField> = listOf(StubField()),
+                private val implementedInterfaces: List<CVClass> = emptyList()) :
     CVClass {
     override fun accept(fieldsVisitor: CVClass.FieldsVisitor) {
         fields.forEach {
@@ -32,9 +32,9 @@ class StubClass(private val name: String = "Test",
     override fun name(): String = name
 }
 
-class StubMethod(private val name: String = TODO(),
-                 private val returnType: CVType = TODO(),
-                 private val parameters: List<CVMethodParameter> = Collections.emptyList()) :
+class StubMethod(private val name: String = "StubMethodName",
+                 private val returnType: CVType = StubType(),
+                 private val parameters: List<CVMethodParameter> = listOf(StubMethodParameter())) :
     CVMethod {
     override fun name(): String = name
 
@@ -45,9 +45,19 @@ class StubMethod(private val name: String = TODO(),
     fun asList() : List<StubMethod> = Collections.singletonList(this)
 }
 
-class StubField(private val name: String = TODO(),
-                private val type: CVType = TODO(),
-                private val visibilityModifier: CVVisibility = TODO()) :
+class StubMethodParameter(
+    private val name: String = "StubParameter",
+    private val type: CVType = StubType()
+) : CVMethodParameter {
+    override fun name(): String = name
+
+    override fun type(): CVType = type
+
+}
+
+class StubField(private val name: String = "StubFieldName",
+                private val type: CVType = StubType(),
+                private val visibilityModifier: CVVisibility = CVVisibility.PUBLIC) :
     CVClassField {
     override fun name(): String = name
 
@@ -58,8 +68,8 @@ class StubField(private val name: String = TODO(),
     fun asList(): List<CVClassField> = Collections.singletonList(this)
 }
 
-class StubType(private val simpleName: String = TODO(),
-               private val fullName: String = TODO()) : CVType {
+class StubType(private val simpleName: String = "StubSimpleName",
+               private val fullName: String = "StubFullName") : CVType {
     override fun simpleName(): String = simpleName
 
     override fun fullName(): String = fullName

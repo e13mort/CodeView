@@ -14,4 +14,4 @@ fun ClassDiagram.fields(entityIndex: Int = 0): List<Member> = ArrayList(leafsval
 
 fun Member.type() : String = getDisplay(false).split(" ")[0]
 
-fun Member.name() : String = getDisplay(false).split(" ")[1]
+fun Member.name() : String = getDisplay(false).split(" ")[1].split("(")[0]
