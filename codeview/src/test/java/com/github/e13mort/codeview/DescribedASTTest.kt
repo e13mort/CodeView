@@ -51,6 +51,15 @@ internal class DescribedASTTest {
         )
     }
 
+    @Test
+    internal fun `CVClasses instance and it's only child has the same description`() {
+        val child = StubClass()
+        assertEquals(
+            child.describe(),
+            MutableCVClasses().apply { add(child) }.describe()
+        )
+    }
+
     @Nested
     inner class MethodsTest {
 
