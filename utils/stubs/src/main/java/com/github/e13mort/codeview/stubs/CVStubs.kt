@@ -102,3 +102,16 @@ class ErrorCVBackend : Backend {
 class StubCVClasses : CVClasses {
     override fun accept(visitor: CVClasses.Visitor) = Unit
 }
+
+class StubCVFrontend : Frontend {
+    override fun generate(classes: CVClasses): Single<StoredObject> = Single.just(StubStoreObject())
+}
+
+class ErrorCVFrontend : Frontend {
+    override fun generate(classes: CVClasses): Single<StoredObject> = Single.error(Exception())
+}
+
+class StubStoreObject : StoredObject {
+    override fun asString(): String = "stub"
+
+}

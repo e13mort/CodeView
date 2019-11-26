@@ -33,8 +33,8 @@ class PredefinedModule {
     }
 
     @Provides
-    fun frontend() : Frontend {
-        return PulmFrontend()
+    fun frontend(log: Log) : Frontend {
+        return PulmFrontend().withLogs(log.withTag("pulm frontend"))
     }
 
     @Provides
