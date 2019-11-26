@@ -1,9 +1,10 @@
 package di
 
-import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.CVInput
+import com.github.e13mort.codeview.PlainCVInput
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
-import com.github.e13mort.codeview.log.ConsoleLog
+import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
 import com.github.e13mort.githuburl.GithubUrl
@@ -26,13 +27,13 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
     }
 
     @Provides
-    fun input(cache: Cache, githubUrl: GithubUrl) : CVInput {
+    fun input(cache: Cache, githubUrl: GithubUrl, log: Log) : CVInput {
         val (input, tag) = if (githubUrl.canParse(factory.sourcesPath))
             CachedCVInput(cache, createGithubDataSource()) to "cached input"
         else {
             PlainCVInput() to "plain input"
         }
-        return input.withLogs(ConsoleLog().withTag(tag))
+        return input.withLogs(log.withTag(tag))
     }
 
     @Provides

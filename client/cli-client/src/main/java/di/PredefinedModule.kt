@@ -5,6 +5,8 @@ import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
+import com.github.e13mort.codeview.log.ConsoleLog
+import com.github.e13mort.codeview.log.Log
 import dagger.Module
 import dagger.Provides
 import java.nio.file.FileSystems
@@ -42,5 +44,10 @@ class PredefinedModule {
             CACHE_REGISTRY_FILE_NAME,
             ConstNameUUIDBasedCacheName(CACHE_FILE_NAME)
         )
+    }
+
+    @Provides
+    fun log() : Log {
+        return ConsoleLog()
     }
 }
