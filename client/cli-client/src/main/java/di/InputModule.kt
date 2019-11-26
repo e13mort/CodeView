@@ -3,6 +3,9 @@ package di
 import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
+import com.github.e13mort.codeview.log.ConsoleLog
+import com.github.e13mort.codeview.log.withLogs
+import com.github.e13mort.codeview.log.withTag
 import com.github.e13mort.githuburl.GithubUrl
 import com.github.e13mort.githuburl.GithubUrlImpl
 import dagger.Module
@@ -24,11 +27,12 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
     fun input(cache: Cache, githubUrl: GithubUrl) : CVInput {
-        return if (githubUrl.canParse(factory.sourcesPath))
-            CachedCVInput(cache, createGithubDataSource())
+        val (input, tag) = if (githubUrl.canParse(factory.sourcesPath))
+            CachedCVInput(cache, createGithubDataSource()) to "cached input"
         else {
-            PlainCVInput()
+            PlainCVInput() to "plain input"
         }
+        return input.withLogs(ConsoleLog().withTag(tag))
     }
 
     @Provides

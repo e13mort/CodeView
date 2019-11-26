@@ -1,6 +1,10 @@
 package com.github.e13mort.codeview.stubs
 
 import com.github.e13mort.codeview.*
+import io.reactivex.Single
+import java.lang.Exception
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 
 class StubClass(private val name: String = "Test",
@@ -73,4 +77,16 @@ class StubType(private val simpleName: String = "StubSimpleName",
     override fun simpleName(): String = simpleName
 
     override fun fullName(): String = fullName
+}
+
+class StubCVInput : CVInput {
+    override fun handleInput(path: SourcePath): Single<Path> {
+        return Single.just(Paths.get("stub"))
+    }
+}
+
+class ErrorCVInput : CVInput {
+    override fun handleInput(path: SourcePath): Single<Path> {
+        return Single.error(Exception("stub"))
+    }
 }
