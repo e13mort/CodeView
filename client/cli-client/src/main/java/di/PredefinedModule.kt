@@ -7,6 +7,8 @@ import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
 import com.github.e13mort.codeview.log.ConsoleLog
 import com.github.e13mort.codeview.log.Log
+import com.github.e13mort.codeview.log.withLogs
+import com.github.e13mort.codeview.log.withTag
 import dagger.Module
 import dagger.Provides
 import java.nio.file.FileSystems
@@ -22,12 +24,12 @@ class PredefinedModule {
     }
 
     @Provides
-    fun backend(contentStorage: ContentStorage) : Backend {
+    fun backend(contentStorage: ContentStorage, log: Log) : Backend {
         return ContentStorageBackendCache(
-            JavaBackend(),
+            JavaBackend().withLogs(log.withTag("java backend")),
             contentStorage,
             CVActualSerialization(CACHE_FILE_NAME)
-        )
+        ).withLogs(log.withTag("content storage backend"))
     }
 
     @Provides

@@ -90,3 +90,15 @@ class ErrorCVInput : CVInput {
         return Single.error(Exception("stub"))
     }
 }
+
+class StubCVBackend : Backend {
+    override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> = Single.just(StubCVClasses())
+}
+
+class ErrorCVBackend : Backend {
+    override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> = Single.error(Exception())
+}
+
+class StubCVClasses : CVClasses {
+    override fun accept(visitor: CVClasses.Visitor) = Unit
+}
