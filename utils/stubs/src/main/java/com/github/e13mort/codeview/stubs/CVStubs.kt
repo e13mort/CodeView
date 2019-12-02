@@ -113,5 +113,16 @@ class ErrorCVFrontend : Frontend {
 
 class StubStoreObject : StoredObject {
     override fun asString(): String = "stub"
+}
 
+class StubOutput<T>(private val instance: T): Output<T> {
+    override fun save(data: StoredObject): Single<T> {
+        return Single.just(instance)
+    }
+}
+
+class ErrorOutput<T>(): Output<T> {
+    override fun save(data: StoredObject): Single<T> {
+        return Single.error(Exception("stub"))
+    }
 }
