@@ -19,10 +19,12 @@ sourceCompatibility = 1.8
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(':codeview')
-    implementation project(':utils:github-url-parser')
-    implementation 'com.jcabi:jcabi-github:1.0'
+    implementation project(':datasource:common')
+    api 'com.jcabi:jcabi-github:1.0'
+    implementation 'javax.inject:javax.inject:1'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.glassfish:javax.json:1.0.4'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }
 
 compileKotlin {

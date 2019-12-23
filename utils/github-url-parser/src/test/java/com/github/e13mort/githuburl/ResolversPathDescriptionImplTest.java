@@ -1,6 +1,6 @@
 package com.github.e13mort.githuburl;
 
-import com.github.e13mort.githuburl.GithubUrl.PathDescription.Kind;
+import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,7 @@ class ResolversPathDescriptionImplTest {
     @EnumSource(Kind.class)
     void allKindsAreInvalidForEmptyResolvers(Kind kind) {
         ResolversPathDescriptionImpl pathDescription = new ResolversPathDescriptionImpl("github.com", Collections.emptyMap());
-        assertEquals(GithubUrl.PathDescription.EMPTY_PART, pathDescription.readPart(kind));
+        assertEquals(SourcesUrl.PathDescription.EMPTY_PART, pathDescription.readPart(kind));
         assertFalse(pathDescription.hasPart(kind));
     }
 

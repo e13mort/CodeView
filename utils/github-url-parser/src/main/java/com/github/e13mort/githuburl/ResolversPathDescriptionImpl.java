@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
-class ResolversPathDescriptionImpl implements GithubUrl.PathDescription {
+class ResolversPathDescriptionImpl implements SourcesUrl.PathDescription {
 
     @NotNull
     private final Map<Kind, PathResolver> resolverMap;

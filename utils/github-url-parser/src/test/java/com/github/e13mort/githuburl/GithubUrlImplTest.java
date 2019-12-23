@@ -16,8 +16,8 @@ class GithubUrlImplTest {
     @ParameterizedTest
     @MethodSource("args")
     void urlParsing(String path, AssertVariant assertVariant) {
-        GithubUrlImpl githubUrl = new GithubUrlImpl(path);
-        assertVariant.performAssertion(githubUrl.parse());
+        GithubUrlImpl githubUrl = new GithubUrlImpl();
+        assertVariant.performAssertion(githubUrl.parse(path));
     }
 
     @Disabled

@@ -6,8 +6,6 @@ import com.github.e13mort.codeview.SourceFile
 import com.github.e13mort.codeview.Sources
 import io.reactivex.Observable
 import io.reactivex.Single
-import java.io.FileInputStream
-import java.io.InputStream
 import java.nio.file.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,24 +39,6 @@ class FileSystemDataSource: DataSource {
             return Observable.fromIterable(files).map {
                 PathSourceFile(it)
             }
-        }
-
-    }
-
-    private class PathSourceFile(private val path: Path): SourceFile {
-        override fun fileInfo(): SourceFile.FileInfo {
-            return object : SourceFile.FileInfo {
-                override fun lastModifiedDate(): Long = 0
-
-            }
-        }
-
-        override fun name(): String {
-            return path.fileName.toString()
-        }
-
-        override fun read(): InputStream {
-            return FileInputStream(path.toFile())
         }
 
     }

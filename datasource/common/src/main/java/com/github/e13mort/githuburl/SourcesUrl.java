@@ -3,12 +3,12 @@ package com.github.e13mort.githuburl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface GithubUrl {
-
-    @Nullable
-    PathDescription parse();
+public interface SourcesUrl {
 
     boolean canParse(@NotNull String path);
+
+    @Nullable
+    PathDescription parse(@NotNull String path);
 
     interface PathDescription {
         enum Kind {

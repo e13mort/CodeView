@@ -1,30 +1,24 @@
 package com.github.e13mort.githuburl;
 
-import com.github.e13mort.githuburl.GithubUrl.PathDescription.Kind;
+import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class GithubUrlImpl implements GithubUrl {
-
-    @NotNull
-    private final String path;
-
-    public GithubUrlImpl(@NotNull String path) {
-        this.path = path;
-    }
-
-    @Nullable
-    @Override
-    public PathDescription parse() {
-        return isValidGithubPath(path) ? new ResolversPathDescriptionImpl(path, createResolvers()) : null;
-    }
+public class GithubUrlImpl implements SourcesUrl {
 
     @Override
     public boolean canParse(@NotNull String path) {
         return isValidGithubPath(path);
+    }
+
+    @Nullable
+    @Override
+    public PathDescription parse(@NotNull String path) {
+        if (isValidGithubPath(path)) return new ResolversPathDescriptionImpl(path, createResolvers());
+        return null;
     }
 
     @NotNull
@@ -39,12 +33,5 @@ public class GithubUrlImpl implements GithubUrl {
 
     private boolean isValidGithubPath(@NotNull String path) {
         return path.startsWith("https://github.com");
-    }
-
-    @Override
-    public String toString() {
-        return "GithubUrlImpl{" +
-                "path='" + path + '\'' +
-                '}';
     }
 }

@@ -1,13 +1,19 @@
 package com.github.e13mort.codeview.datasource.github
 
 import com.github.e13mort.codeview.SourceFile
+import com.github.e13mort.codeview.SourcePath
+import com.github.e13mort.githuburl.SourcesUrl
+import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 import com.jcabi.github.Contents
 import com.jcabi.github.Repos
 import com.jcabi.github.mock.MkGithub
+import com.nhaarman.mockitokotlin2.any
 import io.reactivex.Observable
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers
+import org.mockito.Mockito.*
 import javax.json.JsonObject
 import javax.json.JsonObjectBuilder
 import javax.json.spi.JsonProvider
@@ -21,17 +27,22 @@ class GithubDataSourceTest {
         @DisplayName("There's only one item emitted")
         @Test
         internal fun onItemEmitted() {
-            val dataSource = GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareSingleItem())
-            val test = dataSource.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = githubDataSource().testSources().test()
             test.assertValueCount(1)
         }
 
         @DisplayName("The emitted item has valid name")
         @Test
         internal fun correctName() {
-            val dataSource = GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareSingleItem())
-            val test = dataSource.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
+            val test = githubDataSource().testSources().test()
             test.assertValue { it.name() == "src/test.java" }
+        }
+
+        private fun githubDataSource(): GithubDataSource {
+            return GithubDataSource(
+                GithubDataSource.DataSourceConfig("java"), prepareSingleItem(),
+                transformation()
+            )
         }
 
     }
@@ -42,8 +53,8 @@ class GithubDataSourceTest {
         @Test
         internal fun multipleJavaItems() {
             val source =
-                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeItem())
-            val test = source.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
+                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeItem(), transformation())
+            val test = source.testSources().test()
             test.assertValueCount(3)
         }
     }
@@ -54,13 +65,28 @@ class GithubDataSourceTest {
         @Test
         internal fun multipleJavaItems() {
             val source =
-                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeJavaItem())
-            val test = source.testSources("https://github.com/e13mort/testRepo/tree/master/src").test()
+                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeJavaItem(), transformation())
+            val test = source.testSources().test()
             test.assertValueCount(3)
         }
     }
 
-    fun prepareSingleItem(): MkGithub {
+    private fun transformation(): PathPartsTransformation {
+        return object : PathPartsTransformation {
+            override fun transformSourcePath(path: SourcePath): SourcesUrl.PathDescription {
+                val description = mock(SourcesUrl.PathDescription::class.java)
+                `when`(description.hasPart(any())).thenReturn(true)
+                `when`(description.readPart(ArgumentMatchers.eq(Kind.PATH))).thenReturn("src")
+                `when`(description.readPart(ArgumentMatchers.eq(Kind.BRANCH))).thenReturn("master")
+                `when`(description.readPart(ArgumentMatchers.eq(Kind.USER_NAME))).thenReturn("e13mort")
+                `when`(description.readPart(ArgumentMatchers.eq(Kind.PROJECT_NAME))).thenReturn("testRepo")
+                return description
+            }
+
+        }
+    }
+
+    private fun prepareSingleItem(): MkGithub {
         return prepareGithub {
             it.create(prepareFileJsonObject("test", "src/test.java", "This is a test content"))
         }
@@ -108,6 +134,6 @@ class GithubDataSourceTest {
     }
 }
 
-fun GithubDataSource.testSources(path: String): Observable<SourceFile> {
-    return this.sources(path).blockingGet().sources()
+fun GithubDataSource.testSources(): Observable<SourceFile> {
+    return this.sources("does-not-matter").blockingGet().sources()
 }
