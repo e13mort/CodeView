@@ -12,7 +12,7 @@ public interface SourcesUrl {
 
     interface PathDescription {
         enum Kind {
-            PROJECT_NAME, USER_NAME, BRANCH, PATH
+            PROJECT_NAME, USER_NAME, BRANCH, PATH, GIT_URL_HTTPS
         }
 
         String EMPTY_PART = "";
