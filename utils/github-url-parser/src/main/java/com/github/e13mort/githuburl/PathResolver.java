@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 interface PathResolver {
     String PART_TREE = "/tree/";
     String PART_HTTPS_GITHUB_COM = "https://github.com";
+    char DELIMITER = '/';
 
     PathResolver EMPTY = new PathResolver() {
         @Nullable

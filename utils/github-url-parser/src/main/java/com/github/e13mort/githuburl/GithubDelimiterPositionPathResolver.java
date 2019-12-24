@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 class GithubDelimiterPositionPathResolver implements PathResolver {
-    private static final char DELIMITER = '/';
     private int minimumDelimiterCount;
 
     GithubDelimiterPositionPathResolver(int minimumDelimiterCount) {
