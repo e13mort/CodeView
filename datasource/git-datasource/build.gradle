@@ -19,9 +19,12 @@ sourceCompatibility = 1.8
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(':codeview')
+    implementation project(':datasource:common')
     implementation project(':utils:github-url-parser')
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.5.1.201910021850-r'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation 'com.google.jimfs:jimfs:1.1'
+    testImplementation 'org.assertj:assertj-core:2.9.1'
 }
 
 compileKotlin {
