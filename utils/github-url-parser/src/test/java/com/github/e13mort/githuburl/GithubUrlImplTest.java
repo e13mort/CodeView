@@ -1,7 +1,6 @@
 package com.github.e13mort.githuburl;
 
 import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind;
-import io.reactivex.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GithubUrlImplTest {
 
     private static final String RETROFIT_URL = "https://github.com/square/retrofit/tree/master/retrofit/src/main/java/retrofit2";
-    @NonNull
+
     private GithubUrlImpl githubUrl;
 
     @BeforeEach
