@@ -14,7 +14,8 @@ import java.nio.file.Path
 
 class GitDataSource(
     private val remoteRepositories: RemoteRepositories,
-    private val sourcesUrl: SourcesUrl
+    private val sourcesUrl: SourcesUrl,
+    private val localRepositories: LocalRepositories
 ) : DataSource {
 
     override fun name(): String {
@@ -28,25 +29,37 @@ class GitDataSource(
             val targetBranch = pathDescription.readPart(Kind.BRANCH)
             val pathInRepo = pathDescription.readPart(Kind.PATH)
             remoteRepositories.remoteBranchHash(pathDescription)?.let {
-                return@fromCallable GitSources(GitSources.SourcesDescription(targetRepo, it, pathInRepo), remoteRepositories)
+                return@fromCallable GitSources(GitSources.SourcesDescription(targetRepo, it, pathInRepo), remoteRepositories, localRepositories)
             }
             throw IllegalArgumentException("invalid target branch $targetBranch")
         }
     }
 
-    private class GitSources(private val description: SourcesDescription, private val remoteRepositories: RemoteRepositories) : Sources {
+    private class GitSources(
+        private val description: SourcesDescription,
+        private val remoteRepositories: RemoteRepositories,
+        private val localRepositories: LocalRepositories
+    ) : Sources {
 
         private val fsVisitor = RxFSVisitor()
         private val options = RxFSVisitor.Options("java", 1)
 
         override fun sources(): Observable<SourceFile> {
-            return Single.fromCallable { clonedRepo() }
+            return Single.fromCallable { searchForLocalRepository() }
+                .map { clonedRepo(it) }
+                .doOnSuccess { checkout(it) }
                 .map { resolveSourceFolder(it) }
                 .flatMapObservable { visitFolder(it) }
                 .map { PathSourceFile(it) }
         }
 
-        private fun clonedRepo() = remoteRepositories.clone(description.repoUrl, description.cloneHash)
+        private fun checkout(clonedRepo: RemoteRepositories.ClonedRepo) = clonedRepo.checkout(description.cloneHash)
+
+        private fun searchForLocalRepository(): Path = localRepositories.search(description.repoUrl)
+
+        private fun clonedRepo(localPath: Path): RemoteRepositories.ClonedRepo {
+            return remoteRepositories.clone(description.repoUrl, localPath)
+        }
 
         private fun visitFolder(it: Path) = fsVisitor.visitFolder(it, options)
 

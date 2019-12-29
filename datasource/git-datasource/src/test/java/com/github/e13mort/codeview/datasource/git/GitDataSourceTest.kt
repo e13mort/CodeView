@@ -1,5 +1,6 @@
 package com.github.e13mort.codeview.datasource.git
 
+import com.github.e13mort.codeview.datasource.git.fake.FkLocalRepositories
 import com.github.e13mort.codeview.datasource.git.fake.FkRemoteRepositories
 import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 import com.github.e13mort.githuburl.fake.FkSourceUrl
@@ -20,7 +21,6 @@ internal class GitDataSourceTest {
         val remoteRepositories = FkRemoteRepositories().apply {
             add("repo1.git", "master", "hash1")
             add("repo1.git", "invalid", null)
-            add("repo1.git", "hash1", root)
         }
 
         val sourcesUrl = FkSourceUrl().apply {
@@ -32,7 +32,12 @@ internal class GitDataSourceTest {
             add("path2", Kind.GIT_URL_HTTPS, "repo1.git")
             add("path2", Kind.BRANCH, "invalid_branch")
         }
-        gitDataSource = GitDataSource(remoteRepositories, sourcesUrl)
+
+        val localRepositories = FkLocalRepositories().apply {
+            add("repo1.git", root)
+        }
+
+        gitDataSource = GitDataSource(remoteRepositories, sourcesUrl, localRepositories)
     }
 
     @Test

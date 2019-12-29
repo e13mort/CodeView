@@ -25,6 +25,13 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'com.google.jimfs:jimfs:1.1'
     testImplementation 'org.assertj:assertj-core:2.9.1'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+}
+
+test {
+    useJUnitPlatform {
+        excludeTags 'git-integration'
+    }
 }
 
 compileKotlin {

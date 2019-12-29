@@ -7,7 +7,7 @@ import java.nio.file.Path
 
 class FkRemoteRepositories : RemoteRepositories {
     private val repoWithBranchToHash: MutableMap<Pair<String, String>, String?> = mutableMapOf()
-    private val repoWithHashToRepo: MutableMap<Pair<String, String>, RemoteRepositories.ClonedRepo> = mutableMapOf()
+    private val repoWithHashToRepo: MutableMap<Pair<String, Path>, RemoteRepositories.ClonedRepo> = mutableMapOf()
 
     override fun remoteBranchHash(
         pathDescription: SourcesUrl.PathDescription
@@ -15,19 +15,19 @@ class FkRemoteRepositories : RemoteRepositories {
         return repoWithBranchToHash[Pair(pathDescription.readPart(Kind.GIT_URL_HTTPS), pathDescription.readPart(Kind.BRANCH))]
     }
 
-    override fun clone(repoUrl: String, hash: String): RemoteRepositories.ClonedRepo {
-        return repoWithHashToRepo[Pair(repoUrl, hash)]!!
+    override fun clone(repoUrl: String, path: Path): RemoteRepositories.ClonedRepo {
+        return FkRepo(path, repoUrl)
     }
 
     fun add(repoUrl: String, branchName: String, hash: String?) {
         repoWithBranchToHash += Pair(Pair(repoUrl, branchName), hash)
     }
 
-    fun add(repoUrl: String, hash: String, path: Path) {
-        repoWithHashToRepo += Pair(Pair(repoUrl, hash), FkRepo(path))
-    }
+    private inner class FkRepo(private val path: Path, private val repoUrl: String) : RemoteRepositories.ClonedRepo {
+        override fun checkout(hash: String) {
+            repoWithHashToRepo += Pair(Pair(repoUrl, path), this)
+        }
 
-    private class FkRepo(private val path: Path) : RemoteRepositories.ClonedRepo {
         override fun path(): Path = path
     }
 }

@@ -6,9 +6,13 @@ import java.nio.file.Path
 interface RemoteRepositories {
     fun remoteBranchHash(pathDescription: SourcesUrl.PathDescription): String?
 
-    fun clone(repoUrl: String, hash: String): ClonedRepo
+    fun clone(repoUrl: String, path: Path): ClonedRepo
 
     interface ClonedRepo {
         fun path(): Path
+
+        fun checkout(hash: String)
     }
+
+    class CloneException(cause: Throwable?) : Exception(cause)
 }
