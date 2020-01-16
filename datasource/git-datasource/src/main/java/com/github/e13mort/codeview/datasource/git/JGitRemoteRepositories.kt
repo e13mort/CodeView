@@ -7,7 +7,7 @@ import org.eclipse.jgit.api.ResetCommand
 import java.nio.file.Files
 import java.nio.file.Path
 
-internal class JGitRemoteRepositories(private val listener: RemoteRepositoryStateListener) :
+internal class JGitRemoteRepositories(private val listener: RemoteRepositoryStateListener = RemoteRepositoryStateListener.EMPTY) :
     RemoteRepositories {
     override fun remoteBranchHash(
         pathDescription: SourcesUrl.PathDescription
@@ -77,6 +77,10 @@ internal class JGitRemoteRepositories(private val listener: RemoteRepositoryStat
         enum class Event {CLONE, OPEN, CHECK_OUT}
 
         fun onEvent(event: Event)
+
+        companion object EMPTY : RemoteRepositoryStateListener {
+            override fun onEvent(event: Event) = Unit
+        }
     }
 
 }

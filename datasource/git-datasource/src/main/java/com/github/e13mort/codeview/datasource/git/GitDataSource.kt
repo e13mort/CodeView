@@ -11,8 +11,9 @@ import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.nio.file.Path
+import javax.inject.Inject
 
-class GitDataSource(
+class GitDataSource @Inject constructor(
     private val remoteRepositories: RemoteRepositories,
     private val sourcesUrl: SourcesUrl,
     private val localRepositories: LocalRepositories

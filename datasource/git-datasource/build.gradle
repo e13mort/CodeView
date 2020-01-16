@@ -10,6 +10,7 @@ buildscript {
 plugins {
     id 'java'
     id 'kotlin'
+    id 'kotlin-kapt'
 }
 
 version 'unspecified'
@@ -22,6 +23,8 @@ dependencies {
     implementation project(':datasource:common')
     implementation project(':utils:github-url-parser')
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.5.1.201910021850-r'
+    implementation 'com.google.dagger:dagger:2.23.2'
+    kapt 'com.google.dagger:dagger-compiler:2.23.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'com.google.jimfs:jimfs:1.1'
     testImplementation 'org.assertj:assertj-core:2.9.1'

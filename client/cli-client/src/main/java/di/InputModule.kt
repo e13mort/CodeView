@@ -1,28 +1,34 @@
 package di
 
 import com.github.e13mort.codeview.CVInput
+import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.PlainCVInput
 import com.github.e13mort.codeview.cache.*
+import com.github.e13mort.codeview.datasource.git.di.DaggerGitDataSourceComponent
+import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
 import com.github.e13mort.codeview.datasource.github.GithubPathPartsTransformation
 import com.github.e13mort.codeview.datasource.github.PathPartsTransformation
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
-import com.github.e13mort.githuburl.SourcesUrl
 import com.github.e13mort.githuburl.GithubUrlImpl
+import com.github.e13mort.githuburl.SourcesUrl
 import com.jcabi.github.Github
 import com.jcabi.github.RtGithub
 import dagger.Module
 import dagger.Provides
 import factory.LaunchCommand
-import java.nio.file.FileSystems
+import factory.LaunchCommand.GithubClient
+import java.nio.file.Path
 
 @Module
-class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
+class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModule(factory) {
 
     companion object {
-        const val CACHE_DIR = "cv_cache"
+        const val REGISTRY_FILE_NAME = "registry.json"
+        const val GIT_CACHE_FOLDER_NAME = "git_cache"
+        const val CONTENT_CACHE_FOLDER_NAME = "content_cache"
     }
 
     @Provides
@@ -31,7 +37,7 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
     }
 
     @Provides
-    fun input(cache: Cache, sourcesUrl: SourcesUrl, log: Log, githubDataSource: GithubDataSource) : CVInput {
+    fun input(cache: Cache, sourcesUrl: SourcesUrl, log: Log, githubDataSource: DataSource) : CVInput {
         val (input, tag) = if (sourcesUrl.canParse(factory.sourcesPath)) {
             CachedCVInput(cache, githubDataSource) to "cached input"
         }
@@ -43,8 +49,7 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
     fun cache(cacheName: CacheName) : Cache {
-        val root = FileSystems.getDefault().getPath(System.getProperty("user.home")).resolve(CACHE_DIR)
-        return ContentStorageBasedCache(PathBasedStorage(root, "registry.json", cacheName))
+        return ContentStorageBasedCache(PathBasedStorage(root.resolve(CONTENT_CACHE_FOLDER_NAME), REGISTRY_FILE_NAME, cacheName))
     }
 
     @Provides
@@ -58,11 +63,22 @@ class InputModule(factory: LaunchCommand) : FactoryModule(factory) {
     }
 
     @Provides
-    fun githubDataSource(github: Github, partsTransformation: PathPartsTransformation): GithubDataSource {
-        return GithubDataSource(
-            GithubDataSource.DataSourceConfig("java"),
-            github, partsTransformation
-        )
+    fun dataSource(github: Github, partsTransformation: PathPartsTransformation): DataSource {
+        return when (factory.githubClient) {
+            GithubClient.REST-> {
+                GithubDataSource(
+                    GithubDataSource.DataSourceConfig("java"),
+                    github, partsTransformation
+                )
+            }
+            GithubClient.GIT -> {
+                DaggerGitDataSourceComponent
+                    .builder()
+                    .gitDataSourceModule(GitDataSourceModule(root.resolve(GIT_CACHE_FOLDER_NAME)))
+                    .build()
+                    .createDataSource()
+            }
+        }
     }
 
     @Provides

@@ -44,6 +44,7 @@ dependencies {
     implementation project(':datasource:common')
     implementation project(':datasource:filesystem-datasource')
     implementation project(':datasource:github-datasource')
+    implementation project(':datasource:git-datasource')
     implementation project(':utils:github-url-parser')
     implementation 'com.github.ajalt:clikt:2.0.0'
     implementation 'net.sourceforge.plantuml:plantuml:1.2019.6'

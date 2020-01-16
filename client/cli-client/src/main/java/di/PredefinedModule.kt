@@ -11,16 +11,14 @@ import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
 import dagger.Module
 import dagger.Provides
-import java.nio.file.FileSystems
+import java.nio.file.Path
 
 @Module
-class PredefinedModule {
-
+class PredefinedModule(private val rootFolder: Path) {
     companion object {
-        const val CACHE_FILE_NAME = "classes.puml"
+        const val CACHE_FILE_NAME = "classes.json"
         const val CACHE_FOLDER_NAME = "backend_cache"
         const val CACHE_REGISTRY_FILE_NAME = "backend_registry.json"
-        const val SYSTEM_PROPERTY_HOME = "user.home"
     }
 
     @Provides
@@ -40,9 +38,7 @@ class PredefinedModule {
     @Provides
     fun contentStorage() : ContentStorage {
         return PathBasedStorage(
-            FileSystems.getDefault().getPath(System.getProperty(SYSTEM_PROPERTY_HOME)).resolve(InputModule.CACHE_DIR).resolve(
-                CACHE_FOLDER_NAME
-            ),
+            rootFolder.resolve(CACHE_FOLDER_NAME),
             CACHE_REGISTRY_FILE_NAME,
             ConstNameUUIDBasedCacheName(CACHE_FILE_NAME)
         )

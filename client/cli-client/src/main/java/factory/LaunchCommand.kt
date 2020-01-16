@@ -22,6 +22,8 @@ class LaunchCommand : NoRunCliktCommand(
 
     enum class OutputFormat {PUML, PNG}
 
+    enum class GithubClient {REST, GIT}
+
     val sourcesPath: String by argument("sources", help = "Path to sources root").default(BuildConfig.DEFAULT_SOURCE_ROOT_PATH)
 
     val outputFileName: String by option("--out-name", help = "Output file name").default(BuildConfig.DEFAULT_OUTPUT_FILE_NAME)
@@ -31,5 +33,11 @@ class LaunchCommand : NoRunCliktCommand(
         .default(OutputFormat.PNG)
 
     val githubKey by option()
+
+    val githubClient: GithubClient by option("--github-client", help = "Github client type")
+        .choice(
+            GithubClient.GIT.name.toLowerCase() to GithubClient.GIT,
+            GithubClient.REST.name.toLowerCase() to GithubClient.REST)
+        .default(GithubClient.GIT)
 
 }
