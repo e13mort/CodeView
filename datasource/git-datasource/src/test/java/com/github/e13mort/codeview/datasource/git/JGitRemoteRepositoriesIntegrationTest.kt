@@ -57,7 +57,6 @@ internal class JGitRemoteRepositoriesIntegrationTest {
     @Test
     internal fun `branch on real repository is valid`() {
         val pathDescription = url.parse("integration_repo")!!
-        throw Exception()
         assertThat(repositories.remoteBranchHash(pathDescription)).isEqualTo(MASTER_HASH)
     }
 
