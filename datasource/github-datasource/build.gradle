@@ -10,6 +10,7 @@ buildscript {
 plugins {
     id 'java'
     id 'kotlin'
+    id 'kotlin-kapt'
 }
 
 version 'unspecified'
@@ -20,8 +21,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(':codeview')
     implementation project(':datasource:common')
-    api 'com.jcabi:jcabi-github:1.0'
+    implementation 'com.jcabi:jcabi-github:1.0'
     implementation 'javax.inject:javax.inject:1'
+    implementation 'com.google.dagger:dagger:2.23.2'
+    kapt 'com.google.dagger:dagger-compiler:2.23.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.glassfish:javax.json:1.0.4'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
