@@ -1,3 +1,5 @@
+package com.github.e13mort.codeview.output
+
 import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.StoredObject
 import io.reactivex.Single

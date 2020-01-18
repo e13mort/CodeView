@@ -1,12 +1,12 @@
 package di
 
 import factory.LaunchCommand
-import PNGPumlFileOutput
-import PulmFileOutput
 import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
+import com.github.e13mort.codeview.output.PNGPumlFileOutput
+import com.github.e13mort.codeview.output.PulmFileOutput
 import dagger.Module
 import dagger.Provides
 import factory.LaunchCommand.OutputFormat

@@ -46,8 +46,9 @@ dependencies {
     implementation project(':datasource:github-datasource')
     implementation project(':datasource:git-datasource')
     implementation project(':utils:github-url-parser')
+    implementation project(':output:pulm-diagram-output')
+    implementation project(':output:pulm-raw-output')
     implementation 'com.github.ajalt:clikt:2.0.0'
-    implementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
     implementation 'com.google.dagger:dagger:2.23.2'
     kapt 'com.google.dagger:dagger-compiler:2.23.2'
 
