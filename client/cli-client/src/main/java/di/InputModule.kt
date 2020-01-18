@@ -72,7 +72,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
             GithubClient.GIT -> {
                 DaggerGitDataSourceComponent
                     .builder()
-                    .gitDataSourceModule(GitDataSourceModule(root.resolve(GIT_CACHE_FOLDER_NAME)))
+                    .gitDataSourceModule(GitDataSourceModule(root.resolve(GIT_CACHE_FOLDER_NAME), sourcesUrl))
                     .build()
                     .createDataSource()
             }

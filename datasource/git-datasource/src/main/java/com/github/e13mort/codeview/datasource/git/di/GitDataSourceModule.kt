@@ -2,7 +2,6 @@ package com.github.e13mort.codeview.datasource.git.di
 
 import com.github.e13mort.codeview.datasource.git.*
 import com.github.e13mort.codeview.datasource.git.JGitRemoteRepositories
-import com.github.e13mort.githuburl.GithubUrlImpl
 import com.github.e13mort.githuburl.SourcesUrl
 import dagger.Component
 import dagger.Module
@@ -10,7 +9,7 @@ import dagger.Provides
 import java.nio.file.Path
 
 @Module
-class GitDataSourceModule(private val root: Path) {
+class GitDataSourceModule(private val root: Path, private val sourcesUrl: SourcesUrl) {
 
     @Provides
     fun remoteRepos() : RemoteRepositories {
@@ -19,7 +18,7 @@ class GitDataSourceModule(private val root: Path) {
 
     @Provides
     fun sourcesUrl() : SourcesUrl {
-        return GithubUrlImpl()
+        return sourcesUrl
     }
 
     @Provides
