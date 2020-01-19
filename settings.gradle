@@ -1,4 +1,4 @@
-include ':codeview', ':backend:java-backend', ':cache-common', ':log'
+include ':codeview', ':backend:java-backend', ':cache:cache-common', ':log'
 include ':client:cli-client', ':frontend:pulm-frontend'
 include ':datasource:common'
 include ':datasource:filesystem-datasource', ':datasource:github-datasource', ':datasource:git-datasource'

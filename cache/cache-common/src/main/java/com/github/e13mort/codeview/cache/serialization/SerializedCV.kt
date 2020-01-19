@@ -168,12 +168,12 @@ internal fun CVClasses.toSerialized() : SerializableCVClasses {
     }
 }
 
-internal fun SerializableCVClasses.asJson(): String {
+fun SerializableCVClasses.asJson(): String {
     val json = Json(configuration = JsonConfiguration.Stable)
     return json.toJson(SerializableCVClasses.serializer(), this).toString()
 }
 
-internal fun String.toSerializedCVClasses(): SerializableCVClasses {
+fun String.toSerializedCVClasses(): SerializableCVClasses {
     val json = Json(configuration = JsonConfiguration.Stable)
     return json.parse(SerializableCVClasses.serializer(), this)
 }
