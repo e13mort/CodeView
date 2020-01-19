@@ -4,16 +4,12 @@ apply plugin: 'kotlinx-serialization'
 
 dependencies {
     implementation project(':codeview')
-    implementation project(':cache:content-storage')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation 'commons-io:commons-io:2.6'
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation project(':utils:stubs')
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     testImplementation 'com.google.jimfs:jimfs:1.1'
     testImplementation 'org.assertj:assertj-core:2.9.1'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
 }
 
 sourceCompatibility = "8"
