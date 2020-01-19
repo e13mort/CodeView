@@ -36,7 +36,7 @@ mainClassName = 'io.ktor.server.netty.DevelopmentEngine'
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation project(':codeview')
-    implementation project(':cache')
+    implementation project(':cache-common')
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:filesystem-datasource')
