@@ -40,9 +40,9 @@ dependencies {
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:filesystem-datasource')
+    implementation project(':output:engine-based-output')
     implementation "io.ktor:ktor-server-netty:$ktor_version"
     implementation "ch.qos.logback:logback-classic:1.2.3"
-    implementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
     implementation 'com.google.dagger:dagger:2.23.2'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-rx2', version: '1.2.2'
     kapt 'com.google.dagger:dagger-compiler:2.23.2'

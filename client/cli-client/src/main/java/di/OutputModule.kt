@@ -1,14 +1,17 @@
 package di
 
-import factory.LaunchCommand
 import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
-import com.github.e13mort.codeview.output.PNGPumlFileOutput
-import com.github.e13mort.codeview.output.PulmFileOutput
+import com.github.e13mort.codeview.output.EngineBasedOutput
+import com.github.e13mort.codeview.output.Target
+import com.github.e13mort.codeview.output.engine.OutputEngine
+import com.github.e13mort.codeview.output.engine.PulmOutputEngine
+import com.github.e13mort.codeview.output.engine.RawOutputEngine
 import dagger.Module
 import dagger.Provides
+import factory.LaunchCommand
 import factory.LaunchCommand.OutputFormat
 import factory.LaunchCommand.OutputFormat.PNG
 import factory.LaunchCommand.OutputFormat.PUML
@@ -18,11 +21,22 @@ class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
     fun output(log: Log) : Output<String> {
-        return createOutput(factory.outputFileName, factory.outputFormat).withLogs(log.withTag("output"))
+        return EngineBasedOutput(
+            createEngine(factory.outputFormat),
+            createEngineResult(factory.outputFileName, factory.outputFormat)
+        ).withLogs(log.withTag("output"))
     }
 
-    private fun createOutput(outputFileName: String, outputFormat: OutputFormat): Output<String> = when (outputFormat) {
-        PUML -> PulmFileOutput(outputFileName)
-        PNG -> PNGPumlFileOutput(outputFileName)
+    private fun createEngineResult(outputFileName: String, outputFormat: OutputFormat): Target<String> {
+        return FileOutputResult("$outputFileName.${extension(outputFormat)}")
+    }
+
+    private fun extension(outputFormat: OutputFormat) = outputFormat.name.toLowerCase()
+
+    private fun createEngine(outputFormat: OutputFormat): OutputEngine {
+        return when(outputFormat) {
+            PUML -> RawOutputEngine()
+            PNG -> PulmOutputEngine()
+        }
     }
 }

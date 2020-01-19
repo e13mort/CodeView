@@ -1,29 +1,30 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.Output
-import com.github.e13mort.codeview.StoredObject
+import com.github.e13mort.codeview.output.EngineBasedOutput
+import com.github.e13mort.codeview.output.Target
+import com.github.e13mort.codeview.output.engine.PulmOutputEngine
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Single
-import net.sourceforge.plantuml.SourceStringReader
+import java.io.OutputStream
 
 @Module
 class KtorImageOutputModule(private val dataCache: DataCache) {
 
     @Provides
     fun output(): Output<DataCache.CacheItem> {
-        return CachedOutput(dataCache)
+        return EngineBasedOutput(
+            PulmOutputEngine(),
+            CachedResult(dataCache.createCacheItem()))
     }
 }
 
-class CachedOutput(private val dataCache: DataCache) : Output<DataCache.CacheItem> {
-    override fun save(data: StoredObject): Single<DataCache.CacheItem> {
-        return Single.just(dataCache.createCacheItem())
-            .doOnEvent { item, _ ->
-                SourceStringReader(data.asString()).outputImage(item.write())
-            }.map {
-                it as DataCache.CacheItem
-            }
+class CachedResult(private val dataCache: DataCache.WritableCacheItem) : Target<DataCache.CacheItem> {
+    override fun output(): OutputStream {
+        return dataCache.write()
+    }
 
+    override fun toResult(): DataCache.CacheItem {
+        return dataCache
     }
 }
