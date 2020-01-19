@@ -26,7 +26,7 @@ fun main(params: Array<String>) {
         .build()
         .codeView()
         .run(launchCommand.sourcesPath)
-        .subscribe(::printResult)
+        .subscribe(::printResult, ::println)
 }
 
 private fun printResult(res: String) {
