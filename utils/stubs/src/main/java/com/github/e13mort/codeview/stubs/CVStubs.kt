@@ -92,11 +92,15 @@ class ErrorCVInput : CVInput {
 }
 
 class StubCVBackend : Backend {
-    override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> = Single.just(StubCVClasses())
+    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.just(object : Backend.TransformOperation {
+        override fun classes(): CVClasses = StubCVClasses()
+
+        override fun description(): String = "StubBackendResult"
+    })
 }
 
 class ErrorCVBackend : Backend {
-    override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> = Single.error(Exception())
+    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.error(Exception())
 }
 
 class StubCVClasses : CVClasses {

@@ -23,8 +23,20 @@ public class JavaBackend implements Backend {
 
     @NotNull
     @Override
-    public Single<CVClasses> transformSourcesToCVClasses(@NotNull Path path) {
-        return Single.fromCallable(() -> performTransformation(path));
+    public Single<TransformOperation> prepareTransformOperation(@NotNull Path path) {
+        return Single.fromCallable(() -> new TransformOperation() {
+            @NotNull
+            @Override
+            public CVClasses classes() {
+                return performTransformation(path);
+            }
+
+            @NotNull
+            @Override
+            public String description() {
+                return path.toString();
+            }
+        });
     }
 
     @NotNull

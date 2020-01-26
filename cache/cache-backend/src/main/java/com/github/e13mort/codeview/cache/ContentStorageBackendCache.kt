@@ -11,29 +11,50 @@ class ContentStorageBackendCache(
     private val storage: ContentStorage,
     private val serialization: CVClassSerialization
 ) : Backend {
-    override fun transformSourcesToCVClasses(path: Path): Single<CVClasses> {
-        return searchForItem(path)
-            .onExceptionResumeNext { save(path).subscribeWith(it) }
-            .switchIfEmpty(MaybeSource { save(path).subscribeWith(it) })
-            .toSingle()
+
+    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> {
+        return sourceBackend.prepareTransformOperation(path)
+            .flatMap(this::searchForItem)
+            .flatMap(this::handleCacheResult)
     }
 
-    private fun searchForItem(path: Path): Maybe<CVClasses> {
+    private fun handleCacheResult(cacheResult: CacheResult): Single<Backend.TransformOperation> {
+        val transformOperation = cacheResult.cachedOperation
+        return if (cacheResult.fromCache) {
+            Single.just(transformOperation)
+        } else {
+            save(transformOperation).map { transformOperation }
+        }
+    }
+
+    private fun save(transformOperation: Backend.TransformOperation): Single<ContentStorage.ContentStorageItem> {
+        return storage.put(
+                transformOperation.description(),
+                Observable.fromCallable { serialization.content(transformOperation.classes()) })
+    }
+
+    private fun searchForItem(sourceOperation: Backend.TransformOperation) : Single<CacheResult> {
         return storage
-            .search(path.toString())
-            .map { serialization.classes(it.path()) }
+            .search(sourceOperation.description())
+            .map(this::deserialize)
+            .map { createCacheResult(it, sourceOperation.description()) }
+            .toSingle()
+            .onErrorReturn{ CacheResult(sourceOperation, false) }
     }
 
-    private fun save(path: Path): Maybe<CVClasses> {
-        return storage.put(path.toString(), readDataFromBackend(path))
-            .map { storageItem -> serialization.classes(storageItem.path()) }
-            .toMaybe()
+    private fun deserialize(it: ContentStorage.ContentStorageItem) =
+        serialization.classes(it.path())
+
+    private fun createCacheResult(classes: CVClasses, description: String) : CacheResult {
+        return CacheResult(DumbTransformOperation(classes, description), true)
     }
 
-    private fun readDataFromBackend(path: Path): Observable<Content> {
-        return sourceBackend.transformSourcesToCVClasses(path)
-            .map { serialization.content(it) }
-            .toObservable()
+    private class CacheResult(val cachedOperation: Backend.TransformOperation, val fromCache: Boolean)
+
+    private data class DumbTransformOperation(private val classes: CVClasses, private val description: String) : Backend.TransformOperation {
+        override fun classes(): CVClasses = classes
+
+        override fun description(): String = description
     }
 
     interface CVClassSerialization {

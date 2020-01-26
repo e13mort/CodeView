@@ -8,7 +8,13 @@ interface StoredObject {
 }
 
 interface Backend {
-    fun transformSourcesToCVClasses(path: Path) : Single<CVClasses>
+    fun prepareTransformOperation(path: Path): Single<TransformOperation>
+
+    interface TransformOperation {
+        fun classes(): CVClasses
+
+        fun description(): String
+    }
 }
 
 interface Frontend {
