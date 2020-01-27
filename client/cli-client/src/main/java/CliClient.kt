@@ -1,7 +1,7 @@
 import di.DaggerCliComponent
 import di.InputModule
 import di.OutputModule
-import di.PredefinedModule
+import di.DataModule
 import factory.LaunchCommand
 import java.nio.file.FileSystems
 import java.nio.file.Files
@@ -20,7 +20,7 @@ fun main(params: Array<String>) {
     if (!Files.exists(workingDirectory)) Files.createDirectory(workingDirectory)
 
     DaggerCliComponent.builder()
-        .predefinedModule(PredefinedModule(workingDirectory))
+        .dataModule(DataModule(workingDirectory))
         .inputModule(InputModule(launchCommand, workingDirectory))
         .outputModule(OutputModule(launchCommand))
         .build()

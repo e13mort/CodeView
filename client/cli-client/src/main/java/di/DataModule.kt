@@ -15,7 +15,7 @@ import java.nio.file.Path
 import javax.inject.Named
 
 @Module
-class PredefinedModule(private val rootFolder: Path) {
+class DataModule(private val rootFolder: Path) {
     companion object {
         const val CACHE_FILE_BACK_NAME = "classes.json"
         const val CACHE_FILE_FRONT_NAME = "classes.puml"
