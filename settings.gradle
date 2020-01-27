@@ -1,5 +1,5 @@
 include ':codeview', ':backend:java-backend', ':log'
-include ':cache:cache-common', ':cache:content-storage', ':cache:cache-backend'
+include ':cache:cache-common', ':cache:content-storage', ':cache:cache-backend', ':cache:cache-frontend'
 include ':client:cli-client', ':frontend:pulm-frontend'
 include ':datasource:common'
 include ':datasource:filesystem-datasource', ':datasource:github-datasource', ':datasource:git-datasource'
