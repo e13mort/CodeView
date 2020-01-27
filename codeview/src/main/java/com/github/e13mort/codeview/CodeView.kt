@@ -15,7 +15,7 @@ class CodeView<T> @Inject constructor(
     fun run(parameters: SourcePath = ""): Single<T> {
         return input.handleInput(parameters)
             .flatMap { backend.prepareTransformOperation(it) }
-            .flatMap { frontend.generate(it.classes()) }
+            .flatMap { frontend.prepareTransformOperation(it) }
             .flatMap { output.save(it) }
     }
 }

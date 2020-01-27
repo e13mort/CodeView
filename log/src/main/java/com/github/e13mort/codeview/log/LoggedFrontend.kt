@@ -1,19 +1,26 @@
 package com.github.e13mort.codeview.log
 
-import com.github.e13mort.codeview.CVClasses
+import com.github.e13mort.codeview.Backend
 import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.StoredObject
 import io.reactivex.Single
 
 class LoggedFrontend(private val source: Frontend, private val log: Log) : Frontend {
-    override fun generate(classes: CVClasses): Single<StoredObject> {
-        return Single.fromCallable { classes }
+    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> {
+        return Single.fromCallable { transformOperation }
             .doOnEvent { _, _ -> log.log("cvclasses object is ready to be handled") }
-            .flatMap { source.generate(it) }
+            .flatMap { source.prepareTransformOperation(it) }
             .doOnEvent { storedObject, throwable -> run {
                 storedObject?.let { log.log("storedobject is ready") }
                 throwable?.let { log.log(it) }
             } }
+    }
+}
+
+private class LoggedFrontendTransformOperation(private val sourceOperation: Frontend.TransformOperation, private val log: Log) : Frontend.TransformOperation by sourceOperation {
+    override fun storedObject(): StoredObject {
+        log.log("stored object requested")
+        return sourceOperation.storedObject()
     }
 }
 

@@ -3,9 +3,25 @@ package com.github.e13mort.codeview.frontend.pulm
 import com.github.e13mort.codeview.*
 import io.reactivex.Single
 
-class PulmFrontend(private val params: Set<Frontend.Params> = Frontend.Params.all()): Frontend {
+typealias FrontendParams = Set<Frontend.Params>
 
-    override fun generate(classes: CVClasses): Single<StoredObject> {
-        return Single.fromCallable { VisitorStoredObject(classes, params) }
+class PulmFrontend(private val params: FrontendParams = Frontend.Params.all()): Frontend {
+
+    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> {
+        return Single.fromCallable {
+            PulmFrontendOperation(transformOperation, params)
+        }
     }
+
+    private class PulmFrontendOperation(private val backendOperation: Backend.TransformOperation, private val params: FrontendParams) : Frontend.TransformOperation {
+        override fun storedObject(): StoredObject {
+            return VisitorStoredObject(backendOperation.classes(), params)
+        }
+
+        override fun description(): String {
+            return FrontendDescription(backendOperation.description(), params).toString()
+        }
+    }
+
+    private data class FrontendDescription(private val backendDescription: String, private val frontendDescription: Set<Frontend.Params>)
 }

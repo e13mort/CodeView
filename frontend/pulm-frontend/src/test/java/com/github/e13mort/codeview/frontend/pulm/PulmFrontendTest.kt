@@ -1,14 +1,10 @@
 package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.*
-import com.github.e13mort.codeview.stubs.StubClass
-import com.github.e13mort.codeview.stubs.StubField
-import com.github.e13mort.codeview.stubs.StubMethod
-import com.github.e13mort.codeview.stubs.StubType
+import com.github.e13mort.codeview.stubs.*
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -28,8 +24,8 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.generate(MutableCVClasses.of(StubClass("TestClass")))
-            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
+            val storedObject = frontend.prepareTransformOperation(MutableCVClasses.of(StubClass("TestClass")).toTransform())
+            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -45,7 +41,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.generate(
+            val storedObject = frontend.prepareTransformOperation(
                 MutableCVClasses.of(
                     StubClass(
                         methods = StubMethod(
@@ -56,9 +52,9 @@ class PulmFrontendTest {
                             )
                         ).asList()
                     )
-                )
+                ).toTransform()
             )
-            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -98,10 +94,10 @@ class PulmFrontendTest {
                 )
             )
 
-            val storedObject = frontend.generate(
-                classes
+            val storedObject = frontend.prepareTransformOperation(
+                classes.toTransform()
             )
-            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -121,7 +117,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.generate(
+            val storedObject = frontend.prepareTransformOperation(
                 MutableCVClasses.of(
                     StubClass(
                         name = "TestClass",
@@ -132,10 +128,10 @@ class PulmFrontendTest {
                             )
                         )
                     )
-                )
+                ).toTransform()
             )
 
-            diagram = SourceStringReader(storedObject.blockingGet().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -150,6 +146,49 @@ class PulmFrontendTest {
         @Test
         internal fun onlyOneLinkOnDiagram() {
             assertEquals(1, diagram.links.size)
+        }
+
+    }
+
+    @Nested
+    inner class TransformDescriptionTest {
+
+        @Test
+        internal fun `different params on the same operation leads to different descriptions`() {
+            val operation = StubBackendTransformOperation()
+            assertNotEquals(
+                PulmFrontend().prepareTransformOperation(operation).blockingGet().description(),
+                PulmFrontend(setOf(Frontend.Params.CLASSES)).prepareTransformOperation(operation).blockingGet().description())
+        }
+
+        @Test
+        internal fun `same params on the same operation leads to the same descriptions`() {
+            val operation = StubBackendTransformOperation()
+            assertEquals(
+                PulmFrontend().prepareTransformOperation(operation).blockingGet().description(),
+                PulmFrontend().prepareTransformOperation(operation).blockingGet().description())
+        }
+
+        @Test
+        internal fun `same params on different operation leads to different descriptions`() {
+            val operation1 = StubBackendTransformOperation("operation1")
+            val operation2 = StubBackendTransformOperation("operation2")
+            assertNotEquals(
+                PulmFrontend().prepareTransformOperation(operation1).blockingGet().description(),
+                PulmFrontend().prepareTransformOperation(operation2).blockingGet().description())
+        }
+    }
+}
+
+private fun CVClasses.toTransform() : Backend.TransformOperation {
+    val cvClasses = this
+    return object : Backend.TransformOperation {
+        override fun classes(): CVClasses {
+            return cvClasses
+        }
+
+        override fun description(): String {
+            return "dumb"
         }
 
     }

@@ -92,11 +92,7 @@ class ErrorCVInput : CVInput {
 }
 
 class StubCVBackend : Backend {
-    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.just(object : Backend.TransformOperation {
-        override fun classes(): CVClasses = StubCVClasses()
-
-        override fun description(): String = "StubBackendResult"
-    })
+    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.just(StubBackendTransformOperation())
 }
 
 class ErrorCVBackend : Backend {
@@ -108,11 +104,23 @@ class StubCVClasses : CVClasses {
 }
 
 class StubCVFrontend : Frontend {
-    override fun generate(classes: CVClasses): Single<StoredObject> = Single.just(StubStoreObject())
+    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> = Single.just(StubFrontendTransformOperation())
 }
 
 class ErrorCVFrontend : Frontend {
-    override fun generate(classes: CVClasses): Single<StoredObject> = Single.error(Exception())
+    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> = Single.error(Exception())
+}
+
+class StubFrontendTransformOperation : Frontend.TransformOperation {
+    override fun storedObject(): StoredObject = StubStoreObject()
+
+    override fun description(): String = "stub"
+}
+
+class StubBackendTransformOperation(private val description: String = "stub") : Backend.TransformOperation {
+    override fun classes(): CVClasses = StubCVClasses()
+
+    override fun description(): String = description
 }
 
 class StubStoreObject : StoredObject {
@@ -120,13 +128,13 @@ class StubStoreObject : StoredObject {
 }
 
 class StubOutput<T>(private val instance: T): Output<T> {
-    override fun save(data: StoredObject): Single<T> {
+    override fun save(data: Frontend.TransformOperation): Single<T> {
         return Single.just(instance)
     }
 }
 
 class ErrorOutput<T>(): Output<T> {
-    override fun save(data: StoredObject): Single<T> {
+    override fun save(data: Frontend.TransformOperation): Single<T> {
         return Single.error(Exception("stub"))
     }
 }

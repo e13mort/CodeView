@@ -18,7 +18,13 @@ interface Backend {
 }
 
 interface Frontend {
-    fun generate(classes: CVClasses): Single<StoredObject>
+    fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<TransformOperation>
+
+    interface TransformOperation {
+        fun storedObject(): StoredObject
+
+        fun description(): String
+    }
 
     enum class Params {
         CLASSES, INTERFACES, RELATIONS;
