@@ -10,7 +10,7 @@ import java.nio.file.Path
 
 class StoredObjectActualSerialization :
     CachedCVTransformation.CVSerialization<StoredObject> {
-    override fun content(storedObject: StoredObject): Content {
+    override fun serialize(storedObject: StoredObject): Content {
         return object : Content {
             override fun read(): InputStream {
                 return ByteArrayInputStream(
@@ -24,7 +24,7 @@ class StoredObjectActualSerialization :
         }
     }
 
-    override fun classes(path: Path): StoredObject {
+    override fun deserialize(path: Path): StoredObject {
         return object : StoredObject {
             override fun asString(): String {
                 return Files.readAllBytes(path)

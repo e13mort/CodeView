@@ -31,8 +31,8 @@ internal class ContentStorageBackendCacheTest {
 
     @BeforeEach
     internal fun setUp() {
-        whenever(serialization.content(anyOrNull())).thenReturn(mock())
-        whenever(serialization.classes(anyOrNull())).thenReturn(mock())
+        whenever(serialization.serialize(anyOrNull())).thenReturn(mock())
+        whenever(serialization.deserialize(anyOrNull())).thenReturn(mock())
     }
 
     @Test
@@ -49,7 +49,7 @@ internal class ContentStorageBackendCacheTest {
 
     @Test
     internal fun `data has been pulled from backend if there is an error occurred during cache reading operation`() {
-        whenever(serialization.classes(anyOrNull())).doAnswer { throw Exception() }
+        whenever(serialization.deserialize(anyOrNull())).doAnswer { throw Exception() }
         testStorage.prepare(Paths.get("existing-error")).test()
         backend.assertCounter(1)
     }

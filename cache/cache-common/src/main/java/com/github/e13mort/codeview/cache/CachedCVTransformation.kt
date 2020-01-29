@@ -30,7 +30,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
         return storage.put(
             transformOperation.description(),
-            Observable.fromCallable { serialization.content(transformOperation.run()) })
+            Observable.fromCallable { serialization.serialize(transformOperation.run()) })
     }
 
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {
@@ -48,7 +48,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     }
 
     private fun deserialize(it: ContentStorage.ContentStorageItem) =
-        serialization.classes(it.path())
+        serialization.deserialize(it.path())
 
     private fun createCacheResult(classes: OUTPUT, description: String) : CacheResult<OUTPUT> {
         return CacheResult(
@@ -70,8 +70,8 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     }
 
     interface CVSerialization<OUTPUT> {
-        fun content(classes: OUTPUT): Content
+        fun serialize(classes: OUTPUT): Content
 
-        fun classes(path: Path): OUTPUT
+        fun deserialize(path: Path): OUTPUT
     }
 }

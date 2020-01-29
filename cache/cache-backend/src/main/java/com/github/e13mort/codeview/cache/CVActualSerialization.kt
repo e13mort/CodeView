@@ -12,11 +12,11 @@ import java.nio.file.Path
 class CVActualSerialization(private val fileName: String) :
     CachedCVTransformation.CVSerialization<CVClasses> {
 
-    override fun content(classes: CVClasses): Content {
+    override fun serialize(classes: CVClasses): Content {
         return SerializedCVClassesBasedContent(classes)
     }
 
-    override fun classes(path: Path): CVClasses {
+    override fun deserialize(path: Path): CVClasses {
         return StorageItemBasedCVClasses(path.resolve(fileName)).apply {
             deserialize()
         }
