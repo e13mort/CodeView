@@ -1,25 +1,33 @@
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.Backend
-import com.github.e13mort.codeview.CVClasses
-import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.CVTransformation
+import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.cache.ContentStorage.ContentStorageItem
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.reactivex.*
+import io.reactivex.Maybe
+import io.reactivex.Observable
+import io.reactivex.Single
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import java.nio.file.Paths
 
+typealias ClassFrom = Path
+typealias ClassTo = Path
+
 internal class ContentStorageBackendCacheTest {
-    private val backend = TrackingBackend()
-    private val serialization = mock<ContentStorageBackendCache.CVClassSerialization>()
-    private val testStorage = ContentStorageBackendCache(backend, PredefinedStorage(), serialization)
+    private val backend =
+        TrackingBackend()
+    private val serialization = mock<CachedCVTransformation.CVSerialization<ClassTo>>()
+    private val testStorage = CachedCVTransformation(
+        backend,
+        PredefinedStorage(),
+        serialization
+    )
 
     @BeforeEach
     internal fun setUp() {
@@ -55,12 +63,12 @@ internal class ContentStorageBackendCacheTest {
         }
     }
 
-    internal class TrackingBackend : Backend {
+    internal class TrackingBackend : CVTransformation<ClassFrom, ClassTo> {
         private var counter = 0
 
-        override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> {
+        override fun prepare(source: ClassFrom): Single<CVTransformation.TransformOperation<ClassTo>> {
             return Single.fromCallable {
-                mock<CVTransformation.TransformOperation<CVClasses>>().apply {
+                mock<CVTransformation.TransformOperation<ClassTo>>().apply {
                     whenever(description()).thenReturn(source.toString())
                     whenever(run()).thenAnswer {
                         counter++

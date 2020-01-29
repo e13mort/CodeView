@@ -10,7 +10,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class CVActualSerialization(private val fileName: String) :
-    ContentStorageBackendCache.CVClassSerialization {
+    CachedCVTransformation.CVSerialization<CVClasses> {
 
     override fun content(classes: CVClasses): Content {
         return SerializedCVClassesBasedContent(classes)

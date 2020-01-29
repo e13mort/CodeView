@@ -26,7 +26,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Provides
     fun backend(@Named("backend-storage") contentStorage: ContentStorage, log: Log) : Backend {
-        return ContentStorageBackendCache(
+        return CachedCVTransformation(
             JavaBackend().withLogs(log.withTag("java backend")),
             contentStorage,
             CVActualSerialization(CACHE_FILE_BACK_NAME)
@@ -35,10 +35,10 @@ class DataModule(private val rootFolder: Path) {
 
     @Provides
     fun frontend(@Named("frontend-storage") contentStorage: ContentStorage, log: Log) : Frontend {
-        return ContentStorageCacheFrontend(
+        return CachedCVTransformation(
             PulmFrontend().withLogs(log.withTag("pulm frontend")),
             contentStorage,
-            ContentStorageCacheFrontend.StoredObjectActualSerialization()
+            StoredObjectActualSerialization()
         ).withLogs(log.withTag("cached frontend"))
     }
 

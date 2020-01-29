@@ -5,6 +5,7 @@ apply plugin: 'kotlinx-serialization'
 dependencies {
     implementation project(':codeview')
     implementation project(':cache:content-storage')
+    implementation project(':cache:cache-common')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0"
     testImplementation project(':utils:stubs')
