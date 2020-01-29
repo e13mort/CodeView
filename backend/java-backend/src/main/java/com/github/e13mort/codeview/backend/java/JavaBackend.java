@@ -23,8 +23,8 @@ public class JavaBackend implements Backend {
 
     @NotNull
     @Override
-    public Single<TransformOperation> prepareTransformOperation(@NotNull Path path) {
-        return Single.fromCallable(() -> new TransformOperation() {
+    public Single<TransformOperation<CVClasses>> prepare(@NotNull Path path) {
+        return Single.fromCallable(() -> new TransformOperation<CVClasses>() {
             @NotNull
             @Override
             public CVClasses run() {

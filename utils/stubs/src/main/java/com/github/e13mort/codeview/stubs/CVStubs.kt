@@ -92,11 +92,13 @@ class ErrorCVInput : CVInput {
 }
 
 class StubCVBackend : Backend {
-    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.just(StubBackendTransformOperation())
+    override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> =
+        Single.just(StubBackendTransformOperation())
+
 }
 
 class ErrorCVBackend : Backend {
-    override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> = Single.error(Exception())
+    override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> = Single.error(Exception())
 }
 
 class StubCVClasses : CVClasses {
@@ -104,20 +106,21 @@ class StubCVClasses : CVClasses {
 }
 
 class StubCVFrontend : Frontend {
-    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> = Single.just(StubFrontendTransformOperation())
+    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> = Single.just(StubFrontendTransformOperation())
 }
 
 class ErrorCVFrontend : Frontend {
-    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> = Single.error(Exception())
+    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> = Single.error(Exception())
 }
 
-class StubFrontendTransformOperation : Frontend.TransformOperation {
+class StubFrontendTransformOperation : CVTransformation.TransformOperation<StoredObject> {
     override fun run(): StoredObject = StubStoreObject()
 
     override fun description(): String = "stub"
 }
 
-class StubBackendTransformOperation(private val description: String = "stub") : Backend.TransformOperation {
+class StubBackendTransformOperation(private val description: String = "stub") :
+    CVTransformation.TransformOperation<CVClasses> {
     override fun run(): CVClasses = StubCVClasses()
 
     override fun description(): String = description
@@ -128,13 +131,13 @@ class StubStoreObject : StoredObject {
 }
 
 class StubOutput<T>(private val instance: T): Output<T> {
-    override fun save(data: Frontend.TransformOperation): Single<T> {
+    override fun save(data: CVTransformation.TransformOperation<StoredObject>): Single<T> {
         return Single.just(instance)
     }
 }
 
-class ErrorOutput<T>(): Output<T> {
-    override fun save(data: Frontend.TransformOperation): Single<T> {
+class ErrorOutput<T>: Output<T> {
+    override fun save(data: CVTransformation.TransformOperation<StoredObject>): Single<T> {
         return Single.error(Exception("stub"))
     }
 }

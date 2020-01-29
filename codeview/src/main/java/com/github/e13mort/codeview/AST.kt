@@ -7,24 +7,9 @@ interface StoredObject {
     fun asString(): String
 }
 
-interface Backend {
-    fun prepareTransformOperation(path: Path): Single<TransformOperation>
+interface Backend : CVTransformation<Path, CVClasses>
 
-    interface TransformOperation {
-        fun run(): CVClasses
-
-        fun description(): String
-    }
-}
-
-interface Frontend {
-    fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<TransformOperation>
-
-    interface TransformOperation {
-        fun run(): StoredObject
-
-        fun description(): String
-    }
+interface Frontend : CVTransformation<CVTransformation.TransformOperation<CVClasses>, StoredObject> {
 
     enum class Params {
         CLASSES, INTERFACES, RELATIONS;
@@ -34,6 +19,16 @@ interface Frontend {
                 return Params.values().toSet()
             }
         }
+    }
+}
+
+interface CVTransformation<FROM, TO> {
+    fun prepare(source: FROM): Single<TransformOperation<TO>>
+
+    interface TransformOperation<TO> {
+        fun description(): String
+
+        fun run(): TO
     }
 }
 

@@ -15,13 +15,13 @@ class ContentStorageCacheFrontend(
     private val storage: ContentStorage,
     private val serialization: StoredObjectSerialization
 ) : Frontend {
-    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> {
-        return sourceFrontend.prepareTransformOperation(transformOperation)
+    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> {
+        return sourceFrontend.prepare(source)
             .flatMap (this::searchForItem)
             .flatMap (this::handleCacheResult)
     }
 
-    private fun handleCacheResult(cacheResult: CacheResult): Single<Frontend.TransformOperation> {
+    private fun handleCacheResult(cacheResult: CacheResult): Single<CVTransformation.TransformOperation<StoredObject>> {
         val transformOperation = cacheResult.cachedOperation
         return if (cacheResult.fromCache) {
             Single.just(transformOperation)
@@ -30,13 +30,13 @@ class ContentStorageCacheFrontend(
         }
     }
 
-    private fun save(transformOperation: Frontend.TransformOperation): Single<ContentStorage.ContentStorageItem> {
+    private fun save(transformOperation: CVTransformation.TransformOperation<StoredObject>): Single<ContentStorage.ContentStorageItem> {
         return storage.put(
             transformOperation.description(),
             Observable.fromCallable { serialization.content(transformOperation.run()) })
     }
 
-    private fun searchForItem(sourceOperation: Frontend.TransformOperation) : Single<CacheResult> {
+    private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<StoredObject>) : Single<CacheResult> {
         return storage
             .search(sourceOperation.description())
             .map(this::deserialize)
@@ -52,9 +52,9 @@ class ContentStorageCacheFrontend(
         return CacheResult(DumbTransformOperation(classes, description), true)
     }
 
-    private class CacheResult(val cachedOperation: Frontend.TransformOperation, val fromCache: Boolean)
+    private class CacheResult(val cachedOperation: CVTransformation.TransformOperation<StoredObject>, val fromCache: Boolean)
 
-    private data class DumbTransformOperation(private val storedObject: StoredObject, private val description: String) : Frontend.TransformOperation {
+    private data class DumbTransformOperation(private val storedObject: StoredObject, private val description: String) : CVTransformation.TransformOperation<StoredObject> {
         override fun run(): StoredObject = storedObject
 
         override fun description(): String = description

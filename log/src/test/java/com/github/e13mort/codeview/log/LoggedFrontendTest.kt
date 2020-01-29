@@ -11,21 +11,21 @@ internal class LoggedFrontendTest {
     @Test
     internal fun `regular frontend handling leads to two log calls`() {
         val log = mock<Log>()
-        StubCVFrontend().withLogs(log).prepareTransformOperation(StubBackendTransformOperation()).test()
+        StubCVFrontend().withLogs(log).prepare(StubBackendTransformOperation()).test()
         verify(log, times(2)).log(anyOrNull<String>())
     }
 
     @Test
     internal fun `creation of transform observable doesn't lead to log calls`() {
         val log = mock<Log>()
-        StubCVFrontend().withLogs(log).prepareTransformOperation(StubBackendTransformOperation())
+        StubCVFrontend().withLogs(log).prepare(StubBackendTransformOperation())
         verify(log, times(0)).log(anyOrNull<String>())
     }
 
     @Test
     internal fun `handling with error leads to different log calls`() {
         val log = mock<Log>()
-        ErrorCVFrontend().withLogs(log).prepareTransformOperation(StubBackendTransformOperation()).test()
+        ErrorCVFrontend().withLogs(log).prepare(StubBackendTransformOperation()).test()
         verify(log, times(1)).log(anyOrNull<String>())
         verify(log, times(1)).log(anyOrNull<Exception>())
     }

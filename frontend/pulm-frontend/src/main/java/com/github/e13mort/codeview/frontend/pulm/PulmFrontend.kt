@@ -7,13 +7,13 @@ typealias FrontendParams = Set<Frontend.Params>
 
 class PulmFrontend(private val params: FrontendParams = Frontend.Params.all()): Frontend {
 
-    override fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<Frontend.TransformOperation> {
+    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> {
         return Single.fromCallable {
-            PulmFrontendOperation(transformOperation, params)
+            PulmFrontendOperation(source, params)
         }
     }
 
-    private class PulmFrontendOperation(private val backendOperation: Backend.TransformOperation, private val params: FrontendParams) : Frontend.TransformOperation {
+    private class PulmFrontendOperation(private val backendOperation: CVTransformation.TransformOperation<CVClasses>, private val params: FrontendParams) : CVTransformation.TransformOperation<StoredObject> {
         override fun run(): StoredObject {
             return VisitorStoredObject(backendOperation.run(), params)
         }

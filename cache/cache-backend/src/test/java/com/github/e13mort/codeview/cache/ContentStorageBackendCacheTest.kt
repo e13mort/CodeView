@@ -1,7 +1,9 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Backend
+import com.github.e13mort.codeview.CVClasses
 import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.cache.ContentStorage.ContentStorageItem
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.doAnswer
@@ -27,20 +29,20 @@ internal class ContentStorageBackendCacheTest {
 
     @Test
     internal fun `data has been pulled from backend if content storage is empty`() {
-        testStorage.prepareTransformOperation(Paths.get("test")).test()
+        testStorage.prepare(Paths.get("test")).test()
         backend.assertCounter(1)
     }
 
     @Test
     internal fun `underlying backend is untouched if there is a cached item`() {
-        testStorage.prepareTransformOperation(Paths.get("existing")).test()
+        testStorage.prepare(Paths.get("existing")).test()
         backend.assertCounter(0)
     }
 
     @Test
     internal fun `data has been pulled from backend if there is an error occurred during cache reading operation`() {
         whenever(serialization.classes(anyOrNull())).doAnswer { throw Exception() }
-        testStorage.prepareTransformOperation(Paths.get("existing-error")).test()
+        testStorage.prepare(Paths.get("existing-error")).test()
         backend.assertCounter(1)
     }
 
@@ -56,10 +58,10 @@ internal class ContentStorageBackendCacheTest {
     internal class TrackingBackend : Backend {
         private var counter = 0
 
-        override fun prepareTransformOperation(path: Path): Single<Backend.TransformOperation> {
+        override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> {
             return Single.fromCallable {
-                mock<Backend.TransformOperation>().apply {
-                    whenever(description()).thenReturn(path.toString())
+                mock<CVTransformation.TransformOperation<CVClasses>>().apply {
+                    whenever(description()).thenReturn(source.toString())
                     whenever(run()).thenAnswer {
                         counter++
                         mock()

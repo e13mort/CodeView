@@ -23,19 +23,19 @@ internal class LoggedBackendTest {
 
     @Test
     internal fun `regular backend handling leads to two log calls`() {
-        StubCVBackend().withLogs(log).prepareTransformOperation(Paths.get("path")).test()
+        StubCVBackend().withLogs(log).prepare(Paths.get("path")).test()
         verify(log, times(2)).log(anyOrNull<String>())
     }
 
     @Test
     internal fun `creation of transform observable doesn't lead to log calls`() {
-        StubCVBackend().withLogs(log).prepareTransformOperation(Paths.get("path"))
+        StubCVBackend().withLogs(log).prepare(Paths.get("path"))
         verify(log, times(0)).log(anyOrNull<String>())
     }
 
     @Test
     internal fun `handling with error leads to different log calls`() {
-        ErrorCVBackend().withLogs(log).prepareTransformOperation(Paths.get("path")).test()
+        ErrorCVBackend().withLogs(log).prepare(Paths.get("path")).test()
         verify(log, times(1)).log(anyOrNull<String>())
         verify(log, times(1)).log(anyOrNull<Exception>())
     }
@@ -43,7 +43,7 @@ internal class LoggedBackendTest {
     @Test
     internal fun `regular backend handling with classes call leads to three log calls`() {
         StubCVBackend().withLogs(log)
-            .prepareTransformOperation(Paths.get("path"))
+            .prepare(Paths.get("path"))
             .doOnSuccess { it.run() }
             .test()
         verify(log, times(3)).log(anyOrNull<String>())
