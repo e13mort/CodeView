@@ -7,9 +7,9 @@ interface StoredObject {
     fun asString(): String
 }
 
-interface Backend : CVTransformation<Path, CVClasses>
+typealias Backend = CVTransformation<Path, CVClasses>
 
-interface Frontend : CVTransformation<CVTransformation.TransformOperation<CVClasses>, StoredObject>
+typealias Frontend = CVTransformation<CVTransformation.TransformOperation<CVClasses>, StoredObject>
 
 interface CVTransformation<FROM, TO> {
     fun prepare(source: FROM): Single<TransformOperation<TO>>

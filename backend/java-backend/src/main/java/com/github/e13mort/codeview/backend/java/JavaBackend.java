@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JavaBackend implements Backend {
+public class JavaBackend implements CVTransformation<Path, CVClasses> {
 
     @NotNull
     @Override
