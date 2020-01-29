@@ -30,7 +30,7 @@ class ContentStorageBackendCache(
     private fun save(transformOperation: Backend.TransformOperation): Single<ContentStorage.ContentStorageItem> {
         return storage.put(
                 transformOperation.description(),
-                Observable.fromCallable { serialization.content(transformOperation.classes()) })
+                Observable.fromCallable { serialization.content(transformOperation.run()) })
     }
 
     private fun searchForItem(sourceOperation: Backend.TransformOperation) : Single<CacheResult> {
@@ -52,7 +52,7 @@ class ContentStorageBackendCache(
     private class CacheResult(val cachedOperation: Backend.TransformOperation, val fromCache: Boolean)
 
     private data class DumbTransformOperation(private val classes: CVClasses, private val description: String) : Backend.TransformOperation {
-        override fun classes(): CVClasses = classes
+        override fun run(): CVClasses = classes
 
         override fun description(): String = description
     }

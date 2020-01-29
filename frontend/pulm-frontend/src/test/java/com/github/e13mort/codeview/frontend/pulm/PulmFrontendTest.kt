@@ -25,7 +25,7 @@ class PulmFrontendTest {
         @BeforeEach
         internal fun setUp() {
             val storedObject = frontend.prepareTransformOperation(MutableCVClasses.of(StubClass("TestClass")).toTransform())
-            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -54,7 +54,7 @@ class PulmFrontendTest {
                     )
                 ).toTransform()
             )
-            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -97,7 +97,7 @@ class PulmFrontendTest {
             val storedObject = frontend.prepareTransformOperation(
                 classes.toTransform()
             )
-            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -131,7 +131,7 @@ class PulmFrontendTest {
                 ).toTransform()
             )
 
-            diagram = SourceStringReader(storedObject.blockingGet().storedObject().asString()).asClassDiagram(0)
+            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
         }
 
         @Test
@@ -183,7 +183,7 @@ class PulmFrontendTest {
 private fun CVClasses.toTransform() : Backend.TransformOperation {
     val cvClasses = this
     return object : Backend.TransformOperation {
-        override fun classes(): CVClasses {
+        override fun run(): CVClasses {
             return cvClasses
         }
 

@@ -3,14 +3,12 @@ package com.github.e13mort.codeview.log
 import com.github.e13mort.codeview.stubs.ErrorCVBackend
 import com.github.e13mort.codeview.stubs.StubCVBackend
 import com.nhaarman.mockitokotlin2.anyOrNull
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.exceptions.base.MockitoException
 import java.lang.Exception
 import java.nio.file.Paths
 
@@ -46,7 +44,7 @@ internal class LoggedBackendTest {
     internal fun `regular backend handling with classes call leads to three log calls`() {
         StubCVBackend().withLogs(log)
             .prepareTransformOperation(Paths.get("path"))
-            .doOnSuccess { it.classes() }
+            .doOnSuccess { it.run() }
             .test()
         verify(log, times(3)).log(anyOrNull<String>())
     }

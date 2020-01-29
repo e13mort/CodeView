@@ -112,13 +112,13 @@ class ErrorCVFrontend : Frontend {
 }
 
 class StubFrontendTransformOperation : Frontend.TransformOperation {
-    override fun storedObject(): StoredObject = StubStoreObject()
+    override fun run(): StoredObject = StubStoreObject()
 
     override fun description(): String = "stub"
 }
 
 class StubBackendTransformOperation(private val description: String = "stub") : Backend.TransformOperation {
-    override fun classes(): CVClasses = StubCVClasses()
+    override fun run(): CVClasses = StubCVClasses()
 
     override fun description(): String = description
 }

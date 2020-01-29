@@ -14,8 +14,8 @@ class PulmFrontend(private val params: FrontendParams = Frontend.Params.all()): 
     }
 
     private class PulmFrontendOperation(private val backendOperation: Backend.TransformOperation, private val params: FrontendParams) : Frontend.TransformOperation {
-        override fun storedObject(): StoredObject {
-            return VisitorStoredObject(backendOperation.classes(), params)
+        override fun run(): StoredObject {
+            return VisitorStoredObject(backendOperation.run(), params)
         }
 
         override fun description(): String {

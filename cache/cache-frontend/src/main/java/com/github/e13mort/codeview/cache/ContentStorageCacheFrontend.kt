@@ -33,7 +33,7 @@ class ContentStorageCacheFrontend(
     private fun save(transformOperation: Frontend.TransformOperation): Single<ContentStorage.ContentStorageItem> {
         return storage.put(
             transformOperation.description(),
-            Observable.fromCallable { serialization.content(transformOperation.storedObject()) })
+            Observable.fromCallable { serialization.content(transformOperation.run()) })
     }
 
     private fun searchForItem(sourceOperation: Frontend.TransformOperation) : Single<CacheResult> {
@@ -55,7 +55,7 @@ class ContentStorageCacheFrontend(
     private class CacheResult(val cachedOperation: Frontend.TransformOperation, val fromCache: Boolean)
 
     private data class DumbTransformOperation(private val storedObject: StoredObject, private val description: String) : Frontend.TransformOperation {
-        override fun storedObject(): StoredObject = storedObject
+        override fun run(): StoredObject = storedObject
 
         override fun description(): String = description
     }

@@ -21,9 +21,9 @@ class LoggedBackend(private val source: Backend, private val log: Log) : Backend
 }
 
 private class LoggedTransformOperation(val source: Backend.TransformOperation, val log: Log) : Backend.TransformOperation by source {
-    override fun classes(): CVClasses {
+    override fun run(): CVClasses {
         log.log("classes are requested")
-        return source.classes()
+        return source.run()
     }
 }
 

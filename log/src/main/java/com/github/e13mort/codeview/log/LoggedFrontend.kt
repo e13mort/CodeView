@@ -18,9 +18,9 @@ class LoggedFrontend(private val source: Frontend, private val log: Log) : Front
 }
 
 private class LoggedFrontendTransformOperation(private val sourceOperation: Frontend.TransformOperation, private val log: Log) : Frontend.TransformOperation by sourceOperation {
-    override fun storedObject(): StoredObject {
+    override fun run(): StoredObject {
         log.log("stored object requested")
-        return sourceOperation.storedObject()
+        return sourceOperation.run()
     }
 }
 

@@ -27,7 +27,7 @@ public class JavaBackend implements Backend {
         return Single.fromCallable(() -> new TransformOperation() {
             @NotNull
             @Override
-            public CVClasses classes() {
+            public CVClasses run() {
                 return performTransformation(path);
             }
 

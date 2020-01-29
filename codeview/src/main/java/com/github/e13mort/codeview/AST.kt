@@ -11,7 +11,7 @@ interface Backend {
     fun prepareTransformOperation(path: Path): Single<TransformOperation>
 
     interface TransformOperation {
-        fun classes(): CVClasses
+        fun run(): CVClasses
 
         fun description(): String
     }
@@ -21,7 +21,7 @@ interface Frontend {
     fun prepareTransformOperation(transformOperation: Backend.TransformOperation): Single<TransformOperation>
 
     interface TransformOperation {
-        fun storedObject(): StoredObject
+        fun run(): StoredObject
 
         fun description(): String
     }

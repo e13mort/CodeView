@@ -11,7 +11,7 @@ class EngineBasedOutput<T>(private val engine: OutputEngine, private val target:
     override fun save(data: Frontend.TransformOperation): Single<T> {
         return Single
             .fromCallable { target.output() }
-            .doOnSuccess { engine.saveDataToOutputStream(data.storedObject(), it) }
+            .doOnSuccess { engine.saveDataToOutputStream(data.run(), it) }
             .map { target.toResult() }
     }
 

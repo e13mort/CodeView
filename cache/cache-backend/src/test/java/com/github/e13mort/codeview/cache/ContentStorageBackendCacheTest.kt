@@ -60,7 +60,7 @@ internal class ContentStorageBackendCacheTest {
             return Single.fromCallable {
                 mock<Backend.TransformOperation>().apply {
                     whenever(description()).thenReturn(path.toString())
-                    whenever(classes()).thenAnswer {
+                    whenever(run()).thenAnswer {
                         counter++
                         mock()
                     }
