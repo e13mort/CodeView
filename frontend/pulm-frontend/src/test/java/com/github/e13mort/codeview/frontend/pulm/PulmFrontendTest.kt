@@ -158,7 +158,7 @@ class PulmFrontendTest {
             val operation = StubBackendTransformOperation()
             assertNotEquals(
                 PulmFrontend().prepare(operation).blockingGet().description(),
-                PulmFrontend(setOf(Frontend.Params.CLASSES)).prepare(operation).blockingGet().description())
+                PulmFrontend(setOf(FrontendParams.CLASSES)).prepare(operation).blockingGet().description())
         }
 
         @Test

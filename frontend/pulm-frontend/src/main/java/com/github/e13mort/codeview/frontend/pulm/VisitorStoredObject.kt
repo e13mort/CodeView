@@ -4,7 +4,7 @@ import com.github.e13mort.codeview.*
 
 class VisitorStoredObject(
     private val classes: CVClasses,
-    private val params: Set<Frontend.Params>
+    private val params: Set<FrontendParams>
 ) :
     StoredObject {
 
@@ -29,7 +29,7 @@ class VisitorStoredObject(
         private val methodsVisitor: CVClass.MethodsVisitor,
         private val fieldsVisitor: CVClass.FieldsVisitor,
         private val relationsRenderingVisitor: CVClass.RelationVisitor,
-        private val params: Set<Frontend.Params>
+        private val params: Set<FrontendParams>
     ) :
         CVClasses.Visitor {
 

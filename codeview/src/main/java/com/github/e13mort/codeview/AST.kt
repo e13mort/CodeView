@@ -9,18 +9,7 @@ interface StoredObject {
 
 interface Backend : CVTransformation<Path, CVClasses>
 
-interface Frontend : CVTransformation<CVTransformation.TransformOperation<CVClasses>, StoredObject> {
-
-    enum class Params {
-        CLASSES, INTERFACES, RELATIONS;
-
-        companion object {
-            fun all(): Set<Params> {
-                return Params.values().toSet()
-            }
-        }
-    }
-}
+interface Frontend : CVTransformation<CVTransformation.TransformOperation<CVClasses>, StoredObject>
 
 interface CVTransformation<FROM, TO> {
     fun prepare(source: FROM): Single<TransformOperation<TO>>
