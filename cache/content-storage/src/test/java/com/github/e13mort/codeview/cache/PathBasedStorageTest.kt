@@ -4,7 +4,7 @@ import com.github.e13mort.codeview.Content
 import com.google.common.jimfs.Jimfs
 import io.reactivex.Observable
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayInputStream
@@ -111,9 +111,39 @@ internal class PathBasedStorageTest {
         newStorage.search("key").test().assertComplete().assertNoErrors().assertNoValues()
     }
 
-    private class MemoryContent : Content {
-        override fun read(): InputStream = ByteArrayInputStream(byteArrayOf())
+    @Test
+    internal fun `put single content returns path to the target file`() {
+        storage.putSingleItem("key", "hello".asContent()).apply {
+            assertEquals("hello", Files.readAllLines(path())[0])
+        }
+    }
+
+    @Test
+    internal fun `search for a single not existing value returns null result`() {
+        assertNull(storage.searchSingleItem("key"))
+    }
+
+    @Test
+    internal fun `search for a single existing value returns not null result`() {
+        storage.putSingleItem("key", "hello".asContent())
+        assertNotNull(storage.searchSingleItem("key"))
+    }
+
+    @Test
+    internal fun `search for a single existing value returns a valid result`() {
+        storage.putSingleItem("key", "hello".asContent())
+        storage.searchSingleItem("key")!!.apply {
+            assertEquals("hello", Files.readAllLines(path())[0])
+        }
+    }
+
+    internal class MemoryContent(private val bytes : ByteArray = byteArrayOf()) : Content {
+        override fun read(): InputStream = ByteArrayInputStream(bytes)
 
         fun asObservable(): Observable<Content> = Observable.just(this)
     }
+}
+
+private fun String.asContent() : Content {
+    return PathBasedStorageTest.MemoryContent(this.toByteArray())
 }

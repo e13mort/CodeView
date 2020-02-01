@@ -61,6 +61,14 @@ internal class ContentStorageBackendCacheTest {
         override fun <T : Content> put(key: String, content: Observable<T>): Single<ContentStorageItem> {
             return content.map { mock<ContentStorageItem>() }.lastOrError()
         }
+
+        override fun putSingleItem(key: String, content: Content): ContentStorageItem {
+            throw Exception()
+        }
+
+        override fun searchSingleItem(key: String): ContentStorageItem? {
+            return null
+        }
     }
 
     internal class TrackingBackend : CVTransformation<ClassFrom, ClassTo> {

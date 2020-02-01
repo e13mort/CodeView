@@ -37,10 +37,28 @@ class PathBasedStorage(
     ): Single<ContentStorage.ContentStorageItem> {
 
         return content.withLatestFrom(
-            registerCacheFolder(key),
-            BiFunction<Content, Path, Path> { t1, t2 -> copyFileToCache(t1, t2) })
+            registerCacheFolder(key).toObservable(),
+            BiFunction<Content, Path, Path>(this::copyFileToCache)
+        )
             .lastOrError()
             .map { PathBasedStorageItem(it) }
+    }
+
+    override fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem {
+        registerCacheItem(key).apply {
+            Files.copy(content.read(), this)
+            return PathBasedStorageItem(this)
+        }
+    }
+
+    override fun searchSingleItem(key: String): ContentStorage.ContentStorageItem? {
+        folderName(key)?.apply {
+            val path = root.resolve(this)
+            if (Files.exists(path)) {
+                return PathBasedStorageItem(path)
+            }
+        }
+        return null
     }
 
     private fun copyFileToCache(content: Content, parent: Path): Path {
@@ -48,22 +66,31 @@ class PathBasedStorage(
         return parent
     }
 
-    private fun registerCacheFolder(key: String): Observable<Path> {
-        return Observable.fromPublisher<Path> {
-            try {
-                ensureRootExists()
-                val folderName = cacheName.createDirName()
-                val map = readMap()
-                map[key] = folderName
-                val path = root.resolve(folderName)
-                Files.createDirectory(path)
-                if (Files.exists(path)) saveMap(map)
-                it.onNext(path)
-                it.onComplete()
-            } catch (e: Exception) {
-                it.onError(e)
-            }
+    private fun registerCacheFolder(key: String): Single<Path> {
+        return Single.fromCallable {
+            ensureRootExists()
+            val folderName = cacheName.createDirName()
+            val map = readMap()
+            map[key] = folderName
+            val path = root.resolve(folderName)
+            Files.createDirectory(path)
+            if (Files.exists(path)) saveMap(map)
+            path
         }
+    }
+
+    private fun registerCacheItem(key: String): Path {
+        ensureRootExists()
+        val map = readMap()
+
+        val folderName = cacheName.createDirName()
+        val folderPath = root.resolve(folderName)
+        Files.createDirectory(folderPath)
+        val filePath = folderPath.resolve(cacheName.createFileName())
+        val relativePath = root.relativize(filePath)
+        map[key] = relativePath.toString()
+        saveMap(map)
+        return filePath
     }
 
     private fun ensureRootExists() {

@@ -11,6 +11,10 @@ interface ContentStorage {
 
     fun <T : Content> put(key: String, content: Observable<T>): Single<ContentStorageItem>
 
+    fun putSingleItem(key: String, content: Content) : ContentStorageItem
+
+    fun searchSingleItem(key: String) : ContentStorageItem?
+
     interface ContentStorageItem {
         fun path(): Path
     }

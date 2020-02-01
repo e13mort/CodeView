@@ -63,6 +63,12 @@ class DataModule(private val rootFolder: Path) {
     }
 
     @Provides
+    @Named("output-storage")
+    fun outputContentStorage(): ContentStorage {
+        return PathBasedStorage(rootFolder.resolve("output-cache"), "registry.json", ConstNameUUIDBasedCacheName("output.png"))
+    }
+
+    @Provides
     fun log() : Log {
         return ConsoleLog()
     }

@@ -10,7 +10,7 @@ class EngineBasedOutput<T>(private val engine: OutputEngine, private val target:
     override fun save(data: CVTransformation.TransformOperation<StoredObject>): Single<T> {
         return Single
             .fromCallable { target.output() }
-            .doOnSuccess { engine.saveDataToOutputStream(data.run(), it) }
+            .flatMap { engine.saveDataToOutputStreamCompletable(data, it) }
             .map { target.toResult() }
     }
 
