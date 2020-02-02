@@ -102,7 +102,7 @@ class ErrorCVBackend : Backend {
 }
 
 class StubCVClasses : CVClasses {
-    override fun accept(visitor: CVClasses.Visitor) = Unit
+    override fun accept(visitor: CVClasses.Visitor) = visitor.onClassDetected(StubClass())
 }
 
 class StubCVFrontend : Frontend {

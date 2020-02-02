@@ -7,10 +7,15 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondOutputStream
 import io.ktor.routing.get
+import io.ktor.routing.route
+import io.ktor.html.*
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.rx2.await
+import kotlinx.html.body
+import kotlinx.html.img
+import kotlinx.html.p
 
 fun main() {
     embeddedServer(Netty) {
@@ -25,12 +30,31 @@ fun init(app: Application) {
         .ktorBackendModule(KtorBackendModule())
         .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
+        .ktorCacheModule(KtorCacheModule())
         .build().codeView()
 
     app.routing {
         get("/") {
-            call.respondOutputStream(ContentType.Image.PNG, HttpStatusCode.OK) {
-                codeView.run().await().copyTo(this)
+            call.respondHtml {
+                body {
+                    p {
+                        +"CodeView"
+                    }
+                    img {
+                        src = "diagram/test"
+                    }
+                }
+            }
+        }
+
+        route("diagram") {
+            get("{diagram-id}") {
+                val diagramId = call.parameters["diagram-id"]
+                diagramId?.let {
+                    call.respondOutputStream(ContentType.Image.PNG, HttpStatusCode.OK) {
+                        codeView.run(diagramId).await().copyTo(this)
+                    }
+                }
             }
         }
     }

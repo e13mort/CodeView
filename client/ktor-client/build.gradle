@@ -43,6 +43,7 @@ dependencies {
     implementation project(':output:engine-based-output')
     implementation project(':utils:stubs')
     implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-html-builder:$ktor_version"
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation 'com.google.dagger:dagger:2.23.2'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-rx2', version: '1.2.2'
