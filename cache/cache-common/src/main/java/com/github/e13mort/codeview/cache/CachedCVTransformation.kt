@@ -69,9 +69,9 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         override fun description(): String = description
     }
 
-    interface CVSerialization<OUTPUT> {
-        fun serialize(classes: OUTPUT): Content
+    interface CVSerialization<INPUT> {
+        fun serialize(input: INPUT): Content
 
-        fun deserialize(path: Path): OUTPUT
+        fun deserialize(path: Path): INPUT
     }
 }

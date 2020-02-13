@@ -10,11 +10,11 @@ import java.nio.file.Path
 
 class StoredObjectActualSerialization :
     CachedCVTransformation.CVSerialization<StoredObject> {
-    override fun serialize(storedObject: StoredObject): Content {
+    override fun serialize(input: StoredObject): Content {
         return object : Content {
             override fun read(): InputStream {
                 return ByteArrayInputStream(
-                    storedObject.asString().toByteArray(
+                    input.asString().toByteArray(
                         charset = Charset.forName(
                             "UTF-8"
                         )
