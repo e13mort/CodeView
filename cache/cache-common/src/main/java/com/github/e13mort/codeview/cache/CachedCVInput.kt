@@ -17,12 +17,10 @@ class CachedCVInput(private val cache: Cache, private val dataSource: DataSource
                     return source
                 }
 
-                override fun run(): Path {
+                override fun transform(): Single<Path> {
                     return dataSource.sources(source)
                         .flatMap { cache.cacheSources(it) }
                         .map { it.files() }
-                        .blockingGet()
-                    //todo avoid blockingGet
                 }
 
             }

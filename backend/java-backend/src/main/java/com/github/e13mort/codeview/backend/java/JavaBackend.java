@@ -35,12 +35,6 @@ public class JavaBackend implements CVTransformation<CVTransformation.TransformO
 
             @NotNull
             @Override
-            public CVClasses run() {
-                return transform().blockingGet();
-            }
-
-            @NotNull
-            @Override
             public String description() {
                 return transformation.toString();
             }

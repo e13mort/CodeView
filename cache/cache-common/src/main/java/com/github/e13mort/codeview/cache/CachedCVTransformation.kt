@@ -67,9 +67,10 @@ class CachedCVTransformation<INPUT, OUTPUT>(
 
     private data class DumbTransformOperation<OUTPUT>(private val classes: OUTPUT, private val description: String) :
         CVTransformation.TransformOperation<OUTPUT> {
-        override fun run(): OUTPUT = classes
 
         override fun description(): String = description
+
+        override fun transform(): Single<OUTPUT> = Single.just(classes)
     }
 
     interface CVSerialization<INPUT> {

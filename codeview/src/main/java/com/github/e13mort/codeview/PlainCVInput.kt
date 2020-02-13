@@ -13,8 +13,8 @@ class PlainCVInput : CVInput {
                     return source
                 }
 
-                override fun run(): Path {
-                    return Paths.get(source)
+                override fun transform(): Single<Path> {
+                    return Single.fromCallable { Paths.get(source) }
                 }
 
             }

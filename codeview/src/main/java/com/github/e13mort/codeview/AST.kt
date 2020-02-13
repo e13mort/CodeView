@@ -19,11 +19,7 @@ interface CVTransformation<FROM, TO> {
     interface TransformOperation<TO> {
         fun description(): String
 
-        fun run(): TO
-
-        fun transform(): Single<TO> {
-            return Single.fromCallable { run() }
-        }
+        fun transform(): Single<TO>
     }
 }
 

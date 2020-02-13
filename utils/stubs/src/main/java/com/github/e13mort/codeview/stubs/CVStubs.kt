@@ -89,7 +89,7 @@ class StubCVInput : CVInput {
 class StubCVInputTransformation : CVTransformation.TransformOperation<Path> {
     override fun description(): String = "stub"
 
-    override fun run(): Path = Paths.get("stub")
+    override fun transform(): Single<Path> = Single.just(Paths.get("stub"))
 }
 
 class ErrorCVInput : CVInput {
@@ -123,16 +123,15 @@ class ErrorCVFrontend : Frontend {
 }
 
 class StubFrontendTransformOperation : CVTransformation.TransformOperation<StoredObject> {
-    override fun run(): StoredObject = StubStoreObject()
-
+    override fun transform(): Single<StoredObject> = Single.just(StubStoreObject())
     override fun description(): String = "stub"
 }
 
 class StubBackendTransformOperation(private val description: String = "stub") :
     CVTransformation.TransformOperation<CVClasses> {
-    override fun run(): CVClasses = StubCVClasses()
 
     override fun description(): String = description
+    override fun transform(): Single<CVClasses> = Single.just(StubCVClasses())
 }
 
 class StubStoreObject : StoredObject {

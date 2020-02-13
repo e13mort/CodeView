@@ -22,9 +22,6 @@ class LoggedBackend(private val sourceBackend: Backend, private val log: Log) : 
 }
 
 private class LoggedTransformOperation(val source: CVTransformation.TransformOperation<CVClasses>, val log: Log) : CVTransformation.TransformOperation<CVClasses> by source {
-    override fun run(): CVClasses {
-        return transform().blockingGet()
-    }
 
     override fun transform(): Single<CVClasses> {
         return source.transform().doOnEvent { _, _ -> log.log("classes are handled") }

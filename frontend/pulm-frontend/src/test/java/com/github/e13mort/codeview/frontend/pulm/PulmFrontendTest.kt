@@ -180,12 +180,13 @@ class PulmFrontendTest {
 private fun CVClasses.toTransform() : CVTransformation.TransformOperation<CVClasses> {
     val cvClasses = this
     return object : CVTransformation.TransformOperation<CVClasses> {
-        override fun run(): CVClasses {
-            return cvClasses
-        }
 
         override fun description(): String {
             return "dumb"
+        }
+
+        override fun transform(): Single<CVClasses> {
+            return Single.just(cvClasses)
         }
 
     }
