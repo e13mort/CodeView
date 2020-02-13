@@ -10,7 +10,7 @@ ENV keyStore key.jks
 ENV keyAlias mykey
 ENV keyStorePassword password
 ENV privateKeyPassword password
-ENV workDir codeViewDir
+ENV logsDir logs
 
 RUN apk add --update --no-cache ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family graphviz 
 
@@ -35,5 +35,4 @@ CMD ["sh", "-c", "java -server \
     -jar code-view-application.jar \
     -port=$port -sslPort=$sslPort -P:ktor.security.ssl.keyStore=$keyStore\
     -P:ktor.security.ssl.keyAlias=$keyAlias -P:ktor.security.ssl.keyStorePassword=$keyStorePassword \
-    -P:ktor.security.ssl.privateKeyPassword=$privateKeyPassword \
-    -DCVWorkingDir=$workDir" ]
+    -P:ktor.security.ssl.privateKeyPassword=$privateKeyPassword" ]

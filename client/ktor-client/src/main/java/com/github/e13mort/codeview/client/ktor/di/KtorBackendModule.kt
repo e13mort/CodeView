@@ -18,7 +18,7 @@ class KtorBackendModule {
 
     companion object {
         const val PATH_KEY = "logFilePath"
-        const val WORKING_DIR_ENV_KEY = "CVWorkingDir"
+        const val WORKING_DIR_ENV_KEY = "logsDir"
         const val LOG_FILE_NAME = "cvktor-logs.txt"
     }
 
