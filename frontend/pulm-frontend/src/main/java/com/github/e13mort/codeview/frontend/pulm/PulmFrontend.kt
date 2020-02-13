@@ -13,11 +13,15 @@ class PulmFrontend(private val params: Set<FrontendParams> = FrontendParams.all(
 
     private class PulmFrontendOperation(private val backendOperation: CVTransformation.TransformOperation<CVClasses>, private val params: Set<FrontendParams>) : CVTransformation.TransformOperation<StoredObject> {
         override fun run(): StoredObject {
-            return VisitorStoredObject(backendOperation.run(), params)
+            return transform().blockingGet()
         }
 
         override fun description(): String {
             return FrontendDescription(backendOperation.description(), params).toString()
+        }
+
+        override fun transform(): Single<StoredObject> {
+            return backendOperation.transform().map { VisitorStoredObject(it, params) }
         }
     }
 

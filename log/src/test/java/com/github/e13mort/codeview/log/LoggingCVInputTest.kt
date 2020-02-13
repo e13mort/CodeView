@@ -40,6 +40,6 @@ internal class LoggingCVInputTest {
     }
 
     private fun wrapAndCall(source: CVInput): Single<Path> {
-        return source.withLogs(log).prepare("input").map { it.run() }
+        return source.withLogs(log).prepare("input").flatMap { it.transform() }
     }
 }

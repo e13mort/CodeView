@@ -45,7 +45,7 @@ internal class LoggedBackendTest {
     internal fun `regular backend handling with classes call leads to three log calls`() {
         StubCVBackend().withLogs(log)
             .prepare(StubCVInputTransformation())
-            .doOnSuccess { it.run() }
+            .flatMap { it.transform() }
             .test()
         verify(log, times(3)).log(anyOrNull<String>())
     }

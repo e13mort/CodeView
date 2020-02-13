@@ -15,13 +15,6 @@ class LoggedFrontend(private val source: Frontend, private val log: Log) : Front
     }
 }
 
-private class LoggedFrontendTransformOperation(private val sourceOperation: CVTransformation.TransformOperation<StoredObject>, private val log: Log) : CVTransformation.TransformOperation<StoredObject> by sourceOperation {
-    override fun run(): StoredObject {
-        log.log("stored object requested")
-        return sourceOperation.run()
-    }
-}
-
 fun Frontend.withLogs(log: Log): Frontend {
     return LoggedFrontend(this, log)
 }

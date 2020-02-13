@@ -6,11 +6,20 @@ import java.io.OutputStream
 import java.io.OutputStreamWriter
 
 class RawOutputEngine : OutputEngine {
-    override fun saveDataToOutputStream(data: CVTransformation.TransformOperation<StoredObject>, outputStream: OutputStream) {
-        val fileWriter = OutputStreamWriter(outputStream)
-        fileWriter.write(data.run().asString())
-        fileWriter.flush()
-        fileWriter.close()
+    override fun saveDataToOutputStream(
+        data: CVTransformation.TransformOperation<StoredObject>,
+        outputStream: OutputStream
+    ) {
+        data
+            .transform()
+            .map { it.asString() }
+            .subscribe { string -> save(outputStream, string) }
+    }
+
+    private fun save(outputStream: OutputStream, string: String) {
+        OutputStreamWriter(outputStream).use {
+            it.write(string)
+        }
     }
 
 }

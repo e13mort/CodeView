@@ -2,6 +2,7 @@ package com.github.e13mort.codeview.frontend.pulm
 
 import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.stubs.*
+import io.reactivex.Single
 import net.sourceforge.plantuml.SourceStringReader
 import net.sourceforge.plantuml.classdiagram.ClassDiagram
 import org.junit.jupiter.api.Assertions.*
@@ -24,8 +25,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.prepare(MutableCVClasses.of(StubClass("TestClass")).toTransform())
-            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
+            diagram = frontend.prepare(MutableCVClasses.of(StubClass("TestClass")).toTransform()).asDiagram()
         }
 
         @Test
@@ -41,7 +41,7 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.prepare(
+            diagram = frontend.prepare(
                 MutableCVClasses.of(
                     StubClass(
                         methods = StubMethod(
@@ -53,8 +53,7 @@ class PulmFrontendTest {
                         ).asList()
                     )
                 ).toTransform()
-            )
-            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
+            ).asDiagram()
         }
 
         @Test
@@ -94,10 +93,9 @@ class PulmFrontendTest {
                 )
             )
 
-            val storedObject = frontend.prepare(
+            diagram = frontend.prepare(
                 classes.toTransform()
-            )
-            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
+            ).asDiagram()
         }
 
         @Test
@@ -117,7 +115,8 @@ class PulmFrontendTest {
 
         @BeforeEach
         internal fun setUp() {
-            val storedObject = frontend.prepare(
+
+            diagram = frontend.prepare(
                 MutableCVClasses.of(
                     StubClass(
                         name = "TestClass",
@@ -129,9 +128,7 @@ class PulmFrontendTest {
                         )
                     )
                 ).toTransform()
-            )
-
-            diagram = SourceStringReader(storedObject.blockingGet().run().asString()).asClassDiagram(0)
+            ).asDiagram()
         }
 
         @Test
@@ -192,4 +189,13 @@ private fun CVClasses.toTransform() : CVTransformation.TransformOperation<CVClas
         }
 
     }
+}
+
+private fun Single<CVTransformation.TransformOperation<StoredObject>>.asDiagram() : ClassDiagram {
+    return flatMap { it.transform() }
+        .map { it.asString() }
+        .map { SourceStringReader(it) }
+        .map { it.asClassDiagram(0) }
+        .blockingGet()
+
 }

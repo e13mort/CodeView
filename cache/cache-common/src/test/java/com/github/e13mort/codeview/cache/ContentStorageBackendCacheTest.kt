@@ -78,10 +78,8 @@ internal class ContentStorageBackendCacheTest {
             return Single.fromCallable {
                 mock<CVTransformation.TransformOperation<ClassTo>>().apply {
                     whenever(description()).thenReturn(source.toString())
-                    whenever(run()).thenAnswer {
-                        counter++
-                        mock()
-                    }
+                    val trackedSingle = Single.just<ClassTo>(mock()).doOnEvent { _, _ -> counter++ }
+                    whenever(transform()).thenReturn(trackedSingle)
                 }
             }
         }

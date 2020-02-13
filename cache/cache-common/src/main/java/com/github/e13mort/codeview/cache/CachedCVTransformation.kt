@@ -2,7 +2,6 @@ package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.Content
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.nio.file.Path
 
@@ -30,7 +29,11 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
         return storage.put(
             transformOperation.description(),
-            Observable.fromCallable { serialization.serialize(transformOperation.run()) })
+            transformOperation
+                .transform()
+                .map { serialization.serialize(it) }
+                .toObservable()
+        )
     }
 
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {

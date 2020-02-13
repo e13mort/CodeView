@@ -9,10 +9,19 @@ import java.io.OutputStream
 
 class PulmOutputEngine : OutputEngine {
 
-    override fun saveDataToOutputStream(data: CVTransformation.TransformOperation<StoredObject>, outputStream: OutputStream) {
-        SourceStringReader(data.run().asString())
-            .outputImage(outputStream,
-                FileFormatOption(FileFormat.PNG)
-            )
+    override fun saveDataToOutputStream(
+        data: CVTransformation.TransformOperation<StoredObject>,
+        outputStream: OutputStream
+    ) {
+        data.transform()
+            .map { it.asString() }
+            .subscribe { string -> saveResult(string, outputStream) }
+    }
+
+    private fun saveResult(string: String, outputStream: OutputStream) {
+        SourceStringReader(string).outputImage(
+            outputStream,
+            FileFormatOption(FileFormat.PNG)
+        )
     }
 }

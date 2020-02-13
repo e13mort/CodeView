@@ -20,6 +20,10 @@ interface CVTransformation<FROM, TO> {
         fun description(): String
 
         fun run(): TO
+
+        fun transform(): Single<TO> {
+            return Single.fromCallable { run() }
+        }
     }
 }
 
