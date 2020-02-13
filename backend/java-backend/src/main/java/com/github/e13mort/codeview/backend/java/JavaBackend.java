@@ -19,22 +19,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JavaBackend implements CVTransformation<Path, CVClasses> {
+public class JavaBackend implements CVTransformation<CVTransformation.TransformOperation<Path>, CVClasses> {
 
     @NotNull
     @Override
-    public Single<TransformOperation<CVClasses>> prepare(@NotNull Path path) {
+    public Single<TransformOperation<CVClasses>> prepare(@NotNull CVTransformation.TransformOperation<Path> transformation) {
         return Single.fromCallable(() -> new TransformOperation<CVClasses>() {
             @NotNull
             @Override
             public CVClasses run() {
-                return performTransformation(path);
+                return performTransformation(transformation.run());
             }
 
             @NotNull
             @Override
             public String description() {
-                return path.toString();
+                return transformation.toString();
             }
         });
     }

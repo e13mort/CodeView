@@ -2,10 +2,10 @@ package com.github.e13mort.codeview.stubs
 
 import com.github.e13mort.codeview.*
 import io.reactivex.Single
-import java.lang.Exception
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.Exception
 
 class StubClass(private val name: String = "Test",
                 private val property: ClassProperty? = null,
@@ -80,25 +80,34 @@ class StubType(private val simpleName: String = "StubSimpleName",
 }
 
 class StubCVInput : CVInput {
-    override fun handleInput(path: SourcePath): Single<Path> {
-        return Single.just(Paths.get("stub"))
+
+    override fun prepare(source: SourcePath): Single<CVTransformation.TransformOperation<Path>> {
+        return Single.just(StubCVInputTransformation())
     }
 }
 
+class StubCVInputTransformation : CVTransformation.TransformOperation<Path> {
+    override fun description(): String = "stub"
+
+    override fun run(): Path = Paths.get("stub")
+}
+
 class ErrorCVInput : CVInput {
-    override fun handleInput(path: SourcePath): Single<Path> {
+
+    override fun prepare(source: SourcePath): Single<CVTransformation.TransformOperation<Path>> {
         return Single.error(Exception("stub"))
     }
 }
 
 class StubCVBackend : Backend {
-    override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> =
-        Single.just(StubBackendTransformOperation())
+    override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> {
+        return Single.just(StubBackendTransformOperation())
+    }
 
 }
 
 class ErrorCVBackend : Backend {
-    override fun prepare(source: Path): Single<CVTransformation.TransformOperation<CVClasses>> = Single.error(Exception())
+    override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> = Single.error(Exception())
 }
 
 class StubCVClasses : CVClasses {

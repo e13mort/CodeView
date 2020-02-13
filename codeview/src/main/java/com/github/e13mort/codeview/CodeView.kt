@@ -13,7 +13,7 @@ class CodeView<T> @Inject constructor(
 ) {
 
     fun run(parameters: SourcePath = ""): Single<T> {
-        return input.handleInput(parameters)
+        return input.prepare(parameters)
             .flatMap { backend.prepare(it) }
             .flatMap { frontend.prepare(it) }
             .flatMap { output.save(it) }

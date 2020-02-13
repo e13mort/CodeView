@@ -6,11 +6,11 @@ import com.github.e13mort.codeview.CVTransformation
 import io.reactivex.Single
 import java.nio.file.Path
 
-class LoggedBackend(private val source: Backend, private val log: Log) : Backend {
-    override fun prepare(path: Path): Single<CVTransformation.TransformOperation<CVClasses>> {
-        return Single.fromCallable { path }
+class LoggedBackend(private val sourceBackend: Backend, private val log: Log) : Backend {
+    override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> {
+        return Single.fromCallable { source }
             .doOnEvent { inPath, _ -> log.log("path to handle: $inPath") }
-            .flatMap { source.prepare(path) }
+            .flatMap { sourceBackend.prepare(source) }
             .doOnEvent { operation, t2 ->
                 run {
                     operation?.let { log.log("operation are created successfully") }
