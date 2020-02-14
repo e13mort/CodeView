@@ -8,6 +8,7 @@ import javax.inject.Singleton
 @Component(
     modules = [
         KtorFrontendModule::class,
+        KtorLogModule::class,
         KtorBackendModule::class,
         KtorImageOutputModule::class,
         KtorCacheModule::class
