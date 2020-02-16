@@ -1,15 +1,27 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.CVInput
-import com.github.e13mort.codeview.PlainCVInput
+import com.github.e13mort.codeview.cache.*
+import com.github.e13mort.codeview.client.ktor.AppContext
+import com.github.e13mort.codeview.datasource.git.GitDataSource
 import dagger.Module
 import dagger.Provides
 
 @Module
-class KtorCacheModule {
+class KtorCacheModule(private val appContext: AppContext) {
 
     @Provides
-    fun input() : CVInput {
-        return PlainCVInput()
+    fun input(cache: Cache, dataSource: GitDataSource) : CVInput {
+        return CachedCVInput(cache, dataSource)
+    }
+
+    @Provides
+    fun cache(storage: ContentStorage): Cache {
+        return ContentStorageBasedCache(storage)
+    }
+
+    @Provides
+    fun contentStorage() : ContentStorage {
+        return PathBasedStorage(appContext.sourceCachePath(), cacheName = UUIDCacheName())
     }
 }

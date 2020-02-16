@@ -13,7 +13,7 @@ import java.nio.file.Path
 
 class PathBasedStorage(
     private val root: Path,
-    private val registryFileName: String,
+    private val registryFileName: String = "registry.json",
     private val cacheName: CacheName
 ) :
     ContentStorage {

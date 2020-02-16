@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import dagger.Component
 import javax.inject.Singleton
 
@@ -11,7 +12,8 @@ import javax.inject.Singleton
         KtorLogModule::class,
         KtorBackendModule::class,
         KtorImageOutputModule::class,
-        KtorCacheModule::class
+        KtorCacheModule::class,
+        GitDataSourceModule::class
     ]
 )
 interface KtorComponent {

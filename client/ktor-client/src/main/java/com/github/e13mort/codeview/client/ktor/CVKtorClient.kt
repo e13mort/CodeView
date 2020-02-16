@@ -1,14 +1,15 @@
 package com.github.e13mort.codeview.client.ktor
 
 import com.github.e13mort.codeview.client.ktor.di.*
+import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import io.ktor.application.Application
 import io.ktor.application.call
+import io.ktor.html.respondHtml
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respondOutputStream
 import io.ktor.routing.get
 import io.ktor.routing.route
-import io.ktor.html.*
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
@@ -26,11 +27,14 @@ fun main() {
 fun Application.main() { init(this) }
 
 fun init(app: Application) {
+    val context = EnvironmentAppContext()
     val codeView = DaggerKtorComponent.builder()
         .ktorBackendModule(KtorBackendModule())
         .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
-        .ktorCacheModule(KtorCacheModule())
+        .ktorCacheModule(KtorCacheModule(context))
+        .ktorLogModule(KtorLogModule(context))
+        .gitDataSourceModule(GitDataSourceModule(context.gitCachePath(), PredefinedSourcesUrl()))
         .build().codeView()
 
     app.routing {

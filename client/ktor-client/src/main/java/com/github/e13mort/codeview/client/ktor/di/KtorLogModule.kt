@@ -1,20 +1,19 @@
 package com.github.e13mort.codeview.client.ktor.di
 
+import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.impl.SimpleFileLog
 import dagger.Module
 import dagger.Provides
 import java.nio.file.Path
-import java.nio.file.Paths
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class KtorLogModule {
+class KtorLogModule(private val context: AppContext) {
 
     companion object {
         const val PATH_KEY = "logFilePath"
-        const val WORKING_DIR_ENV_KEY = "logsDir"
         const val LOG_FILE_NAME = "cvktor-logs.txt"
     }
 
@@ -28,6 +27,6 @@ class KtorLogModule {
     @Provides
     @Named(PATH_KEY)
     fun logFilePath() : Path {
-        return Paths.get(System.getenv(WORKING_DIR_ENV_KEY)).resolve(LOG_FILE_NAME)
+        return context.logsPath().resolve(LOG_FILE_NAME)
     }
 }

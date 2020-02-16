@@ -11,6 +11,7 @@ ENV keyAlias mykey
 ENV keyStorePassword password
 ENV privateKeyPassword password
 ENV logsDir logs
+ENV cacheDir cache
 
 RUN apk add --update --no-cache ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family graphviz 
 
