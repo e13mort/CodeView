@@ -6,6 +6,7 @@ import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.datasource.git.GitDataSource
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @Module
 class KtorCacheModule(private val appContext: AppContext) {
@@ -23,5 +24,11 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     fun contentStorage() : ContentStorage {
         return PathBasedStorage(appContext.sourceCachePath(), cacheName = UUIDCacheName())
+    }
+
+    @Provides
+    @Named(DI_KEY_BACKEND_STORAGE)
+    fun backendStorage() : ContentStorage {
+        return PathBasedStorage(appContext.backendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()))
     }
 }

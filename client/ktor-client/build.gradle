@@ -38,6 +38,7 @@ dependencies {
     implementation project(':codeview')
     implementation project(':cache:cache-common')
     implementation project(':cache:content-storage')
+    implementation project(':cache:cache-backend')
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:common')

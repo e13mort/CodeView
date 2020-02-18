@@ -5,31 +5,28 @@ import java.nio.file.Paths
 
 class EnvironmentAppContext : AppContext {
 
-    override fun logsPath(): Path {
-        return Paths.get(readEnv(LOGS_DIR_ENV_KEY))
-    }
+    override fun logsPath(): Path = Paths.get(readEnv(LOGS_DIR_ENV_KEY))
 
-    override fun gitCachePath(): Path {
-        return cachePath().resolve(GIT_CACHE_DIR)
-    }
+    override fun gitCachePath(): Path = cachePath().resolve(GIT_CACHE_DIR)
 
-    override fun sourceCachePath(): Path {
-        return cachePath().resolve(STORAGE_DIR_NAME)
-    }
+    override fun sourceCachePath(): Path = cachePath().resolve(SOURCE_STORAGE_DIR_NAME)
 
-    private fun cachePath(): Path {
-        return Paths.get(readEnv(CACHE_DIR_ENV_KEY))
-    }
+    override fun backendCachePath(): Path = cachePath().resolve(BACKEND_STORAGE_DIR_NAME)
 
-    private fun readEnv(name: String) : String {
-        return System.getenv(name)
-    }
+    override fun backendStorageItemName(): String = BACKEND_STORAGE_ITEM_NAME
+
+    private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
+
+    private fun readEnv(name: String) : String = System.getenv(name)
 
     companion object {
         const val LOGS_DIR_ENV_KEY = "logsDir"
         const val CACHE_DIR_ENV_KEY = "cacheDir"
 
         const val GIT_CACHE_DIR = "gitRepositories"
-        const val STORAGE_DIR_NAME = "sources"
+        const val SOURCE_STORAGE_DIR_NAME = "sources"
+        const val BACKEND_STORAGE_DIR_NAME = "backend"
+
+        const val BACKEND_STORAGE_ITEM_NAME = "classes.json"
     }
 }

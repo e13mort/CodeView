@@ -9,7 +9,7 @@ import java.nio.file.Path
 class LoggedBackend(private val sourceBackend: Backend, private val log: Log) : Backend {
     override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> {
         return Single.fromCallable { source }
-            .doOnEvent { inPath, _ -> log.log("path to handle: $inPath") }
+            .doOnEvent { inPath, _ -> log.log("path to handle: ${inPath.description()}") }
             .flatMap { sourceBackend.prepare(source) }
             .doOnEvent { operation, t2 ->
                 run {

@@ -8,4 +8,8 @@ interface AppContext {
     fun gitCachePath(): Path
 
     fun sourceCachePath(): Path
+
+    fun backendCachePath(): Path
+
+    fun backendStorageItemName(): String
 }

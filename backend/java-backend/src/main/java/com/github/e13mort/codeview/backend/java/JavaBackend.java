@@ -36,7 +36,7 @@ public class JavaBackend implements CVTransformation<CVTransformation.TransformO
             @NotNull
             @Override
             public String description() {
-                return transformation.toString();
+                return transformation.description();
             }
         });
     }
