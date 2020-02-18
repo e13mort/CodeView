@@ -19,9 +19,13 @@ class EnvironmentAppContext : AppContext {
 
     override fun frontendStorageItemName(): String = FRONTEND_STORAGE_ITEM_NAME
 
+    override fun outputStorageItemName(): String = OUTPUT_STORAGE_ITEM_NAME
+
+    override fun outputCachePath(): Path = cachePath().resolve(OUTPUT_STORAGE_DIR_NAME)
+
     private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
 
-    private fun readEnv(name: String) : String = System.getenv(name)
+    private fun readEnv(name: String): String = System.getenv(name)
 
     companion object {
         const val LOGS_DIR_ENV_KEY = "logsDir"
@@ -31,9 +35,11 @@ class EnvironmentAppContext : AppContext {
         const val SOURCE_STORAGE_DIR_NAME = "sources"
         const val BACKEND_STORAGE_DIR_NAME = "backend"
         const val FRONTEND_STORAGE_DIR_NAME = "frontend"
+        const val OUTPUT_STORAGE_DIR_NAME = "output"
 
         const val BACKEND_STORAGE_ITEM_NAME = "classes.json"
         const val FRONTEND_STORAGE_ITEM_NAME = "classes.puml"
+        const val OUTPUT_STORAGE_ITEM_NAME = "output.png"
 
     }
 }

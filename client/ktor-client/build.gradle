@@ -40,6 +40,7 @@ dependencies {
     implementation project(':cache:content-storage')
     implementation project(':cache:cache-backend')
     implementation project(':cache:cache-frontend')
+    implementation project(':cache:cached-output')
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:common')
