@@ -15,6 +15,10 @@ class EnvironmentAppContext : AppContext {
 
     override fun backendStorageItemName(): String = BACKEND_STORAGE_ITEM_NAME
 
+    override fun frontendCachePath(): Path = cachePath().resolve(FRONTEND_STORAGE_DIR_NAME)
+
+    override fun frontendStorageItemName(): String = FRONTEND_STORAGE_ITEM_NAME
+
     private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
 
     private fun readEnv(name: String) : String = System.getenv(name)
@@ -26,7 +30,10 @@ class EnvironmentAppContext : AppContext {
         const val GIT_CACHE_DIR = "gitRepositories"
         const val SOURCE_STORAGE_DIR_NAME = "sources"
         const val BACKEND_STORAGE_DIR_NAME = "backend"
+        const val FRONTEND_STORAGE_DIR_NAME = "frontend"
 
         const val BACKEND_STORAGE_ITEM_NAME = "classes.json"
+        const val FRONTEND_STORAGE_ITEM_NAME = "classes.puml"
+
     }
 }

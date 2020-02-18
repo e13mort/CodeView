@@ -38,7 +38,7 @@ class DataModule(private val rootFolder: Path) {
         return CachedCVTransformation(
             PulmFrontend().withLogs(log.withTag("pulm frontend")),
             contentStorage,
-            StoredObjectActualSerialization()
+            StoredObjectActualSerialization(CACHE_FILE_FRONT_NAME)
         ).withLogs(log.withTag("cached frontend"))
     }
 

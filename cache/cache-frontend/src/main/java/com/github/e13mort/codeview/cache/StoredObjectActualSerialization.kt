@@ -8,7 +8,7 @@ import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Path
 
-class StoredObjectActualSerialization :
+class StoredObjectActualSerialization(private val cacheItemName: String) :
     CachedCVTransformation.CVSerialization<StoredObject> {
     override fun serialize(input: StoredObject): Content {
         return object : Content {
@@ -27,7 +27,7 @@ class StoredObjectActualSerialization :
     override fun deserialize(path: Path): StoredObject {
         return object : StoredObject {
             override fun asString(): String {
-                return Files.readAllBytes(path)
+                return Files.readAllBytes(path.resolve(cacheItemName))
                     .toString(charset = Charset.forName("UTF-8"))
             }
         }

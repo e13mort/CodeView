@@ -11,5 +11,9 @@ interface AppContext {
 
     fun backendCachePath(): Path
 
+    fun frontendCachePath(): Path
+
     fun backendStorageItemName(): String
+
+    fun frontendStorageItemName(): String
 }

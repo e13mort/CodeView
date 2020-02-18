@@ -31,4 +31,10 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun backendStorage() : ContentStorage {
         return PathBasedStorage(appContext.backendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()))
     }
+
+    @Provides
+    @Named(DI_KEY_FRONTEND_STORAGE)
+    fun frontendStorage() : ContentStorage {
+        return PathBasedStorage(appContext.frontendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName()))
+    }
 }
