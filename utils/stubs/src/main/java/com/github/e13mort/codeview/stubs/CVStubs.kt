@@ -92,6 +92,18 @@ class StubCVInputTransformation : CVTransformation.TransformOperation<Path> {
     override fun transform(): Single<Path> = Single.just(Paths.get("stub"))
 }
 
+class ErrorTransformOperation<T> : CVTransformation.TransformOperation<T> {
+    override fun description(): String = "error"
+
+    override fun transform(): Single<T> = Single.error(Exception())
+}
+
+class ErrorTransformation<FROM, TO> : CVTransformation<FROM, TO> {
+    override fun prepare(source: FROM): Single<CVTransformation.TransformOperation<TO>> {
+        return Single.error(Exception())
+    }
+}
+
 class ErrorCVInput : CVInput {
 
     override fun prepare(source: SourcePath): Single<CVTransformation.TransformOperation<Path>> {
@@ -99,27 +111,8 @@ class ErrorCVInput : CVInput {
     }
 }
 
-class StubCVBackend : Backend {
-    override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> {
-        return Single.just(StubBackendTransformOperation())
-    }
-
-}
-
-class ErrorCVBackend : Backend {
-    override fun prepare(source: CVTransformation.TransformOperation<Path>): Single<CVTransformation.TransformOperation<CVClasses>> = Single.error(Exception())
-}
-
 class StubCVClasses : CVClasses {
     override fun accept(visitor: CVClasses.Visitor) = visitor.onClassDetected(StubClass())
-}
-
-class StubCVFrontend : Frontend {
-    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> = Single.just(StubFrontendTransformOperation())
-}
-
-class ErrorCVFrontend : Frontend {
-    override fun prepare(source: CVTransformation.TransformOperation<CVClasses>): Single<CVTransformation.TransformOperation<StoredObject>> = Single.error(Exception())
 }
 
 class StubFrontendTransformOperation : CVTransformation.TransformOperation<StoredObject> {
