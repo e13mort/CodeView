@@ -16,7 +16,7 @@ class LoggingCVInput(private val source: CVInput, private val log: Log) : CVInpu
                 this.source.prepare(it)
             }.doOnEvent { t1, throwable ->
                 t1?.let {
-                    log.log("result path: $it")
+                    log.log("result path: ${it.description()}")
                 }
                 throwable?.let { log.log(it) }
             }
