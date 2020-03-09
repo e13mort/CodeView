@@ -9,20 +9,20 @@ import java.nio.file.Path
 class LoggingCVInput(private val source: CVInput, private val log: Log) : CVInput {
 
     override fun prepare(source: SourcePath): Single<CVTransformation.TransformOperation<Path>> {
-        return Single.fromCallable { source }
-            .doOnEvent { t1, _ ->
-                log.log("path to handle: $t1")
-            }.flatMap {
-                this.source.prepare(it)
-            }.doOnEvent { t1, throwable ->
-                t1?.let {
-                    log.log("result path: ${it.description()}")
-                }
-                throwable?.let { log.log(it) }
-            }
+        return this.source
+            .prepare(source)
+            .doOnError { log.log(it) }
+            .map { LoggedInputOperation(it, log) }
     }
 }
 
-fun CVInput.withLogs(log: Log) : CVInput {
+internal class LoggedInputOperation(val source: CVTransformation.TransformOperation<Path>, val log: Log) :
+    CVTransformation.TransformOperation<Path> by source {
+    override fun transform(): Single<Path> {
+        return source.transform().doOnEvent { _, _ -> log.log("operation called") }
+    }
+}
+
+fun CVInput.withLogs(log: Log): CVInput {
     return LoggingCVInput(this, log)
 }
