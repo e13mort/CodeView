@@ -133,12 +133,6 @@ class StubStoreObject : StoredObject {
 
 class StubOutput<T>(private val instance: T): Output<T> {
     override fun save(data: CVTransformation.TransformOperation<StoredObject>): Single<T> {
-        return Single.just(instance)
-    }
-}
-
-class ErrorOutput<T>: Output<T> {
-    override fun save(data: CVTransformation.TransformOperation<StoredObject>): Single<T> {
-        return Single.error(Exception("stub"))
+        return data.transform().map { instance }
     }
 }

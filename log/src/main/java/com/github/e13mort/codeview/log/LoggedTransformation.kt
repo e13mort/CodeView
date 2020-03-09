@@ -12,15 +12,16 @@ class LoggedTransformation<T, U>(private val cvTransformation: CVTransformation<
             .map { LoggedTransformationOperation(it, log) }
     }
 
-    private class LoggedTransformationOperation<U>(val source: CVTransformation.TransformOperation<U>, val log: Log) : CVTransformation.TransformOperation<U> by source {
+}
 
-        override fun transform(): Single<U> {
-            return source.transform()
-                .doOnEvent { res, throwable -> run {
-                    res?.let { log.log("operation called") }
-                    throwable?.let { log.log(SourceOperationException(it)) }
-                } }
-        }
+class LoggedTransformationOperation<U>(val source: CVTransformation.TransformOperation<U>, val log: Log) : CVTransformation.TransformOperation<U> by source {
+
+    override fun transform(): Single<U> {
+        return source.transform()
+            .doOnEvent { res, throwable -> run {
+                res?.let { log.log("operation called") }
+                throwable?.let { log.log(SourceOperationException(it)) }
+            } }
     }
 }
 
