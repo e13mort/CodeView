@@ -18,6 +18,7 @@ import dagger.Provides
 import factory.LaunchCommand
 import factory.LaunchCommand.GithubClient
 import java.nio.file.Path
+import javax.inject.Named
 
 @Module
 class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModule(factory) {
@@ -60,6 +61,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     }
 
     @Provides
+    @Named("raw-data-source")
     fun dataSource(sourcesUrl: SourcesUrl): DataSource {
         return when (factory.githubClient) {
             GithubClient.REST -> {
@@ -77,6 +79,11 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
                     .createDataSource()
             }
         }
+    }
+
+    @Provides
+    fun loggedDataSource(@Named("raw-data-source") dataSource: DataSource, log: Log) : DataSource {
+        return dataSource.withLogs(log.withTag("datasource"))
     }
 
     private fun githubToken(): String {
