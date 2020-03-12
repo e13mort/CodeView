@@ -9,7 +9,9 @@ import com.nhaarman.mockitokotlin2.doAnswer
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.io.InputStream
 
@@ -46,6 +48,67 @@ internal class CachedCVTransformationTest {
         source.assertCounter(1)
     }
 
+    @Disabled
+    @Nested
+    inner class ChainedCVTransformationTest {
+
+        @Test
+        internal fun `cached transformation with empty storage should request it's source transformation one time`() {
+            val tr1 = TestStringToStringTransformation()
+
+            CachedCVTransformation(tr1, createTestStorage(), serialization)
+                .prepare("input")
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(1, tr1.counter)
+        }
+
+        @Test
+        internal fun `two cached transformations with empty storages should request it's source transformation one time`() {
+
+            val tr1 = TestStringToStringTransformation()
+            val tr2 = TestTransformedStringToStringTransformation()
+
+            CachedCVTransformation(tr1, createTestStorage(), serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, createTestStorage(), serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(1, tr1.counter)
+            assertEquals(1, tr2.counter)
+        }
+
+        inner class TestStringToStringTransformation : CVTransformation<String, String> {
+            var counter = 0
+
+            override fun prepare(source: String): Single<CVTransformation.TransformOperation<String>> {
+                return Single.just(object : CVTransformation.TransformOperation<String> {
+                    override fun description(): String = "tr1"
+
+                    override fun transform(): Single<String> =
+                        Single.just(source + "_transform1").doOnSubscribe { counter++ }
+                })
+            }
+        }
+
+        inner class TestTransformedStringToStringTransformation :
+            CVTransformation<CVTransformation.TransformOperation<String>, String> {
+            var counter = 0
+
+            override fun prepare(source: CVTransformation.TransformOperation<String>): Single<CVTransformation.TransformOperation<String>> {
+                return Single.just(object : CVTransformation.TransformOperation<String> {
+                    override fun description(): String = "tr2"
+
+                    override fun transform(): Single<String> =
+                        source.transform().map { it + "_transform2" }.doOnSubscribe { counter++ }
+                })
+            }
+        }
+
+    }
+
     internal class TestOperation(private val to: String) : CVTransformation.TransformOperation<String> {
         private var counter = 0
 
@@ -60,7 +123,7 @@ internal class CachedCVTransformationTest {
         }
 
         fun assertCounter(expected: Int) {
-            Assertions.assertEquals(expected, counter)
+            assertEquals(expected, counter)
         }
 
     }
