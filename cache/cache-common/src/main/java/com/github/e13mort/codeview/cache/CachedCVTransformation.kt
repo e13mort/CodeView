@@ -22,12 +22,14 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         return if (cacheResult.fromCache) {
             Single.just(transformOperation)
         } else {
+            //FIXME Save operation should return content of cached operation somehow. Otherwise we'll make transformation even after caching
             save(transformOperation).map { transformOperation }
         }
     }
 
-    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
-        return storage.put(
+   private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
+       //FIXME maybe you should return content of cached operation from put method and wrap it with DumbTransformOperation
+       return storage.put(
             transformOperation.description(),
             transformOperation
                 .transform()
@@ -76,6 +78,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     interface CVSerialization<INPUT> {
         fun serialize(input: INPUT): Content
 
+        //FIXME it's seems that there is should be content in arguments
         fun deserialize(path: Path): INPUT
     }
 }

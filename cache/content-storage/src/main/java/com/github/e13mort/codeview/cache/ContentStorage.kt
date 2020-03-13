@@ -7,6 +7,7 @@ import io.reactivex.Single
 import java.nio.file.Path
 
 interface ContentStorage {
+    //FIXME searching by key returns ContentStorageItem with only Path, but previously we put Content in it
     fun search(key: String): Maybe<ContentStorageItem>
 
     fun <T : Content> put(key: String, content: Observable<T>): Single<ContentStorageItem>
