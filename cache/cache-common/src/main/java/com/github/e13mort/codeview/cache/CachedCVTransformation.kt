@@ -25,11 +25,12 @@ class CachedCVTransformation<INPUT, OUTPUT>(
             //FIXME Save operation should return content of cached operation somehow. Otherwise we'll make transformation even after caching
             save(transformOperation).map { transformOperation }
         }
+        //OR if we use fast hacky solution we just return Single.just(cacheResult.cachedOperation)
     }
 
-   private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
-       //FIXME maybe you should return content of cached operation from put method and wrap it with DumbTransformOperation
-       return storage.put(
+    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
+        //FIXME maybe you should return content of cached operation from put method and wrap it with DumbTransformOperation
+        return storage.put(
             transformOperation.description(),
             transformOperation
                 .transform()
@@ -38,9 +39,14 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         )
     }
 
-    private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {
+    private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>): Single<CacheResult<OUTPUT>> {
         return storage
             .search(sourceOperation.description())
+           //OR we can just save this operation if we can't find it, then return result of search (fast hacky solution)
+          //  .switchIfEmpty(
+            //    save(sourceOperation)
+              //      .flatMapMaybe { storage.search(sourceOperation.description()) }
+           // )
             .map(this::deserialize)
             .map { createCacheResult(it, sourceOperation.description()) }
             .toSingle()
@@ -55,7 +61,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     private fun deserialize(it: ContentStorage.ContentStorageItem) =
         serialization.deserialize(it.path())
 
-    private fun createCacheResult(classes: OUTPUT, description: String) : CacheResult<OUTPUT> {
+    private fun createCacheResult(classes: OUTPUT, description: String): CacheResult<OUTPUT> {
         return CacheResult(
             DumbTransformOperation(
                 classes,
@@ -65,9 +71,15 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         )
     }
 
-    private class CacheResult<OUTPUT>(val cachedOperation: CVTransformation.TransformOperation<OUTPUT>, val fromCache: Boolean)
+    private class CacheResult<OUTPUT>(
+        val cachedOperation: CVTransformation.TransformOperation<OUTPUT>,
+        val fromCache: Boolean
+    )
 
-    private data class DumbTransformOperation<OUTPUT>(private val classes: OUTPUT, private val description: String) :
+    private data class DumbTransformOperation<OUTPUT>(
+        private val classes: OUTPUT,
+        private val description: String
+    ) :
         CVTransformation.TransformOperation<OUTPUT> {
 
         override fun description(): String = description
