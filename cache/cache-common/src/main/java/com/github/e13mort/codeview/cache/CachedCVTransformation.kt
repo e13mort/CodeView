@@ -13,6 +13,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
 
     override fun prepare(source: INPUT): Single<CVTransformation.TransformOperation<OUTPUT>> {
         return sourceBackend.prepare(source)
+            .map { CachedTransformOperation(it) }
             .flatMap(this::searchForItem)
             .flatMap(this::handleCacheResult)
     }
