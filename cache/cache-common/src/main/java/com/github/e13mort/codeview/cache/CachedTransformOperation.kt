@@ -2,19 +2,18 @@ package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.CVTransformation
 import io.reactivex.Single
-import io.reactivex.subjects.BehaviorSubject
 
 class CachedTransformOperation<OUTPUT>(
     private val decoratedTransformation: CVTransformation.TransformOperation<OUTPUT>
 ) : CVTransformation.TransformOperation<OUTPUT> by decoratedTransformation {
 
-    private val behaviorSubject: BehaviorSubject<OUTPUT> = BehaviorSubject.create()
+    private var cachedValue: OUTPUT? = null
 
     override fun transform(): Single<OUTPUT> {
-        return if (behaviorSubject.value != null) {
-            Single.just(behaviorSubject.value)
+        return if (cachedValue != null) {
+            Single.just(cachedValue)
         } else {
-            decoratedTransformation.transform().doOnSuccess { behaviorSubject.onNext(it) }
+            decoratedTransformation.transform().doOnSuccess { cachedValue = it }
         }
     }
 
