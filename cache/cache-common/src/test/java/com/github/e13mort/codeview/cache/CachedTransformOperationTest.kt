@@ -30,6 +30,7 @@ internal class CachedTransformOperationTest {
         val cachedOperation = CachedTransformOperation(operationTest)
         cachedOperation.transform().test()
         operationTest.startCount()
+        cachedOperation.transform().test()
         operationTest.assertCounter(0)
     }
 
