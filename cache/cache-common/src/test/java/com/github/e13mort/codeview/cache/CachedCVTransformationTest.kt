@@ -10,7 +10,6 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import io.reactivex.Single
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import java.io.InputStream
@@ -48,7 +47,6 @@ internal class CachedCVTransformationTest {
         source.assertCounter(1)
     }
 
-    @Disabled
     @Nested
     inner class ChainedCVTransformationTest {
 
