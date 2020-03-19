@@ -35,24 +35,24 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     }
 
     @Provides
-    fun input(cache: Cache, sourcesUrl: SourcesUrl, log: Log, githubDataSource: DataSource): CVInput {
+    fun input(@Named("input-storage") contentStorage: ContentStorage, sourcesUrl: SourcesUrl, log: Log, githubDataSource: DataSource): CVInput {
         val (input, tag) = if (sourcesUrl.canParse(factory.sourcesPath)) {
-            CachedCVInput(cache, githubDataSource) to "cached input"
+            CachedCVInput(githubDataSource, contentStorage) to "cached input"
         } else {
             PlainCVInput() to "plain input"
         }
         return input.withLogs(log.withTag(tag))
     }
 
+    @Named("input-storage")
     @Provides
-    fun cache(cacheName: CacheName): Cache {
-        return ContentStorageBasedCache(
-            PathBasedStorage(
-                root.resolve(CONTENT_CACHE_FOLDER_NAME),
-                REGISTRY_FILE_NAME,
-                cacheName
-            )
+    fun cache(cacheName: CacheName): ContentStorage {
+        return PathBasedStorage(
+            root.resolve(CONTENT_CACHE_FOLDER_NAME),
+            REGISTRY_FILE_NAME,
+            cacheName
         )
+
     }
 
     @Provides
