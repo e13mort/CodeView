@@ -5,10 +5,7 @@ import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
-import com.github.e13mort.codeview.log.ConsoleLog
-import com.github.e13mort.codeview.log.Log
-import com.github.e13mort.codeview.log.withLogs
-import com.github.e13mort.codeview.log.withTag
+import com.github.e13mort.codeview.log.*
 import dagger.Module
 import dagger.Provides
 import java.nio.file.Path
@@ -44,28 +41,32 @@ class DataModule(private val rootFolder: Path) {
 
     @Named("backend-storage")
     @Provides
-    fun contentStorage() : ContentStorage {
+    fun contentStorage(log: Log) : ContentStorage {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_BACK_NAME),
             CACHE_REGISTRY_FILE_NAME,
             ConstNameUUIDBasedCacheName(CACHE_FILE_BACK_NAME)
-        )
+        ).withLogs(log.withTag("backed-storage"))
     }
 
     @Named("frontend-storage")
     @Provides
-    fun contentStorageFront() : ContentStorage {
+    fun contentStorageFront(log: Log) : ContentStorage {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_FRONT_NAME),
             CACHE_REGISTRY_FILE_NAME,
             ConstNameUUIDBasedCacheName(CACHE_FILE_FRONT_NAME)
-        )
+        ).withLogs(log.withTag("frontend-storage"))
     }
 
     @Provides
     @Named("output-storage")
-    fun outputContentStorage(): ContentStorage {
-        return PathBasedStorage(rootFolder.resolve("output-cache"), "registry.json", ConstNameUUIDBasedCacheName("output.png"))
+    fun outputContentStorage(log: Log): ContentStorage {
+        return PathBasedStorage(
+            rootFolder.resolve("output-cache"),
+            "registry.json",
+            ConstNameUUIDBasedCacheName("output.png")
+        ).withLogs(log.withTag("output-storage"))
     }
 
     @Provides

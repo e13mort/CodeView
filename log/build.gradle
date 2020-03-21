@@ -4,6 +4,7 @@ apply plugin: 'kotlinx-serialization'
 
 dependencies {
     implementation project(':codeview')
+    implementation project(':cache:content-storage')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation project(':utils:stubs')
