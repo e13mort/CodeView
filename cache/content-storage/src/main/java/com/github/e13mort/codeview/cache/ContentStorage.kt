@@ -9,7 +9,7 @@ import java.nio.file.Path
 interface ContentStorage {
     fun search(key: String): Maybe<ContentStorageItem>
 
-    fun <T : Content> put(key: String, content: Observable<T>): Single<ContentStorageItem>
+    fun put(key: String, content: Observable<out Content>): Single<ContentStorageItem>
 
     fun putSingleItem(key: String, content: Content) : ContentStorageItem
 

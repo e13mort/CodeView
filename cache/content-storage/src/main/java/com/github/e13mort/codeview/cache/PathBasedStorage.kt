@@ -31,9 +31,9 @@ class PathBasedStorage(
         }
     }
 
-    override fun <T : Content> put(
+    override fun put(
         key: String,
-        content: Observable<T>
+        content: Observable<out Content>
     ): Single<ContentStorage.ContentStorageItem> {
 
         return content.withLatestFrom(
