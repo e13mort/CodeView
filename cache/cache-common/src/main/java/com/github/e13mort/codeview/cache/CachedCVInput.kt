@@ -6,7 +6,7 @@ import java.nio.file.Path
 
 class CachedCVInput(
     private val dataSource: DataSource,
-    private val storage: ContentStorage
+    private val storage: PathBasedStorage
 ) :
     CVInput {
 
@@ -20,13 +20,14 @@ class CachedCVInput(
                 override fun transform(): Single<Path> {
                     return dataSource.sources(source)
                         .flatMap { cacheSources(it) }
-                        .map { it.path() }
+
                 }
 
-                private fun cacheSources(it: Sources): Single<ContentStorage.ContentStorageItem> {
+                private fun cacheSources(it: Sources): Single<Path> {
                     return storage
                         .search(it.name())
                         .switchIfEmpty(storage.put(it.name(), it.sources()))
+                        .map { it.path() }
                 }
 
             }

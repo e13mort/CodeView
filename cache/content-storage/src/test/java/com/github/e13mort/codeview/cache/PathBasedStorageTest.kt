@@ -13,9 +13,9 @@ import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
 
-internal class PathBasedStorageTest {
+class PathBasedStorageTest {
     private lateinit var memoryFileSystem: FileSystem
-    private lateinit var storage: ContentStorage
+    private lateinit var storage: PathBasedStorage
     private lateinit var root: Path
     private val cacheName = UUIDCacheName()
 

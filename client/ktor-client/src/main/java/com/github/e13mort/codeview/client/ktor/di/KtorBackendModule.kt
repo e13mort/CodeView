@@ -30,7 +30,7 @@ class KtorBackendModule(private val context: AppContext) {
         return CachedCVTransformation(
             source,
             contentStorage,
-            CVActualSerialization(context.backendStorageItemName())
+            CVActualSerialization()
         ).withLogs(log.withTag("CachedBackend"))
     }
 }

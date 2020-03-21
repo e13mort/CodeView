@@ -29,7 +29,7 @@ class DataModule(private val rootFolder: Path) {
         return CachedCVTransformation(
             JavaBackend().withLogs(log.withTag("java backend")),
             contentStorage,
-            CVActualSerialization(CACHE_FILE_BACK_NAME)
+            CVActualSerialization()
         ).withLogs(log.withTag("content storage backend"))
     }
 
@@ -38,7 +38,7 @@ class DataModule(private val rootFolder: Path) {
         return CachedCVTransformation(
             PulmFrontend().withLogs(log.withTag("pulm frontend")),
             contentStorage,
-            StoredObjectActualSerialization(CACHE_FILE_FRONT_NAME)
+            StoredObjectActualSerialization()
         ).withLogs(log.withTag("cached frontend"))
     }
 

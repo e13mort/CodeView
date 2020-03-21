@@ -4,7 +4,6 @@ import com.github.e13mort.codeview.Frontend
 import com.github.e13mort.codeview.cache.CachedCVTransformation
 import com.github.e13mort.codeview.cache.ContentStorage
 import com.github.e13mort.codeview.cache.StoredObjectActualSerialization
-import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
@@ -15,7 +14,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class KtorFrontendModule(private val context: AppContext) {
+class KtorFrontendModule {
 
     @Singleton
     @Provides
@@ -30,7 +29,7 @@ class KtorFrontendModule(private val context: AppContext) {
         return CachedCVTransformation(
             source,
             contentStorage,
-            StoredObjectActualSerialization(context.frontendStorageItemName())
+            StoredObjectActualSerialization()
         ).withLogs(log.withTag("CachedFrontend"))
     }
 }

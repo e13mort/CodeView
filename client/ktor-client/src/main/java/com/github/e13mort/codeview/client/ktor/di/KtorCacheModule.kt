@@ -12,13 +12,13 @@ import javax.inject.Named
 class KtorCacheModule(private val appContext: AppContext) {
 
     @Provides
-    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: ContentStorage, dataSource: GitDataSource) : CVInput {
+    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: GitDataSource) : CVInput {
         return CachedCVInput(dataSource, cache)
     }
 
     @Provides
     @Named(DI_KEY_INPUT_STORAGE)
-    fun contentStorage() : ContentStorage {
+    fun contentStorage() : PathBasedStorage {
         return PathBasedStorage(appContext.sourceCachePath(), cacheName = UUIDCacheName())
     }
 

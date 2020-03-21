@@ -3,7 +3,6 @@ package com.github.e13mort.codeview.cache
 import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.Content
 import io.reactivex.Single
-import java.nio.file.Path
 
 class CachedCVTransformation<INPUT, OUTPUT>(
     private val sourceBackend: CVTransformation<INPUT, OUTPUT>,
@@ -27,7 +26,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         }
     }
 
-    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<ContentStorage.ContentStorageItem> {
+    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<out ContentStorage.ContentStorageItem> {
         return storage.put(
             transformOperation.description(),
             transformOperation
@@ -52,7 +51,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     }
 
     private fun deserialize(it: ContentStorage.ContentStorageItem) =
-        serialization.deserialize(it.path())
+        serialization.deserialize(it.content())
 
     private fun createCacheResult(classes: OUTPUT, description: String) : CacheResult<OUTPUT> {
         return CacheResult(
@@ -77,6 +76,6 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     interface CVSerialization<INPUT> {
         fun serialize(input: INPUT): Content
 
-        fun deserialize(path: Path): INPUT
+        fun deserialize(content: Content) : INPUT
     }
 }

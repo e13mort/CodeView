@@ -6,24 +6,22 @@ import com.github.e13mort.codeview.cache.serialization.asJson
 import com.github.e13mort.codeview.cache.serialization.toSerialized
 import com.github.e13mort.codeview.cache.serialization.toSerializedCVClasses
 import java.io.InputStream
-import java.nio.file.Files
-import java.nio.file.Path
 
-class CVActualSerialization(private val fileName: String) :
+class CVActualSerialization :
     CachedCVTransformation.CVSerialization<CVClasses> {
 
     override fun serialize(input: CVClasses): Content {
         return SerializedCVClassesBasedContent(input)
     }
 
-    override fun deserialize(path: Path): CVClasses {
-        return StorageItemBasedCVClasses(path.resolve(fileName)).apply {
+    override fun deserialize(content: Content): CVClasses {
+        return StorageItemBasedCVClasses(content).apply {
             deserialize()
         }
     }
 
     private class StorageItemBasedCVClasses(
-        private val path: Path
+        private val content: Content
     ) : CVClasses {
 
         private var classes: CVClasses? = null
@@ -33,8 +31,7 @@ class CVActualSerialization(private val fileName: String) :
         }
 
         internal fun deserialize() {
-            classes = Files.readAllLines(path)
-                .reduce { acc, s -> acc.plus(s) }
+            classes = content.read().reader().readText()
                 .toSerializedCVClasses()
         }
     }

@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.io.OutputStream
-import java.nio.file.Files
 
 class CachedOutputEngine(private val source: OutputEngine, private val contentStorage: ContentStorage) :
     OutputEngine {
@@ -18,7 +17,7 @@ class CachedOutputEngine(private val source: OutputEngine, private val contentSt
         it: ContentStorage.ContentStorageItem,
         outputStream: OutputStream
     ): Long {
-        return Files.copy(it.path(), outputStream)
+        return it.content().read().copyTo(outputStream)
     }
 
     override fun saveDataToOutputStream(

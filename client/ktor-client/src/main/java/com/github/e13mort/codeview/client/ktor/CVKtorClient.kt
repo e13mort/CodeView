@@ -30,7 +30,7 @@ fun init(app: Application) {
     val context = EnvironmentAppContext()
     val codeView = DaggerKtorComponent.builder()
         .ktorBackendModule(KtorBackendModule(context))
-        .ktorFrontendModule(KtorFrontendModule(context))
+        .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
         .ktorCacheModule(KtorCacheModule(context))
         .ktorLogModule(KtorLogModule(context))

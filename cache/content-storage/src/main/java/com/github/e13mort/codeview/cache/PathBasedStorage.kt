@@ -8,6 +8,7 @@ import io.reactivex.functions.BiFunction
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -18,7 +19,7 @@ class PathBasedStorage(
 ) :
     ContentStorage {
 
-    override fun search(key: String): Maybe<ContentStorage.ContentStorageItem> {
+    override fun search(key: String): Maybe<PathBasedStorageItem> {
         return Maybe.create {
             folderName(key)?.apply {
                 val path = root.resolve(this)
@@ -34,7 +35,7 @@ class PathBasedStorage(
     override fun put(
         key: String,
         content: Observable<out Content>
-    ): Single<ContentStorage.ContentStorageItem> {
+    ): Single<PathBasedStorageItem> {
 
         return content.withLatestFrom(
             registerCacheFolder(key).toObservable(),
@@ -44,14 +45,14 @@ class PathBasedStorage(
             .map { PathBasedStorageItem(it) }
     }
 
-    override fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem {
+    override fun putSingleItem(key: String, content: Content): PathBasedStorageItem {
         registerCacheItem(key).apply {
             Files.copy(content.read(), this)
             return PathBasedStorageItem(this)
         }
     }
 
-    override fun searchSingleItem(key: String): ContentStorage.ContentStorageItem? {
+    override fun searchSingleItem(key: String): PathBasedStorageItem? {
         folderName(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {
@@ -120,9 +121,16 @@ class PathBasedStorage(
         return json.parse(CachedMap.serializer(), combined).data
     }
 
-    private class PathBasedStorageItem(private val path: Path) :
+    class PathBasedStorageItem(private val path: Path) :
         ContentStorage.ContentStorageItem {
-        override fun path(): Path = path
+        override fun content(): Content = PathBasedContent(path)
+
+        fun path(): Path = path
+    }
+
+    private class PathBasedContent(private val path: Path) : Content {
+        override fun read(): InputStream = Files.newInputStream(path)
+
     }
 
 }
