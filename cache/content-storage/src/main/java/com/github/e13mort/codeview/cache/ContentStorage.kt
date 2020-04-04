@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface ContentStorage {
-    fun search(key: String): Maybe<out ContentStorageItem>
+    fun search(key: String): Maybe<out ContentStorageItem> //bug here
 
     fun put(key: String, content: Observable<out Content>): Single<out ContentStorageItem>
 

@@ -123,7 +123,12 @@ class PathBasedStorage(
 
     class PathBasedStorageItem(private val path: Path) :
         ContentStorage.ContentStorageItem {
-        override fun content(): Content = PathBasedContent(path)
+        override fun content(): Content {
+            if (Files.isDirectory(path)) {
+                return Files.list(path).findFirst().map { PathBasedContent(it) }.get()
+            }
+            return PathBasedContent(path)
+        }
 
         fun path(): Path = path
     }

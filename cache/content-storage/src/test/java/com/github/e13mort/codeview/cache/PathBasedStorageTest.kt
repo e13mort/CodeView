@@ -100,6 +100,12 @@ class PathBasedStorageTest {
     }
 
     @Test
+    internal fun `cached item is equal to the original item`() {
+        storage.put("key", Observable.just("hello".asContent())).test()
+        assertEquals("hello", storage.search("key").blockingGet().content().read().reader().readText())
+    }
+
+    @Test
     internal fun `storage creates cache dir if one doesn't exists`() {
         val newStorage = PathBasedStorage(root.resolve("not_existing_dir"), REGISTRY_NAME, cacheName)
         newStorage.put("key", MemoryContent().asObservable()).test().assertComplete().assertNoErrors()
