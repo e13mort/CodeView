@@ -30,7 +30,7 @@ class StubDataSource(private val sources: Sources) : DataSource {
     }
 }
 
-class StubContent : Content {
-    override fun read(): InputStream = "stub content".byteInputStream()
+class StubContent(private val stringContent: String = "stub content") : Content {
+    override fun read(): InputStream = stringContent.byteInputStream()
 
 }
