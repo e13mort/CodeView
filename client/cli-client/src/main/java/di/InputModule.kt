@@ -6,6 +6,7 @@ import com.github.e13mort.codeview.PlainCVInput
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.datasource.git.di.DaggerGitDataSourceComponent
 import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
+import com.github.e13mort.codeview.datasource.git.di.SourcesUrlModule
 import com.github.e13mort.codeview.datasource.github.di.DaggerGithubDataSourceComponent
 import com.github.e13mort.codeview.datasource.github.di.GithubDataSourceModule
 import com.github.e13mort.codeview.log.Log
@@ -74,7 +75,8 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
             GithubClient.GIT -> {
                 DaggerGitDataSourceComponent
                     .builder()
-                    .gitDataSourceModule(GitDataSourceModule(root.resolve(GIT_CACHE_FOLDER_NAME), sourcesUrl))
+                    .sourcesUrlModule(SourcesUrlModule(sourcesUrl))
+                    .gitDataSourceModule(GitDataSourceModule(root.resolve(GIT_CACHE_FOLDER_NAME)))
                     .build()
                     .createDataSource()
             }

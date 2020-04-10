@@ -9,16 +9,11 @@ import dagger.Provides
 import java.nio.file.Path
 
 @Module
-class GitDataSourceModule(private val root: Path, private val sourcesUrl: SourcesUrl) {
+class GitDataSourceModule(private val root: Path) {
 
     @Provides
     fun remoteRepos() : RemoteRepositories {
         return JGitRemoteRepositories()
-    }
-
-    @Provides
-    fun sourcesUrl() : SourcesUrl {
-        return sourcesUrl
     }
 
     @Provides
@@ -27,7 +22,13 @@ class GitDataSourceModule(private val root: Path, private val sourcesUrl: Source
     }
 }
 
-@Component(modules = [GitDataSourceModule::class])
+@Module
+class SourcesUrlModule(private val sourcesUrl: SourcesUrl) {
+    @Provides
+    fun sourcesUrl() = sourcesUrl
+}
+
+@Component(modules = [GitDataSourceModule::class, SourcesUrlModule::class])
 interface GitDataSourceComponent {
     fun createDataSource() : GitDataSource
 }

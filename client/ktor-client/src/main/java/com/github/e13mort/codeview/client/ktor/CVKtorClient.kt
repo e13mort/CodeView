@@ -34,7 +34,7 @@ fun init(app: Application) {
         .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
         .ktorCacheModule(KtorCacheModule(context))
         .ktorLogModule(KtorLogModule(context))
-        .gitDataSourceModule(GitDataSourceModule(context.gitCachePath(), PredefinedSourcesUrl()))
+        .gitDataSourceModule(GitDataSourceModule(context.gitCachePath()))
         .build().codeView()
 
     app.routing {
