@@ -8,3 +8,5 @@ const val DI_KEY_SOURCE_FRONTEND = "sourceFrontend"
 
 const val DI_KEY_INPUT_STORAGE = "inputStorage"
 const val DI_KEY_OUTPUT_STORAGE = "outputStorage"
+
+const val DI_KEY_SOURCES_URL_STORAGE = "sourcesUrlStorage"

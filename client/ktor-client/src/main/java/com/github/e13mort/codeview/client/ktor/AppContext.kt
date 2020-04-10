@@ -20,4 +20,8 @@ interface AppContext {
     fun frontendStorageItemName(): String
 
     fun outputStorageItemName(): String
+
+    fun sourcesUrlCachePath(): Path
+
+    fun sourceUrlItemName(): String
 }

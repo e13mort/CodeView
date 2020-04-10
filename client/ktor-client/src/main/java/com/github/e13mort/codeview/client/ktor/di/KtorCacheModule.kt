@@ -39,4 +39,10 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun outputStorage() : ContentStorage {
         return PathBasedStorage(appContext.outputCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.outputStorageItemName()))
     }
+
+    @Provides
+    @Named(DI_KEY_SOURCES_URL_STORAGE)
+    fun sourcesUrlStorage() : ContentStorage {
+        return PathBasedStorage(appContext.sourcesUrlCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()))
+    }
 }
