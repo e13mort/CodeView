@@ -7,6 +7,7 @@ import com.github.e13mort.codeview.cache.PathBasedStorage
 import com.github.e13mort.codeview.output.engine.OutputEngine
 import com.github.e13mort.codeview.stubs.StubFrontendTransformOperation
 import com.google.common.jimfs.Jimfs
+import io.reactivex.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,16 +35,16 @@ internal class CachedOutputEngineTest {
     @Test
     internal fun `save first transform operation item requests source engine to run`() {
         val stream = ByteArrayOutputStream()
-        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream)
+        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream).test()
         assertEquals("fake1", stream.toByteArray().toString(Charset.defaultCharset()))
     }
 
     @Test
     internal fun `save second transform operation item does not requests source engine to run second time`() {
         val stream = ByteArrayOutputStream()
-        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream)
+        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream).test()
         stream.reset()
-        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream)
+        outputEngine.saveDataToOutputStream(StubFrontendTransformOperation(), stream).test()
         assertEquals("fake1", stream.toByteArray().toString(Charset.defaultCharset()))
     }
 
@@ -54,9 +55,11 @@ internal class CachedOutputEngineTest {
         override fun saveDataToOutputStream(
             data: CVTransformation.TransformOperation<StoredObject>,
             outputStream: OutputStream
-        ) {
-            outputStream.writer().use {
-                it.append("fake${++writerCounter}")
+        ): Completable {
+            return Completable.fromAction {
+                outputStream.writer().use {
+                    it.append("fake${++writerCounter}")
+                }
             }
         }
     }

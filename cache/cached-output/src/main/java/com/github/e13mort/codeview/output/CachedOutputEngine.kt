@@ -5,42 +5,55 @@ import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.StoredObject
 import com.github.e13mort.codeview.cache.ContentStorage
 import com.github.e13mort.codeview.output.engine.OutputEngine
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import io.reactivex.*
+import java.io.*
 
 class CachedOutputEngine(private val source: OutputEngine, private val contentStorage: ContentStorage) :
     OutputEngine {
 
-    private fun copyToOutput(
-        it: ContentStorage.ContentStorageItem,
-        outputStream: OutputStream
-    ): Long {
-        return it.content().read().copyTo(outputStream)
-    }
-
     override fun saveDataToOutputStream(
         data: CVTransformation.TransformOperation<StoredObject>,
         outputStream: OutputStream
-    ) {
-        var storageItem = contentStorage.searchSingleItem(data.description())
-        if (storageItem == null) {
-            storageItem = contentStorage.putSingleItem(data.description(), MemoryContent(data, source))
-        }
-        copyToOutput(storageItem, outputStream)
+    ): Completable {
 
+        return readFromCache(data)
+            .switchIfEmpty(readFromSource(data))
+            .doOnSuccess { copyToOutput(outputStream, it) }
+            .ignoreElement()
+    }
+
+    private fun readFromCache(data: CVTransformation.TransformOperation<StoredObject>) =
+        Maybe.create<InputStream> {
+            contentStorage.searchSingleItem(data.description())?.run {
+                it.onSuccess(content().read())
+                return@create
+            }
+            it.onComplete()
+        }
+
+
+    private fun copyToOutput(outputStream: OutputStream, inputStream: InputStream) =
+        inputStream.copyTo(outputStream)
+
+
+    private fun readFromSource(data: CVTransformation.TransformOperation<StoredObject>): SingleSource<InputStream> {
+        val cachedOutputStream = ByteArrayOutputStream()
+        return source.saveDataToOutputStream(data, cachedOutputStream)
+            .toSingle { cachedOutputStream.toByteArray() }
+            .doOnSuccess { saveToCache(data.description(), it) }
+            .map { ByteArrayInputStream(it) }
+    }
+
+    private fun saveToCache(description: String, data: ByteArray) {
+        contentStorage.putSingleItem(description, MemoryContent(data))
     }
 
     private class MemoryContent(
-        private val data: CVTransformation.TransformOperation<StoredObject>,
-        private val source: OutputEngine
+        private val data: ByteArray
     ) : Content {
 
         override fun read(): InputStream {
-            val outputStream = ByteArrayOutputStream()
-            source.saveDataToOutputStream(data, outputStream)
-            return ByteArrayInputStream(outputStream.toByteArray())
+            return ByteArrayInputStream(data)
         }
     }
 }
