@@ -18,5 +18,5 @@ import javax.inject.Singleton
     ]
 )
 interface KtorComponent {
-    fun codeView(): CodeView<DataCache.CacheItem>
+    fun codeView(): CodeView<KtorResult>
 }

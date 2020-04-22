@@ -7,11 +7,16 @@ import java.io.OutputStream
 
 class FileOutputResult(private val fileName: String) :
     Target<String> {
-    override fun output(): OutputStream {
-        return FileOutputStream(fileName)
-    }
 
-    override fun toResult(): String {
-        return File(fileName).absolutePath
+    override fun prepare(): Target.TargetValue<String> {
+        return object : Target.TargetValue<String> {
+            override fun output(): OutputStream {
+                return FileOutputStream(fileName)
+            }
+
+            override fun toResult(): String {
+                return File(fileName).absolutePath
+            }
+        }
     }
 }

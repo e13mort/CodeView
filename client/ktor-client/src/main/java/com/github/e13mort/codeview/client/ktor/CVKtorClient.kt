@@ -31,7 +31,7 @@ fun init(app: Application) {
     val codeView = DaggerKtorComponent.builder()
         .ktorBackendModule(KtorBackendModule(context))
         .ktorFrontendModule(KtorFrontendModule())
-        .ktorImageOutputModule(KtorImageOutputModule(MemoryCache()))
+        .ktorImageOutputModule(KtorImageOutputModule())
         .ktorCacheModule(KtorCacheModule(context))
         .ktorLogModule(KtorLogModule(context))
         .gitDataSourceModule(GitDataSourceModule(context.gitCachePath()))
