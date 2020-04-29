@@ -143,6 +143,34 @@ class PathBasedStorageTest {
         }
     }
 
+    @Test
+    internal fun `removing single item leads to empty result`() {
+        storage.putSingleItem("test", "hello".asContent())
+        storage.remove("test")
+        assertNull(storage.searchSingleItem("test"))
+    }
+
+    @Test
+    internal fun `removing multiple items leads to empty result`() {
+        storage.put("key", MemoryContent().asObservable()).subscribe()
+        storage.remove("key")
+        storage.search("key").test().assertNoValues()
+    }
+
+    @Test
+    internal fun `removing single item leads to actual files removal`() {
+        storage.putSingleItem("test", "hello".asContent())
+        storage.remove("test")
+        assertEquals(0L, root.internalDirsCount())
+    }
+
+    @Test
+    internal fun `removing multiple items leads actual files removal`() {
+        storage.put("key", MemoryContent().asObservable()).subscribe()
+        storage.remove("key")
+        assertEquals(0L, root.internalDirsCount())
+    }
+
     internal class MemoryContent(private val bytes : ByteArray = byteArrayOf()) : Content {
         override fun read(): InputStream = ByteArrayInputStream(bytes)
 
@@ -152,4 +180,8 @@ class PathBasedStorageTest {
 
 private fun String.asContent() : Content {
     return PathBasedStorageTest.MemoryContent(this.toByteArray())
+}
+
+private fun Path.internalDirsCount(): Long {
+    return Files.list(this).filter { Files.isDirectory(it) }.count()
 }

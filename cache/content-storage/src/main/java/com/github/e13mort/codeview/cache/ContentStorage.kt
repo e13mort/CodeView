@@ -10,9 +10,11 @@ interface ContentStorage {
 
     fun put(key: String, content: Observable<out Content>): Single<out ContentStorageItem>
 
-    fun putSingleItem(key: String, content: Content) : ContentStorageItem
+    fun putSingleItem(key: String, content: Content): ContentStorageItem
 
-    fun searchSingleItem(key: String) : ContentStorageItem?
+    fun searchSingleItem(key: String): ContentStorageItem?
+
+    fun remove(key: String)
 
     interface ContentStorageItem {
         fun content(): Content

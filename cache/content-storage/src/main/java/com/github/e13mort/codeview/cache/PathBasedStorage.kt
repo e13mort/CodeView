@@ -62,6 +62,25 @@ class PathBasedStorage(
         return null
     }
 
+    override fun remove(key: String) {
+        folderName(key)?.apply {
+            readMap().apply {
+                remove(key)
+                saveMap(this)
+            }
+            val path = root.resolve(this)
+            if (Files.isDirectory(path)) { //items was placed via reactive methods
+                Files
+                    .walk(path)
+                    .sorted(Comparator.reverseOrder())
+                    .forEach { Files.delete(it) }
+            } else { //an item was placed via `single` methods
+                Files.delete(path)
+                Files.delete(path.parent)
+            }
+        }
+    }
+
     private fun copyFileToCache(content: Content, parent: Path): Path {
         Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
         return parent
