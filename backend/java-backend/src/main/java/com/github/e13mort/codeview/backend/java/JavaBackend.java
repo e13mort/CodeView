@@ -27,6 +27,12 @@ public class JavaBackend implements CVTransformation<CVTransformation.TransformO
         return Single.fromCallable(() -> new TransformOperation<CVClasses>() {
             @NotNull
             @Override
+            public OperationState state() {
+                return OperationState.READY;
+            }
+
+            @NotNull
+            @Override
             public Single<CVClasses> transform() {
                 return transformation
                         .transform()

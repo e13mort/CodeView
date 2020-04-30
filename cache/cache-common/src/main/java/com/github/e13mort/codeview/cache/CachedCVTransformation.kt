@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.CVTransformation
+import com.github.e13mort.codeview.CVTransformation.TransformOperation.OperationState
 import com.github.e13mort.codeview.Content
 import io.reactivex.Single
 
@@ -13,8 +14,15 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     override fun prepare(source: INPUT): Single<CVTransformation.TransformOperation<OUTPUT>> {
         return sourceBackend.prepare(source)
             .map { CachedTransformOperation(it) }
+            .doOnSuccess { validateOperation(it) }
             .flatMap(this::searchForItem)
             .flatMap(this::handleCacheResult)
+    }
+
+    private fun validateOperation(operation: CachedTransformOperation<OUTPUT>) {
+        if (operation.state() != OperationState.READY) {
+            storage.remove(operation.description())
+        }
     }
 
     private fun handleCacheResult(cacheResult: CacheResult<OUTPUT>): Single<CVTransformation.TransformOperation<OUTPUT>> {

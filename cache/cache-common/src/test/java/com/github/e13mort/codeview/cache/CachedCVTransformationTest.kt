@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.CVTransformation
+import com.github.e13mort.codeview.CVTransformation.TransformOperation.OperationState
 import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.ProxyCVTransformation
 import com.google.common.jimfs.Jimfs
@@ -47,13 +48,25 @@ internal class CachedCVTransformationTest {
         source.assertCounter(1)
     }
 
+    @Test
+    internal fun `cached source operation called again if there was an error`() {
+        val operation = TestOperation("existing")
+        operation.switchSuccessful(OperationState.ERROR)
+        cvTransformation1.prepare(operation).test()
+        operation.assertCounter(1)
+    }
+
     @Nested
     inner class ChainedCVTransformationTest {
 
+        private val tr1 = TestStringToStringTransformation()
+        private val tr2 = TestTransformedStringToStringTransformation()
+
+        private val storage1 = createTestStorage()
+        private val storage2 = createTestStorage()
+
         @Test
         internal fun `cached transformation with empty storage should request it's source transformation one time`() {
-            val tr1 = TestStringToStringTransformation()
-
             CachedCVTransformation(tr1, createTestStorage(), serialization)
                 .prepare("input")
                 .flatMap { it.transform() }
@@ -64,10 +77,6 @@ internal class CachedCVTransformationTest {
 
         @Test
         internal fun `two cached transformations with empty storages should request it's source transformation one time`() {
-
-            val tr1 = TestStringToStringTransformation()
-            val tr2 = TestTransformedStringToStringTransformation()
-
             CachedCVTransformation(tr1, createTestStorage(), serialization)
                 .prepare("input")
                 .flatMap { CachedCVTransformation(tr2, createTestStorage(), serialization).prepare(it) }
@@ -78,15 +87,96 @@ internal class CachedCVTransformationTest {
             assertEquals(1, tr2.counter)
         }
 
+        @Test
+        internal fun `second call of two cached transformations with empty storages should request it's source transformation one time`() {
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(1, tr1.counter)
+            assertEquals(1, tr2.counter)
+        }
+
+        @Test
+        internal fun `first transform operation called twice if there was an error after the first call`() {
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            tr1.state = OperationState.ERROR
+
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(2, tr1.counter)
+            assertEquals(1, tr2.counter)
+        }
+
+        @Test
+        internal fun `both source operations are requested second time if first source has changed description`() {
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            tr1.description = "tr1_updated"
+
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { CachedCVTransformation(tr2, storage2, serialization).prepare(it) }
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(2, tr1.counter)
+            assertEquals(2, tr2.counter)
+        }
+
+        @Test
+        internal fun `source operation is requested second time if the source operation has changed description`() {
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { it.transform() }
+                .test()
+
+            tr1.description = "tr1_updated"
+
+            CachedCVTransformation(tr1, storage1, serialization)
+                .prepare("input")
+                .flatMap { it.transform() }
+                .test()
+
+            assertEquals(2, tr1.counter)
+        }
+
         inner class TestStringToStringTransformation : CVTransformation<String, String> {
             var counter = 0
 
+            internal var state : OperationState = OperationState.READY
+
+            internal var description = "tr1"
+
             override fun prepare(source: String): Single<CVTransformation.TransformOperation<String>> {
                 return Single.just(object : CVTransformation.TransformOperation<String> {
-                    override fun description(): String = "tr1"
+                    override fun description(): String = description
 
                     override fun transform(): Single<String> =
                         Single.just(source + "_transform1").doOnSubscribe { counter++ }
+
+                    override fun state(): OperationState = state
                 })
             }
         }
@@ -97,7 +187,7 @@ internal class CachedCVTransformationTest {
 
             override fun prepare(source: CVTransformation.TransformOperation<String>): Single<CVTransformation.TransformOperation<String>> {
                 return Single.just(object : CVTransformation.TransformOperation<String> {
-                    override fun description(): String = "tr2"
+                    override fun description(): String = source.description() + "tr2"
 
                     override fun transform(): Single<String> =
                         source.transform().map { it + "_transform2" }.doOnSubscribe { counter++ }
@@ -107,7 +197,7 @@ internal class CachedCVTransformationTest {
 
     }
 
-    internal class TestOperation(private val to: String) : CVTransformation.TransformOperation<String> {
+    internal class TestOperation(private val to: String, private var state: OperationState = OperationState.READY) : CVTransformation.TransformOperation<String> {
         private var counter = 0
 
         override fun description(): String {
@@ -120,8 +210,16 @@ internal class CachedCVTransformationTest {
             }
         }
 
+        override fun state(): OperationState {
+            return state
+        }
+
         fun assertCounter(expected: Int) {
             assertEquals(expected, counter)
+        }
+
+        fun switchSuccessful(state: OperationState) {
+            this.state = state
         }
 
     }

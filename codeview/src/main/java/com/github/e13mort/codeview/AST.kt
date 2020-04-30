@@ -19,7 +19,19 @@ interface CVTransformation<FROM, TO> {
     interface TransformOperation<TO> {
         fun description(): String
 
-        fun transform(): Single<TO>
+        /**
+         * Should display a possible future error if operation couldn't be executed
+         * */
+        fun state(): OperationState = OperationState.READY //
+
+        /**
+         * Might emit an error if operation is failed
+         * */
+        fun transform(): Single<TO> //
+
+        enum class OperationState {
+            READY, ERROR
+        }
     }
 }
 
