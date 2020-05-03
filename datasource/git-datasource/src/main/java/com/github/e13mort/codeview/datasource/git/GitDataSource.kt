@@ -5,10 +5,9 @@ import com.github.e13mort.codeview.SourceFile
 import com.github.e13mort.codeview.SourcePath
 import com.github.e13mort.codeview.Sources
 import com.github.e13mort.codeview.datasource.filesystem.PathSourceFile
-import com.github.e13mort.codeview.datasource.filesystem.RxFSVisitor
+import com.github.e13mort.codeview.datasource.filesystem.FSVisitor
 import com.github.e13mort.githuburl.SourcesUrl
 import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.nio.file.Path
 import javax.inject.Inject
@@ -42,20 +41,16 @@ class GitDataSource @Inject constructor(
         private val localRepositories: LocalRepositories
     ) : Sources {
 
-        private val fsVisitor = RxFSVisitor()
-        private val options = RxFSVisitor.Options("java", 1)
+        private val fsVisitor = FSVisitor()
+        private val options = FSVisitor.Options("java", 1)
 
         override fun sources(): List<SourceFile> {
-            return sourcesInternal().blockingIterable().toList()
-        }
-
-        private fun sourcesInternal(): Observable<SourceFile> {
-            return Single.fromCallable { searchForLocalRepository() }
-                .map { clonedRepo(it) }
-                .doOnSuccess { checkout(it) }
-                .map { resolveSourceFolder(it) }
-                .flatMapObservable { visitFolder(it) }
-                .map { PathSourceFile(it) }
+            clonedRepo(searchForLocalRepository()).let {
+                checkout(it)
+                resolveSourceFolder(it)
+            }.let {
+                return visitFolder(it).map(::PathSourceFile)
+            }
         }
 
         private fun checkout(clonedRepo: RemoteRepositories.ClonedRepo) = clonedRepo.checkout(description.cloneHash)
@@ -66,7 +61,9 @@ class GitDataSource @Inject constructor(
             return remoteRepositories.clone(description.repoUrl, localPath)
         }
 
-        private fun visitFolder(it: Path) = fsVisitor.visitFolder(it, options)
+        private fun visitFolder(it: Path): List<Path> {
+            return fsVisitor.visitFolder(it, options)
+        }
 
         private fun resolveSourceFolder(it: RemoteRepositories.ClonedRepo) = it.path().resolve(description.sourcesFolder)
 
