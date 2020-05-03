@@ -6,6 +6,8 @@ import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 import com.github.e13mort.githuburl.fake.FkSourceUrl
 import com.google.common.jimfs.Jimfs
 import org.assertj.core.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
@@ -61,21 +63,20 @@ internal class GitDataSourceTest {
     @Test
     internal fun `there is one item sources provided by valid path`() {
         val sources = gitDataSource.sources("path1").blockingGet()!!
-        val test = sources.sources().test()
-        test.assertValueCount(1)
+        assertEquals(1, sources.sources().size)
     }
 
     @Test
     internal fun `there is no errors in sources provided by valid path`() {
         val sources = gitDataSource.sources("path1").blockingGet()!!
-        val test = sources.sources().test()
-        test.assertNoErrors()
+        val test = sources.sources()
+        assertNotNull(test)
     }
 
     @Test
     internal fun `there is one valid source file in a valid repository`() {
         val sources = gitDataSource.sources("path1").blockingGet()!!
-        val sourceFile = sources.sources().blockingFirst()!!
+        val sourceFile = sources.sources()[0]
         Assertions.assertThat(sourceFile.name()).isEqualTo("file1.java")
     }
 

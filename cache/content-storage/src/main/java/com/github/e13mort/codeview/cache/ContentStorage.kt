@@ -1,14 +1,12 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import io.reactivex.Maybe
-import io.reactivex.Observable
-import io.reactivex.Single
 
-interface ContentStorage {
-    fun search(key: String): Maybe<out ContentStorageItem> //bug here
+interface ContentStorage<T> {
+    //todo return T
+    fun search(key: String): ContentStorageItem?
 
-    fun put(key: String, content: Observable<out Content>): Single<out ContentStorageItem>
+    fun prepareStorageItems(key: String): StorageItems<T>
 
     fun putSingleItem(key: String, content: Content): ContentStorageItem
 
@@ -18,5 +16,11 @@ interface ContentStorage {
 
     interface ContentStorageItem {
         fun content(): Content
+    }
+
+    interface StorageItems<T> {
+        fun put(content: Content)
+
+        fun save(): T
     }
 }

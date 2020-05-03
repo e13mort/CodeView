@@ -8,7 +8,7 @@ import com.github.e13mort.codeview.output.engine.OutputEngine
 import io.reactivex.*
 import java.io.*
 
-class CachedOutputEngine(private val source: OutputEngine, private val contentStorage: ContentStorage) :
+class CachedOutputEngine<T>(private val source: OutputEngine, private val contentStorage: ContentStorage<T>) :
     OutputEngine {
 
     override fun saveDataToOutputStream(
@@ -58,6 +58,6 @@ class CachedOutputEngine(private val source: OutputEngine, private val contentSt
     }
 }
 
-fun OutputEngine.toCached(contentStorage: ContentStorage): OutputEngine {
+fun <T>OutputEngine.toCached(contentStorage: ContentStorage<T>): OutputEngine {
     return CachedOutputEngine(this, contentStorage)
 }

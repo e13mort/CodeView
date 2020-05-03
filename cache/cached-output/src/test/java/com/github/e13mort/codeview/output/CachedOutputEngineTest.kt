@@ -14,10 +14,11 @@ import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
+import java.nio.file.Path
 
 internal class CachedOutputEngineTest {
 
-    private lateinit var outputEngine: CachedOutputEngine
+    private lateinit var outputEngine: CachedOutputEngine<Path>
     private lateinit var storage: PathBasedStorage
     private val fileSystem = Jimfs.newFileSystem()
     private val root = fileSystem.getPath(".")

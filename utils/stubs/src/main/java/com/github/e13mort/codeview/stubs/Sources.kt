@@ -1,7 +1,6 @@
 package com.github.e13mort.codeview.stubs
 
 import com.github.e13mort.codeview.*
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.InputStream
 
@@ -17,7 +16,7 @@ class StubSourceFile(private val stream: InputStream) : SourceFile {
 class StubSources(private val source: SourceFile) : Sources {
     override fun name(): String = "stub"
 
-    override fun sources(): Observable<SourceFile> = Observable.just(source)
+    override fun sources(): List<SourceFile> = listOf(source)
 }
 
 class StubDataSource(private val sources: Sources) : DataSource {

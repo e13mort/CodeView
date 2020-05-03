@@ -45,7 +45,11 @@ class GitDataSource @Inject constructor(
         private val fsVisitor = RxFSVisitor()
         private val options = RxFSVisitor.Options("java", 1)
 
-        override fun sources(): Observable<SourceFile> {
+        override fun sources(): List<SourceFile> {
+            return sourcesInternal().blockingIterable().toList()
+        }
+
+        private fun sourcesInternal(): Observable<SourceFile> {
             return Single.fromCallable { searchForLocalRepository() }
                 .map { clonedRepo(it) }
                 .doOnSuccess { checkout(it) }

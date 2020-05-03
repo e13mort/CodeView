@@ -11,6 +11,7 @@ import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
 import dagger.Module
 import dagger.Provides
+import java.nio.file.Path
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -26,7 +27,7 @@ class KtorBackendModule(private val context: AppContext) {
 
     @Provides
     @Singleton
-    fun cachedBackend(@Named(DI_KEY_SOURCE_BACKEND) source: Backend, @Named(DI_KEY_BACKEND_STORAGE) contentStorage: ContentStorage, log: Log) : Backend {
+    fun cachedBackend(@Named(DI_KEY_SOURCE_BACKEND) source: Backend, @Named(DI_KEY_BACKEND_STORAGE) contentStorage: ContentStorage<Path>, log: Log) : Backend {
         return CachedCVTransformation(
             source,
             contentStorage,

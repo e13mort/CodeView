@@ -35,12 +35,9 @@ class FileSystemDataSource: DataSource {
             return path
         }
 
-        override fun sources(): Observable<SourceFile> {
-            return Observable.fromIterable(files).map {
-                PathSourceFile(it)
-            }
+        override fun sources(): List<SourceFile> {
+            return files.map { PathSourceFile(it) }
         }
-
     }
 
 }

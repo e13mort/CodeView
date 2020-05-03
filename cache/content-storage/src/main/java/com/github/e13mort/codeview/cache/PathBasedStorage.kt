@@ -1,10 +1,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import io.reactivex.Maybe
-import io.reactivex.Observable
 import io.reactivex.Single
-import io.reactivex.functions.BiFunction
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -17,32 +14,35 @@ class PathBasedStorage(
     private val registryFileName: String = "registry.json",
     private val cacheName: CacheName
 ) :
-    ContentStorage {
+    ContentStorage<Path> {
 
-    override fun search(key: String): Maybe<PathBasedStorageItem> {
-        return Maybe.create {
-            folderName(key)?.apply {
-                val path = root.resolve(this)
-                if (Files.exists(path)) {
-                    it.onSuccess(PathBasedStorageItem(path))
-                    return@create
-                }
-            }
-            it.onComplete()
+    override fun search(key: String): PathBasedStorageItem? {
+        val folderName = folderName(key)
+        folderName?.let {
+            val path = root.resolve(it)
+            if (Files.exists(path)) return PathBasedStorageItem(path)
         }
+        return null
     }
 
-    override fun put(
-        key: String,
-        content: Observable<out Content>
-    ): Single<PathBasedStorageItem> {
+    override fun prepareStorageItems(key: String): ContentStorage.StorageItems<Path> {
+        return StorageItemsImpl(key)
+    }
 
-        return content.withLatestFrom(
-            registerCacheFolder(key).toObservable(),
-            BiFunction<Content, Path, Path>(this::copyFileToCache)
-        )
-            .lastOrError()
-            .map { PathBasedStorageItem(it) }
+    private inner class StorageItemsImpl(private val key: String) : ContentStorage.StorageItems<Path> {
+
+        private val path by lazy {
+            registerCacheFolder(key).blockingGet()
+        }
+
+        override fun put(content: Content) {
+            copyFileToCache(content, path)
+        }
+
+        override fun save(): Path {
+            return path
+        }
+
     }
 
     override fun putSingleItem(key: String, content: Content): PathBasedStorageItem {

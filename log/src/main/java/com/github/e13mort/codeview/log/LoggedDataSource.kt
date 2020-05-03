@@ -4,7 +4,6 @@ import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.SourceFile
 import com.github.e13mort.codeview.SourcePath
 import com.github.e13mort.codeview.Sources
-import io.reactivex.Observable
 import io.reactivex.Single
 
 private class LoggedDataSource(private val dataSource: DataSource, private val log: Log) : DataSource by dataSource {
@@ -14,8 +13,9 @@ private class LoggedDataSource(private val dataSource: DataSource, private val l
 }
 
 private class LoggedSources(private val sources: Sources, private val log: Log) : Sources by sources {
-    override fun sources(): Observable<SourceFile> {
-        return sources.sources().doOnSubscribe { log.log("datasource ${name()} requested") }
+    override fun sources(): List<SourceFile> {
+        log.log("datasource ${name()} requested")
+        return sources.sources()
     }
 }
 

@@ -8,13 +8,14 @@ import com.github.e13mort.codeview.output.toCached
 import dagger.Module
 import dagger.Provides
 import java.io.OutputStream
+import java.nio.file.Path
 import javax.inject.Named
 
 @Module
 class KtorImageOutputModule {
 
     @Provides
-    fun output(@Named(DI_KEY_OUTPUT_STORAGE) storage: ContentStorage): Output<KtorResult> {
+    fun output(@Named(DI_KEY_OUTPUT_STORAGE) storage: ContentStorage<Path>): Output<KtorResult> {
         return EngineBasedOutput(
             PulmOutputEngine().toCached(storage),
             MemoryCacheTarget())

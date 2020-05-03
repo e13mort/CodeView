@@ -45,11 +45,12 @@ private class GithubSources(
         return pathParts.toString()
     }
 
-    override fun sources(): Observable<SourceFile> {
-        return Observable.fromIterable(
-            github.repos().get(Coordinates.Simple(part(Kind.USER_NAME), part(Kind.PROJECT_NAME)))
-                .contents().iterate(part(Kind.PATH), part(Kind.BRANCH))
-        )
+    override fun sources(): List<SourceFile> {
+        return github
+            .repos()
+            .get(Coordinates.Simple(part(Kind.USER_NAME), part(Kind.PROJECT_NAME)))
+            .contents()
+            .iterate(part(Kind.PATH), part(Kind.BRANCH))
             .filter { isItemFits(it) }
             .map { GithubSourceFile(it) }
     }

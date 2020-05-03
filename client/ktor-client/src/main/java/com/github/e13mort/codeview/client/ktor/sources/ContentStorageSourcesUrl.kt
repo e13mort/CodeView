@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonConfiguration
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.contentOrNull
 
-class ContentStorageSourcesUrl(private val contentStorage: ContentStorage) : SourcesUrl {
+class ContentStorageSourcesUrl(private val contentStorage: ContentStorage<out Any>) : SourcesUrl {
 
     override fun parse(path: String): SourcesUrl.PathDescription? {
         val singleItem = contentStorage.searchSingleItem(path) ?: return null

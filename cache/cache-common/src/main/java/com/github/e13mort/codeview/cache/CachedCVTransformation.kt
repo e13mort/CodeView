@@ -7,7 +7,7 @@ import io.reactivex.Single
 
 class CachedCVTransformation<INPUT, OUTPUT>(
     private val sourceBackend: CVTransformation<INPUT, OUTPUT>,
-    private val storage: ContentStorage,
+    private val storage: ContentStorage<out Any>,
     private val serialization: CVSerialization<OUTPUT>
 ) : CVTransformation<INPUT, OUTPUT> {
 
@@ -35,27 +35,20 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     }
 
     private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<out ContentStorage.ContentStorageItem> {
-        return storage.put(
-            transformOperation.description(),
-            transformOperation
-                .transform()
-                .map { serialization.serialize(it) }
-                .toObservable()
-        )
+        return transformOperation.transform()
+            .map { serialization.serialize(it) }
+            .map { storage.putSingleItem(transformOperation.description(), it) }
     }
 
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {
-        return storage
-            .search(sourceOperation.description())
-            .map(this::deserialize)
-            .map { createCacheResult(it, sourceOperation.description()) }
-            .toSingle()
-            .onErrorReturn{
-                CacheResult(
-                    sourceOperation,
-                    false
-                )
-            }
+        return Single.fromCallable {
+            try {
+                storage.search(sourceOperation.description())?.let {
+                    return@fromCallable createCacheResult(deserialize(it), sourceOperation.description())
+                }
+            } catch (e: Exception) {}
+            return@fromCallable CacheResult(sourceOperation, false)
+        }
     }
 
     private fun deserialize(it: ContentStorage.ContentStorageItem) =

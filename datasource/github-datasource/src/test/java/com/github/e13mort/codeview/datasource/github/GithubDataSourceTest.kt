@@ -135,5 +135,5 @@ class GithubDataSourceTest {
 }
 
 fun GithubDataSource.testSources(): Observable<SourceFile> {
-    return this.sources("does-not-matter").blockingGet().sources()
+    return Observable.fromIterable(this.sources("does-not-matter").blockingGet().sources())
 }

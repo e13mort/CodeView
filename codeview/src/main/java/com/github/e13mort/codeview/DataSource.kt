@@ -20,12 +20,12 @@ interface Sources {
     object EMPTY : Sources {
         override fun name(): String = "empty sources"
 
-        override fun sources(): Observable<SourceFile> = Observable.empty()
+        override fun sources(): List<SourceFile> = emptyList()
     }
 
     fun name(): String
 
-    fun sources(): Observable<SourceFile>
+    fun sources(): List<SourceFile>
 }
 
 interface Content {
@@ -44,4 +44,15 @@ interface SourceFile : Content {
 
         fun lastModifiedDate(): Long
     }
+}
+
+fun String.asContent(): Content {
+    return object : Content {
+        override fun read(): InputStream = this@asContent.toByteArray().inputStream()
+
+    }
+}
+
+fun Content.asString(): String {
+    return read().reader().readText()
 }

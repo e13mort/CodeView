@@ -6,6 +6,7 @@ import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.datasource.git.GitDataSource
 import dagger.Module
 import dagger.Provides
+import java.nio.file.Path
 import javax.inject.Named
 
 @Module
@@ -24,25 +25,25 @@ class KtorCacheModule(private val appContext: AppContext) {
 
     @Provides
     @Named(DI_KEY_BACKEND_STORAGE)
-    fun backendStorage() : ContentStorage {
+    fun backendStorage() : ContentStorage<Path> {
         return PathBasedStorage(appContext.backendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()))
     }
 
     @Provides
     @Named(DI_KEY_FRONTEND_STORAGE)
-    fun frontendStorage() : ContentStorage {
+    fun frontendStorage() : ContentStorage<Path> {
         return PathBasedStorage(appContext.frontendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName()))
     }
 
     @Provides
     @Named(DI_KEY_OUTPUT_STORAGE)
-    fun outputStorage() : ContentStorage {
+    fun outputStorage() : ContentStorage<Path> {
         return PathBasedStorage(appContext.outputCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.outputStorageItemName()))
     }
 
     @Provides
     @Named(DI_KEY_SOURCES_URL_STORAGE)
-    fun sourcesUrlStorage() : ContentStorage {
+    fun sourcesUrlStorage() : ContentStorage<Path> {
         return PathBasedStorage(appContext.sourcesUrlCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()))
     }
 }

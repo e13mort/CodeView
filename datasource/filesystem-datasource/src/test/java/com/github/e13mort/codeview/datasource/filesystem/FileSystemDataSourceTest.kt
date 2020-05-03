@@ -1,11 +1,7 @@
 package com.github.e13mort.codeview.datasource.filesystem
 
 import com.github.e13mort.codeview.SourceFile
-import io.reactivex.Observable
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -28,8 +24,8 @@ internal class FileSystemDataSourceTest {
         @Test
         internal fun twoFiles() {
             val fileSystemDataSource = FileSystemDataSource()
-            val test = fileSystemDataSource.testSources(dir.toFile().absolutePath).test()
-            test.assertValueCount(2)
+            val test = fileSystemDataSource.testSources(dir.toFile().absolutePath)
+            Assertions.assertEquals(2, test.size)
         }
 
     }
@@ -53,13 +49,13 @@ internal class FileSystemDataSourceTest {
         @Test
         internal fun twoFiles() {
             val fileSystemDataSource = FileSystemDataSource()
-            val test = fileSystemDataSource.testSources(dir.toFile().absolutePath).test()
-            test.assertValueCount(2)
+            val test = fileSystemDataSource.testSources(dir.toFile().absolutePath)
+            Assertions.assertEquals(2, test.size)
         }
 
     }
 }
 
-fun FileSystemDataSource.testSources(path: String): Observable<SourceFile> {
-    return this.sources(path).blockingGet().sources()
+fun FileSystemDataSource.testSources(path: String): List<SourceFile> {
+    return this.sources(path).map { it.sources() }.blockingGet()
 }

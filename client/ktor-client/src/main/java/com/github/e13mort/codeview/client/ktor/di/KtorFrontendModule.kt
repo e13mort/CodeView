@@ -10,6 +10,7 @@ import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
 import dagger.Module
 import dagger.Provides
+import java.nio.file.Path
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -25,7 +26,7 @@ class KtorFrontendModule {
 
     @Provides
     @Singleton
-    fun cachedBackend(@Named(DI_KEY_SOURCE_FRONTEND) source: Frontend, @Named(DI_KEY_FRONTEND_STORAGE) contentStorage: ContentStorage, log: Log) : Frontend {
+    fun cachedBackend(@Named(DI_KEY_SOURCE_FRONTEND) source: Frontend, @Named(DI_KEY_FRONTEND_STORAGE) contentStorage: ContentStorage<Path>, log: Log) : Frontend {
         return CachedCVTransformation(
             source,
             contentStorage,

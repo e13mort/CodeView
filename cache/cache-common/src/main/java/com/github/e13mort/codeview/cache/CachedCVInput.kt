@@ -1,7 +1,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.*
-import io.reactivex.Single
+import io.reactivex.*
 import java.nio.file.Path
 
 class CachedCVInput(
@@ -19,15 +19,22 @@ class CachedCVInput(
 
                 override fun transform(): Single<Path> {
                     return dataSource.sources(source)
-                        .flatMap { cacheSources(it) }
+                        .map {
+                            storage.search(it.name())?.apply {
+                                return@map path()
+                            }
+                            return@map saveToCache(it)
+                        }
 
                 }
 
-                private fun cacheSources(it: Sources): Single<Path> {
-                    return storage
-                        .search(it.name())
-                        .switchIfEmpty(storage.put(it.name(), it.sources()))
-                        .map { it.path() }
+                private fun saveToCache(sources: Sources): Path {
+                    storage.prepareStorageItems(sources.name()).let { items ->
+                        sources.sources().forEach {
+                            items.put(it)
+                        }
+                        return items.save()
+                    }
                 }
 
             }

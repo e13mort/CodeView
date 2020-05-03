@@ -22,7 +22,7 @@ class DataModule(private val rootFolder: Path) {
     }
 
     @Provides
-    fun backend(@Named("backend-storage") contentStorage: ContentStorage, log: Log) : Backend {
+    fun backend(@Named("backend-storage") contentStorage: ContentStorage<Path>, log: Log) : Backend {
         return CachedCVTransformation(
             JavaBackend().withLogs(log.withTag("java backend")),
             contentStorage,
@@ -31,7 +31,7 @@ class DataModule(private val rootFolder: Path) {
     }
 
     @Provides
-    fun frontend(@Named("frontend-storage") contentStorage: ContentStorage, log: Log) : Frontend {
+    fun frontend(@Named("frontend-storage") contentStorage: ContentStorage<Path>, log: Log) : Frontend {
         return CachedCVTransformation(
             PulmFrontend().withLogs(log.withTag("pulm frontend")),
             contentStorage,
@@ -41,7 +41,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Named("backend-storage")
     @Provides
-    fun contentStorage(log: Log) : ContentStorage {
+    fun contentStorage(log: Log) : ContentStorage<Path> {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_BACK_NAME),
             CACHE_REGISTRY_FILE_NAME,
@@ -51,7 +51,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Named("frontend-storage")
     @Provides
-    fun contentStorageFront(log: Log) : ContentStorage {
+    fun contentStorageFront(log: Log) : ContentStorage<Path> {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_FRONT_NAME),
             CACHE_REGISTRY_FILE_NAME,
@@ -61,7 +61,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Provides
     @Named("output-storage")
-    fun outputContentStorage(log: Log): ContentStorage {
+    fun outputContentStorage(log: Log): ContentStorage<Path> {
         return PathBasedStorage(
             rootFolder.resolve("output-cache"),
             "registry.json",
