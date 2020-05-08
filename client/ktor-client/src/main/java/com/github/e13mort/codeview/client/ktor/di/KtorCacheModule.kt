@@ -4,6 +4,7 @@ import com.github.e13mort.codeview.CVInput
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.datasource.git.GitDataSource
+import com.github.e13mort.codeview.work.AsyncWorkRunner
 import dagger.Module
 import dagger.Provides
 import java.nio.file.Path
@@ -14,7 +15,7 @@ class KtorCacheModule(private val appContext: AppContext) {
 
     @Provides
     fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: GitDataSource) : CVInput {
-        return CachedCVInput(dataSource, cache)
+        return CachedCVInput(dataSource, cache, AsyncWorkRunner())
     }
 
     @Provides

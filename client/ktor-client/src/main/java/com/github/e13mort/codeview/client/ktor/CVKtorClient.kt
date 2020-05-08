@@ -1,5 +1,6 @@
 package com.github.e13mort.codeview.client.ktor
 
+import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.client.ktor.di.*
 import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import io.ktor.application.Application
@@ -56,10 +57,20 @@ fun init(app: Application) {
                 val diagramId = call.parameters["diagram-id"]
                 diagramId?.let {
                     call.respondOutputStream(ContentType.Image.PNG, HttpStatusCode.OK) {
-                        codeView.run(diagramId).await().copyTo(this)
+                        codeView.run(diagramId)
+                            .onErrorReturn { wrapException(it) }
+                            .await().copyTo(this)
                     }
                 }
             }
         }
+    }
+}
+
+private fun wrapException(it: Throwable) : KtorResult {
+    return if (it is CVTransformation.TransformOperation.LongOperationException) {
+        PredefinedOperationResult(LONG_OPERATION_FILE_NAME)
+    } else {
+        PredefinedOperationResult(ERROR_OPERATION_FILE_NAME)
     }
 }

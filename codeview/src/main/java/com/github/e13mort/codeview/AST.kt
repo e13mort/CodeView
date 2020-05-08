@@ -32,6 +32,8 @@ interface CVTransformation<FROM, TO> {
         enum class OperationState {
             READY, ERROR
         }
+
+        class LongOperationException: Exception()
     }
 }
 

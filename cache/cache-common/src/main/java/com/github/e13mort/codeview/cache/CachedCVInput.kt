@@ -1,12 +1,15 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.work.ImmediateWorkRunner
+import com.github.e13mort.codeview.work.WorkRunner
 import io.reactivex.*
 import java.nio.file.Path
 
 class CachedCVInput(
     private val dataSource: DataSource,
-    private val storage: PathBasedStorage
+    private val storage: PathBasedStorage,
+    private val workRunner: WorkRunner = ImmediateWorkRunner()
 ) :
     CVInput {
 
@@ -29,12 +32,21 @@ class CachedCVInput(
                 }
 
                 private fun saveToCache(sources: Sources): Path {
-                    storage.prepareStorageItems(sources.name()).let { items ->
-                        sources.sources().forEach {
-                            items.put(it)
+                    val schedule = workRunner.schedule(sources.name()) {
+                        val sourcesList = sources.sources()
+                        storage.prepareStorageItems(sources.name()).apply {
+                            sourcesList.forEach {
+                                put(it)
+                            }
+                            save()
                         }
-                        return items.save()
                     }
+                    if (schedule == WorkRunner.NewWorkState.PERFORMED) {
+                        storage.search(sources.name())?.apply {
+                            return path()
+                        }
+                    }
+                    throw CVTransformation.TransformOperation.LongOperationException()
                 }
 
             }
