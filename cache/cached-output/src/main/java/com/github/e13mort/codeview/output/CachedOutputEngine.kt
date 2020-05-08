@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.output
 
 import com.github.e13mort.codeview.CVTransformation
+import com.github.e13mort.codeview.CVTransformation.TransformOperation.OperationState
 import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.StoredObject
 import com.github.e13mort.codeview.cache.ContentStorage
@@ -22,14 +23,19 @@ class CachedOutputEngine<T>(private val source: OutputEngine, private val conten
             .ignoreElement()
     }
 
-    private fun readFromCache(data: CVTransformation.TransformOperation<StoredObject>) =
-        Maybe.create<InputStream> {
+    private fun readFromCache(data: CVTransformation.TransformOperation<StoredObject>): Maybe<InputStream> {
+        return Maybe.create<InputStream> {
+            if (data.state() == OperationState.ERROR) {
+                it.onComplete()
+                return@create
+            }
             contentStorage.searchSingleItem(data.description())?.run {
                 it.onSuccess(content().read())
                 return@create
             }
             it.onComplete()
         }
+    }
 
 
     private fun copyToOutput(outputStream: OutputStream, inputStream: InputStream) =

@@ -28,7 +28,7 @@ public class JavaBackend implements CVTransformation<CVTransformation.TransformO
             @NotNull
             @Override
             public OperationState state() {
-                return OperationState.READY;
+                return transformation.state();
             }
 
             @NotNull

@@ -24,15 +24,27 @@ class GitDataSource @Inject constructor(
 
     override fun sources(path: SourcePath): Single<Sources> {
         return Single.fromCallable {
-            val pathDescription = sourcesUrl.parse(path) ?: throw IllegalArgumentException("path $path can not be parsed")
-            val targetRepo = pathDescription.readPart(Kind.GIT_URL_HTTPS)
-            val targetBranch = pathDescription.readPart(Kind.BRANCH)
-            val pathInRepo = pathDescription.readPart(Kind.PATH)
-            remoteRepositories.remoteBranchHash(pathDescription)?.let {
-                return@fromCallable GitSources(GitSources.SourcesDescription(targetRepo, it, pathInRepo), remoteRepositories, localRepositories)
+            sourcesDescription(path)?.let {
+                return@fromCallable GitSources(it, remoteRepositories, localRepositories)
             }
-            throw IllegalArgumentException("invalid target branch $targetBranch")
+            val pathDescription = sourcesUrl.parse(path) ?: throw IllegalArgumentException("path $path can not be parsed")
+            throw IllegalArgumentException("invalid target branch ${pathDescription.readPart(Kind.BRANCH)}")
         }
+    }
+
+    override fun describeSources(source: SourcePath): String {
+        return sourcesDescription(source)?.toString() ?: super.describeSources(source)
+    }
+
+    private fun sourcesDescription(source: SourcePath): GitSources.SourcesDescription? {
+        val pathDescription =
+            sourcesUrl.parse(source) ?: throw IllegalArgumentException("path $source can not be parsed")
+        val targetRepo = pathDescription.readPart(Kind.GIT_URL_HTTPS)
+        val pathInRepo = pathDescription.readPart(Kind.PATH)
+        remoteRepositories.remoteBranchHash(pathDescription)?.let {
+            return GitSources.SourcesDescription(targetRepo, it, pathInRepo)
+        }
+        return null
     }
 
     private class GitSources(

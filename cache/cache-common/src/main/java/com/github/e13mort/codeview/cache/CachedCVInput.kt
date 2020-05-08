@@ -1,6 +1,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.CVTransformation.TransformOperation.OperationState
 import com.github.e13mort.codeview.work.ImmediateWorkRunner
 import com.github.e13mort.codeview.work.WorkRunner
 import io.reactivex.*
@@ -16,8 +17,18 @@ class CachedCVInput(
     override fun prepare(source: SourcePath): Single<CVTransformation.TransformOperation<Path>> {
         return Single.fromCallable {
             object : CVTransformation.TransformOperation<Path> {
+                private val sourcesDescription by lazy {
+                    dataSource.describeSources(source)
+                }
+
                 override fun description(): String {
-                    return source
+                    return sourcesDescription
+                }
+
+                override fun state(): OperationState {
+                    return if (storage.search(sourcesDescription) != null)
+                        OperationState.READY
+                    else OperationState.ERROR
                 }
 
                 override fun transform(): Single<Path> {

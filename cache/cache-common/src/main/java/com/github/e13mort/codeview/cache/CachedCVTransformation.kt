@@ -44,7 +44,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         return Single.fromCallable {
             try {
                 storage.search(sourceOperation.description())?.let {
-                    return@fromCallable createCacheResult(deserialize(it), sourceOperation.description())
+                    return@fromCallable createCacheResult(deserialize(it), sourceOperation)
                 }
             } catch (e: Exception) {}
             return@fromCallable CacheResult(sourceOperation, false)
@@ -54,11 +54,14 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     private fun deserialize(it: ContentStorage.ContentStorageItem) =
         serialization.deserialize(it.content())
 
-    private fun createCacheResult(classes: OUTPUT, description: String) : CacheResult<OUTPUT> {
+    private fun createCacheResult(
+        classes: OUTPUT,
+        operation: CVTransformation.TransformOperation<OUTPUT>
+    ) : CacheResult<OUTPUT> {
         return CacheResult(
-            DumbTransformOperation(
+            PredefinedOutputTransformOperation(
                 classes,
-                description
+                operation
             ),
             true
         )
@@ -66,12 +69,13 @@ class CachedCVTransformation<INPUT, OUTPUT>(
 
     private class CacheResult<OUTPUT>(val cachedOperation: CVTransformation.TransformOperation<OUTPUT>, val fromCache: Boolean)
 
-    private data class DumbTransformOperation<OUTPUT>(private val classes: OUTPUT, private val description: String) :
-        CVTransformation.TransformOperation<OUTPUT> {
+    private data class PredefinedOutputTransformOperation<OUTPUT>(
+        private val output: OUTPUT,
+        private val operation: CVTransformation.TransformOperation<OUTPUT>
+    ) :
+        CVTransformation.TransformOperation<OUTPUT> by operation {
 
-        override fun description(): String = description
-
-        override fun transform(): Single<OUTPUT> = Single.just(classes)
+        override fun transform(): Single<OUTPUT> = Single.just(output)
     }
 
     interface CVSerialization<INPUT> {

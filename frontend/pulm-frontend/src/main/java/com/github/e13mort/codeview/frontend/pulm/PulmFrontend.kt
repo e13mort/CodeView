@@ -23,6 +23,10 @@ class PulmFrontend(private val params: Set<FrontendParams> = FrontendParams.all(
         override fun transform(): Single<StoredObject> {
             return backendOperation.transform().map { VisitorStoredObject(it, params) }
         }
+
+        override fun state(): CVTransformation.TransformOperation.OperationState {
+            return backendOperation.state()
+        }
     }
 
     private data class FrontendDescription(
