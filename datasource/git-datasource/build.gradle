@@ -39,6 +39,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     implementation project(':codeview')
     implementation project(':datasource:common')
+    implementation project(':cache:content-storage')
     implementation 'org.eclipse.jgit:org.eclipse.jgit:5.5.1.201910021850-r'
     implementation 'com.google.dagger:dagger:2.23.2'
     kapt 'com.google.dagger:dagger-compiler:2.23.2'
