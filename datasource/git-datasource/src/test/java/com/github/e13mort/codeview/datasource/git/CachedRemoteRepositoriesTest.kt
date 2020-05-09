@@ -29,12 +29,10 @@ import org.junit.jupiter.api.Test
 
 internal class CachedRemoteRepositoriesTest {
 
-    private val root = Jimfs.newFileSystem().getPath(".")
-
     private val remoteRepositories = FkRemoteRepositories().apply {
         add("repo1", "master", "masterHash")
     }
-    private val target = remoteRepositories.cached(PathBasedStorage(root, cacheName = UUIDCacheName()))
+    private val target = remoteRepositories.cached(PathBasedStorage(Jimfs.newFileSystem().getPath("."), cacheName = UUIDCacheName()))
 
     @Test
     internal fun `basic remote hash method call returns valid data`() {
