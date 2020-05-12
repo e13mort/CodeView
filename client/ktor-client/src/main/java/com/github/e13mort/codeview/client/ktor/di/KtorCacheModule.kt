@@ -19,9 +19,9 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.CVInput
+import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.client.ktor.AppContext
-import com.github.e13mort.codeview.datasource.git.GitDataSource
 import com.github.e13mort.codeview.work.AsyncWorkRunner
 import dagger.Module
 import dagger.Provides
@@ -32,7 +32,7 @@ import javax.inject.Named
 class KtorCacheModule(private val appContext: AppContext) {
 
     @Provides
-    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: GitDataSource) : CVInput {
+    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: DataSource) : CVInput {
         return CachedCVInput(dataSource, cache, AsyncWorkRunner())
     }
 
@@ -64,5 +64,11 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Named(DI_KEY_SOURCES_URL_STORAGE)
     fun sourcesUrlStorage() : ContentStorage<Path> {
         return PathBasedStorage(appContext.sourcesUrlCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()))
+    }
+
+    @Provides
+    @Named(DI_KEY_BRANCH_META_STORAGE)
+    fun branchMetaStorage() : ContentStorage<Path> {
+        return PathBasedStorage(appContext.branchMetaDirPath(), cacheName = ConstNameUUIDBasedCacheName(appContext.branchHashItemName()))
     }
 }

@@ -45,25 +45,33 @@ class EnvironmentAppContext : AppContext {
 
     override fun outputCachePath(): Path = cachePath().resolve(OUTPUT_STORAGE_DIR_NAME)
 
+    override fun branchHashItemName(): String = BRANCH_HASH_ITEM_NAME
+
+    override fun branchMetaDirPath(): Path = cachePath().resolve(BRANCH_META_DIR_NAME)
+
+    override fun branchMetaTTL(): Long = readEnv(BRANCH_META_ENV_KEY).toLongOrNull() ?: BRANCH_META_DEFAULT_TTL_SEC
+
     private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
 
-    private fun readEnv(name: String): String = System.getenv(name)
+    private fun readEnv(name: String): String = System.getenv(name) ?: ""
 
-    companion object {
-        const val LOGS_DIR_ENV_KEY = "logsDir"
-        const val CACHE_DIR_ENV_KEY = "cacheDir"
-
-        const val GIT_CACHE_DIR = "gitRepositories"
-        const val SOURCE_STORAGE_DIR_NAME = "sources"
-        const val BACKEND_STORAGE_DIR_NAME = "backend"
-        const val FRONTEND_STORAGE_DIR_NAME = "frontend"
-        const val OUTPUT_STORAGE_DIR_NAME = "output"
-        const val SOURCE_URL_STORAGE_DIR_NAME = "sourcesUrl"
-
-        const val BACKEND_STORAGE_ITEM_NAME = "classes.json"
-        const val FRONTEND_STORAGE_ITEM_NAME = "classes.puml"
-        const val OUTPUT_STORAGE_ITEM_NAME = "output.png"
-        const val SOURCE_URL_ITEM_NAME = "sources.json"
-
-    }
 }
+
+const val LOGS_DIR_ENV_KEY = "logsDir"
+const val CACHE_DIR_ENV_KEY = "cacheDir"
+const val BRANCH_META_ENV_KEY = "branchMetaTTLSec"
+const val BRANCH_META_DEFAULT_TTL_SEC = 60L
+
+const val GIT_CACHE_DIR = "gitRepositories"
+const val SOURCE_STORAGE_DIR_NAME = "sources"
+const val BACKEND_STORAGE_DIR_NAME = "backend"
+const val FRONTEND_STORAGE_DIR_NAME = "frontend"
+const val OUTPUT_STORAGE_DIR_NAME = "output"
+const val SOURCE_URL_STORAGE_DIR_NAME = "sourcesUrl"
+const val BRANCH_META_DIR_NAME = "branchMetaData"
+
+const val BACKEND_STORAGE_ITEM_NAME = "classes.json"
+const val FRONTEND_STORAGE_ITEM_NAME = "classes.puml"
+const val OUTPUT_STORAGE_ITEM_NAME = "output.png"
+const val SOURCE_URL_ITEM_NAME = "sources.json"
+const val BRANCH_HASH_ITEM_NAME = "branch_hash.txt"

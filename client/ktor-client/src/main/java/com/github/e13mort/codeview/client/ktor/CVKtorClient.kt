@@ -48,12 +48,13 @@ fun Application.main() { init(this) }
 fun init(app: Application) {
     val context = EnvironmentAppContext()
     val codeView = DaggerKtorComponent.builder()
-        .ktorBackendModule(KtorBackendModule(context))
+        .ktorBackendModule(KtorBackendModule())
         .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule())
         .ktorCacheModule(KtorCacheModule(context))
         .ktorLogModule(KtorLogModule(context))
         .gitDataSourceModule(GitDataSourceModule(context.gitCachePath()))
+        .ktorDataSourceModule(KtorDataSourceModule(context))
         .build().codeView()
 
     app.routing {

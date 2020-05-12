@@ -32,6 +32,7 @@ import javax.inject.Singleton
         KtorImageOutputModule::class,
         KtorCacheModule::class,
         KtorSourcesModule::class,
+        KtorDataSourceModule::class,
         GitDataSourceModule::class
     ]
 )

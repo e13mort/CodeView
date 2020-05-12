@@ -28,3 +28,5 @@ const val DI_KEY_INPUT_STORAGE = "inputStorage"
 const val DI_KEY_OUTPUT_STORAGE = "outputStorage"
 
 const val DI_KEY_SOURCES_URL_STORAGE = "sourcesUrlStorage"
+
+const val DI_KEY_BRANCH_META_STORAGE = "branchMetaStorage"

@@ -23,7 +23,6 @@ import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.cache.CVActualSerialization
 import com.github.e13mort.codeview.cache.CachedCVTransformation
 import com.github.e13mort.codeview.cache.ContentStorage
-import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
@@ -34,7 +33,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class KtorBackendModule(private val context: AppContext) {
+class KtorBackendModule {
 
     @Singleton
     @Provides

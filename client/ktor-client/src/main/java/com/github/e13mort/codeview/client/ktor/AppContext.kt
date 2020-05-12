@@ -42,4 +42,10 @@ interface AppContext {
     fun sourcesUrlCachePath(): Path
 
     fun sourceUrlItemName(): String
+
+    fun branchHashItemName(): String
+
+    fun branchMetaDirPath(): Path
+
+    fun branchMetaTTL(): Long
 }

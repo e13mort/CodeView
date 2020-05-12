@@ -18,8 +18,15 @@
 
 package com.github.e13mort.codeview.client.ktor.di
 
+import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.cache.ContentStorage
+import com.github.e13mort.codeview.cache.withTimeLimit
+import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.client.ktor.sources.ContentStorageSourcesUrl
+import com.github.e13mort.codeview.datasource.git.GitDataSource
+import com.github.e13mort.codeview.datasource.git.LocalRepositories
+import com.github.e13mort.codeview.datasource.git.RemoteRepositories
+import com.github.e13mort.codeview.datasource.git.cached
 import com.github.e13mort.githuburl.SourcesUrl
 import dagger.Module
 import dagger.Provides
@@ -30,4 +37,18 @@ import javax.inject.Named
 class KtorSourcesModule {
     @Provides
     fun sources(@Named(DI_KEY_SOURCES_URL_STORAGE) storage: ContentStorage<Path>) : SourcesUrl = ContentStorageSourcesUrl(storage)
+}
+
+@Module
+class KtorDataSourceModule(private val context: AppContext) {
+    @Provides
+    fun dataSource(
+        remoteRepositories: RemoteRepositories,
+        localRemoteRepositories: LocalRepositories,
+        sourcesUrl: SourcesUrl,
+        @Named(DI_KEY_BRANCH_META_STORAGE)
+        contentStorage: ContentStorage<Path>
+    ): DataSource {
+        return GitDataSource(remoteRepositories.cached(contentStorage.withTimeLimit(context.branchMetaTTL())), sourcesUrl, localRemoteRepositories)
+    }
 }
