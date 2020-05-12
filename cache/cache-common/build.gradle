@@ -25,7 +25,7 @@ dependencies {
     implementation project(':cache:content-storage')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     implementation 'commons-io:commons-io:2.6'
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.13.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_runtime_version"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation project(':utils:stubs')
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'

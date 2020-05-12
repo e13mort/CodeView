@@ -73,7 +73,7 @@ dependencies {
     implementation "ch.qos.logback:logback-classic:1.2.3"
     implementation 'com.google.dagger:dagger:2.23.2'
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-rx2', version: '1.2.2'
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialization_runtime_version"
     kapt 'com.google.dagger:dagger-compiler:2.23.2'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'

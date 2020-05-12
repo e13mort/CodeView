@@ -56,7 +56,7 @@ internal class ContentStorageSourcesUrlTest {
     @ParameterizedTest
     @MethodSource("args")
     internal fun `cached item contains corresponding part`(key: String, value: String, kind: Kind) {
-        prepareStorage("data", "{ $key: \"$value\" }")
+        prepareStorage("data", "{ \"$key\": \"$value\" }")
         val pathDescription = sources.parse("data")
         assertTrue(pathDescription!!.hasPart(kind))
     }
@@ -64,15 +64,15 @@ internal class ContentStorageSourcesUrlTest {
     @ParameterizedTest
     @MethodSource("args")
     internal fun `cached item contains valid value`(key: String, value: String, kind: Kind) {
-        prepareStorage("data", "{ $key: \"$value\" }")
+        prepareStorage("data", "{ \"$key\": \"$value\" }")
         val pathDescription = sources.parse("data")
         assertEquals(value, pathDescription!!.readPart(kind))
     }
 
     @Test
     internal fun `two items might be cached`() {
-        prepareStorage("data", "{ branch: \"master\" }")
-        prepareStorage("data2", "{ branch: \"dev\" }")
+        prepareStorage("data", "{ \"branch\": \"master\" }")
+        prepareStorage("data2", "{ \"branch\": \"dev\" }")
         assertEquals("master", sources.parse("data")!!.readPart(Kind.BRANCH))
         assertEquals("dev", sources.parse("data2")!!.readPart(Kind.BRANCH))
     }
