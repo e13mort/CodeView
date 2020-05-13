@@ -61,7 +61,7 @@ class CachedCVTransformation<INPUT, OUTPUT>(
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {
         return Single.fromCallable {
             try {
-                storage.search(sourceOperation.description())?.let {
+                storage.searchSingleItem(sourceOperation.description() + "error")?.let {
                     return@fromCallable createCacheResult(deserialize(it), sourceOperation)
                 }
             } catch (e: Exception) {}
