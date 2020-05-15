@@ -22,12 +22,12 @@ import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.CVTransformation.TransformOperation.OperationState
 import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.StoredObject
-import com.github.e13mort.codeview.cache.ContentStorage
+import com.github.e13mort.codeview.cache.KeyValueStorage
 import com.github.e13mort.codeview.output.engine.OutputEngine
 import io.reactivex.*
 import java.io.*
 
-class CachedOutputEngine<T>(private val source: OutputEngine, private val contentStorage: ContentStorage<T>) :
+class CachedOutputEngine(private val source: OutputEngine, private val contentStorage: KeyValueStorage) :
     OutputEngine {
 
     override fun saveDataToOutputStream(
@@ -42,7 +42,7 @@ class CachedOutputEngine<T>(private val source: OutputEngine, private val conten
     }
 
     private fun readFromCache(data: CVTransformation.TransformOperation<StoredObject>): Maybe<InputStream> {
-        return Maybe.create<InputStream> {
+        return Maybe.create {
             if (data.state() == OperationState.ERROR) {
                 it.onComplete()
                 return@create
@@ -82,6 +82,6 @@ class CachedOutputEngine<T>(private val source: OutputEngine, private val conten
     }
 }
 
-fun <T>OutputEngine.toCached(contentStorage: ContentStorage<T>): OutputEngine {
+fun OutputEngine.toCached(contentStorage: KeyValueStorage): OutputEngine {
     return CachedOutputEngine(this, contentStorage)
 }

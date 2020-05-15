@@ -32,7 +32,7 @@ class PathBasedStorage(
     private val registryFileName: String = "registry.json",
     private val cacheName: CacheName
 ) :
-    ContentStorage<Path> {
+    ContentStorage<Path>, KeyValueStorage {
 
     override fun search(key: String): PathBasedStorageItem? {
         val folderName = folderName(key)

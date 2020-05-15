@@ -26,12 +26,6 @@ interface ContentStorage<T> {
 
     fun prepareStorageItems(key: String): StorageItems<T>
 
-    fun putSingleItem(key: String, content: Content): ContentStorageItem
-
-    fun searchSingleItem(key: String): ContentStorageItem?
-
-    fun remove(key: String)
-
     interface ContentStorageItem {
         fun content(): Content
     }
@@ -41,4 +35,12 @@ interface ContentStorage<T> {
 
         fun save(): T
     }
+}
+
+interface KeyValueStorage {
+    fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem
+
+    fun searchSingleItem(key: String): ContentStorage.ContentStorageItem?
+
+    fun remove(key: String)
 }

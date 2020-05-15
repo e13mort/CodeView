@@ -16,34 +16,30 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.e13mort.codeview.cache
+package com.github.e13mort.codeview.log
 
 import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.cache.ContentStorage
+import com.github.e13mort.codeview.cache.KeyValueStorage
 
-private class MemoryBasedLimitedTimeContentStorage(
-    private val source: KeyValueStorage,
-    private val time: Time,
-    private val ttlSeconds: Long
-) : KeyValueStorage {
-
-    private val timeMap = mutableMapOf<String, Long>()
-
+private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage {
     override fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem {
         return source.putSingleItem(key, content).also {
-            timeMap[key] = time.nowMillis()
+            log.log("put item with key $key")
         }
     }
 
     override fun searchSingleItem(key: String): ContentStorage.ContentStorageItem? {
-        val putTime = timeMap[key] ?: return null
-        return if (putTime + ttlSeconds * 1000 > time.nowMillis()) source.searchSingleItem(key) else null
+        return source.searchSingleItem(key).also {
+            log.log("search item for key $key; result = $it")
+        }
     }
 
     override fun remove(key: String) {
-        throw UnsupportedOperationException()
+        return source.remove(key).also {
+            log.log("remove item with key $key")
+        }
     }
 }
 
-fun KeyValueStorage.withTimeLimit(ttlSeconds: Long, time: Time = Time.REAL): KeyValueStorage {
-    return MemoryBasedLimitedTimeContentStorage(this, time, ttlSeconds)
-}
+fun KeyValueStorage.withLogs(log: Log): KeyValueStorage = LoggedKeyValueStorage(this, log)

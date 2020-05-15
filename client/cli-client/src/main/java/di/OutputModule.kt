@@ -19,7 +19,7 @@
 package di
 
 import com.github.e13mort.codeview.Output
-import com.github.e13mort.codeview.cache.ContentStorage
+import com.github.e13mort.codeview.cache.KeyValueStorage
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
@@ -35,14 +35,13 @@ import factory.LaunchCommand
 import factory.LaunchCommand.OutputFormat
 import factory.LaunchCommand.OutputFormat.PNG
 import factory.LaunchCommand.OutputFormat.PUML
-import java.nio.file.Path
 import javax.inject.Named
 
 @Module
 class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
 
     @Provides
-    fun output(log: Log, @Named("output-storage") contentStorage: ContentStorage<Path>) : Output<String> {
+    fun output(log: Log, @Named("output-storage") contentStorage: KeyValueStorage) : Output<String> {
         return EngineBasedOutput(
             createEngine(factory.outputFormat).toCached(contentStorage),
             createEngineResult(factory.outputFileName, factory.outputFormat)

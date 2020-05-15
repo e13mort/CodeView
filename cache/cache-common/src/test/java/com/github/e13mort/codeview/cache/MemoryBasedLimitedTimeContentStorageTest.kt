@@ -69,20 +69,6 @@ internal class MemoryBasedLimitedTimeContentStorageTest {
     }
 
     @Test
-    internal fun `search method is unsupported`() {
-        assertThrows<UnsupportedOperationException> {
-            target.search("key")
-        }
-    }
-
-    @Test
-    internal fun `prepareStorageItems method is unsupported`() {
-        assertThrows<UnsupportedOperationException> {
-            target.prepareStorageItems("key")
-        }
-    }
-
-    @Test
     internal fun `remove method is unsupported`() {
         assertThrows<UnsupportedOperationException> {
             target.remove("key")

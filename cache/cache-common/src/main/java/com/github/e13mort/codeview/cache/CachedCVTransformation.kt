@@ -25,7 +25,7 @@ import io.reactivex.Single
 
 class CachedCVTransformation<INPUT, OUTPUT>(
     private val sourceBackend: CVTransformation<INPUT, OUTPUT>,
-    private val storage: ContentStorage<out Any>,
+    private val storage: KeyValueStorage,
     private val serialization: CVSerialization<OUTPUT>
 ) : CVTransformation<INPUT, OUTPUT> {
 

@@ -25,18 +25,17 @@ import com.github.e13mort.codeview.cache.PathBasedStorage
 import com.github.e13mort.codeview.output.engine.OutputEngine
 import com.github.e13mort.codeview.stubs.StubFrontendTransformOperation
 import com.google.common.jimfs.Jimfs
-import io.reactivex.*
+import io.reactivex.Completable
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.OutputStream
 import java.nio.charset.Charset
-import java.nio.file.Path
 
 internal class CachedOutputEngineTest {
 
-    private lateinit var outputEngine: CachedOutputEngine<Path>
+    private lateinit var outputEngine: CachedOutputEngine
     private lateinit var storage: PathBasedStorage
     private val fileSystem = Jimfs.newFileSystem()
     private val root = fileSystem.getPath(".")

@@ -19,11 +19,11 @@ package com.github.e13mort.codeview.datasource.git
 
 import com.github.e13mort.codeview.asContent
 import com.github.e13mort.codeview.asString
-import com.github.e13mort.codeview.cache.ContentStorage
+import com.github.e13mort.codeview.cache.KeyValueStorage
 import com.github.e13mort.githuburl.SourcesUrl
 import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 
-internal class CachedRemoteRepositories(private val source: RemoteRepositories, private val storage: ContentStorage<*>) :
+internal class CachedRemoteRepositories(private val source: RemoteRepositories, private val storage: KeyValueStorage) :
     RemoteRepositories by source {
 
     override fun remoteBranchHash(pathDescription: SourcesUrl.PathDescription): String? {
@@ -46,6 +46,6 @@ internal class CachedRemoteRepositories(private val source: RemoteRepositories, 
     }
 }
 
-fun RemoteRepositories.cached(storage: ContentStorage<*>) : RemoteRepositories {
+fun RemoteRepositories.cached(storage: KeyValueStorage) : RemoteRepositories {
     return CachedRemoteRepositories(this, storage)
 }
