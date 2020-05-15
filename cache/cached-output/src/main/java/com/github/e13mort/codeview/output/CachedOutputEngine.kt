@@ -48,7 +48,7 @@ class CachedOutputEngine(private val source: OutputEngine, private val contentSt
                 return@create
             }
             contentStorage.searchSingleItem(data.description())?.run {
-                it.onSuccess(content().read())
+                it.onSuccess(read())
                 return@create
             }
             it.onComplete()

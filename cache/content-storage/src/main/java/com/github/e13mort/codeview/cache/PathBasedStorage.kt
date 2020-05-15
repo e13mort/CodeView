@@ -69,7 +69,7 @@ class PathBasedStorage(
         }
     }
 
-    override fun searchSingleItem(key: String): PathBasedStorageItem? {
+    override fun searchSingleItem(key: String): Content? {
         folderName(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {
@@ -158,15 +158,17 @@ class PathBasedStorage(
     }
 
     class PathBasedStorageItem(private val path: Path) :
-        ContentStorage.ContentStorageItem {
-        override fun content(): Content {
-            if (Files.isDirectory(path)) {
-                return Files.list(path).findFirst().map { PathBasedContent(it) }.get()
-            }
-            return PathBasedContent(path)
-        }
+        ContentStorage.ContentStorageItem, Content {
+        override fun content(): Content = this
 
         fun path(): Path = path
+
+        override fun read(): InputStream {
+            if (Files.isDirectory(path)) {
+                return Files.list(path).findFirst().map { PathBasedContent(it) }.get().read()
+            }
+            return PathBasedContent(path).read()
+        }
     }
 
     private class PathBasedContent(private val path: Path) : Content {

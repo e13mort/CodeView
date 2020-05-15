@@ -128,7 +128,7 @@ class PathBasedStorageTest {
     @Test
     internal fun `put single content returns path to the target file`() {
         storage.putSingleItem("key", "hello".asContent())
-        assertEquals("hello", storage.searchSingleItem("key")!!.content().asString())
+        assertEquals("hello", storage.searchSingleItem("key")!!.asString())
     }
 
     @Test
@@ -146,7 +146,7 @@ class PathBasedStorageTest {
     internal fun `search for a single existing value returns a valid result`() {
         storage.putSingleItem("key", "hello".asContent())
         storage.searchSingleItem("key")!!.apply {
-            assertEquals("hello", Files.readAllLines(path())[0])
+            assertEquals("hello", asString())
         }
     }
 

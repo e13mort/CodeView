@@ -18,6 +18,7 @@
 
 package com.github.e13mort.codeview.client.ktor.sources
 
+import com.github.e13mort.codeview.asString
 import com.github.e13mort.codeview.cache.KeyValueStorage
 import com.github.e13mort.githuburl.SourcesUrl
 import kotlinx.serialization.json.Json
@@ -28,11 +29,10 @@ import kotlinx.serialization.json.contentOrNull
 class ContentStorageSourcesUrl(private val contentStorage: KeyValueStorage) : SourcesUrl {
 
     override fun parse(path: String): SourcesUrl.PathDescription? {
-        val singleItem = contentStorage.searchSingleItem(path) ?: return null
+        val content = contentStorage.searchSingleItem(path) ?: return null
         val json = Json(JsonConfiguration.Stable)
-        val content = singleItem.content().read().reader().readText()
 
-        val data = json.parse(JsonObject.serializer(), content)
+        val data = json.parse(JsonObject.serializer(), content.asString())
         return StoredSourcesUrlDescription(data)
     }
 

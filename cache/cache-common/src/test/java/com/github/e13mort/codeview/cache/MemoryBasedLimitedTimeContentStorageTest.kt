@@ -57,7 +57,7 @@ internal class MemoryBasedLimitedTimeContentStorageTest {
     internal fun `returned item's content is valid`() {
         target.putSingleItem("key", "value".asContent())
         time.advanceSeconds(1)
-        assertEquals("value", target.searchSingleItem("key")!!.content().asString())
+        assertEquals("value", target.searchSingleItem("key")!!.asString())
     }
 
     @Test
@@ -65,7 +65,7 @@ internal class MemoryBasedLimitedTimeContentStorageTest {
         target.putSingleItem("key", "value".asContent())
         time.advanceSeconds(5)
         target.putSingleItem("key", "value2".asContent())
-        assertEquals("value2", target.searchSingleItem("key")!!.content().asString())
+        assertEquals("value2", target.searchSingleItem("key")!!.asString())
     }
 
     @Test

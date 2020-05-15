@@ -20,19 +20,10 @@ package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
 
-interface ContentStorage<T> {
-    //todo return T
-    fun search(key: String): ContentStorageItem?
+interface KeyValueStorage {
+    fun putSingleItem(key: String, content: Content)
 
-    fun prepareStorageItems(key: String): StorageItems<T>
+    fun searchSingleItem(key: String): Content?
 
-    interface ContentStorageItem {
-        fun content(): Content
-    }
-
-    interface StorageItems<T> {
-        fun put(content: Content)
-
-        fun save(): T
-    }
+    fun remove(key: String)
 }

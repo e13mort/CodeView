@@ -34,7 +34,7 @@ private class MemoryBasedLimitedTimeContentStorage(
         }
     }
 
-    override fun searchSingleItem(key: String): ContentStorage.ContentStorageItem? {
+    override fun searchSingleItem(key: String): Content? {
         val putTime = timeMap[key] ?: return null
         return if (putTime + ttlSeconds * 1000 > time.nowMillis()) source.searchSingleItem(key) else null
     }

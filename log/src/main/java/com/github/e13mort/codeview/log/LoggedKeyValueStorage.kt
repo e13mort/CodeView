@@ -19,7 +19,6 @@
 package com.github.e13mort.codeview.log
 
 import com.github.e13mort.codeview.Content
-import com.github.e13mort.codeview.cache.ContentStorage
 import com.github.e13mort.codeview.cache.KeyValueStorage
 
 private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage {
@@ -29,7 +28,7 @@ private class LoggedKeyValueStorage(private val source: KeyValueStorage, private
         }
     }
 
-    override fun searchSingleItem(key: String): ContentStorage.ContentStorageItem? {
+    override fun searchSingleItem(key: String): Content? {
         return source.searchSingleItem(key).also {
             log.log("search item for key $key; result = $it")
         }

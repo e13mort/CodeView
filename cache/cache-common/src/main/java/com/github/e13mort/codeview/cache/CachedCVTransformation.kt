@@ -61,15 +61,12 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         return Single.fromCallable {
             try {
                 storage.searchSingleItem(sourceOperation.description())?.let {
-                    return@fromCallable createCacheResult(deserialize(it), sourceOperation)
+                    return@fromCallable createCacheResult(serialization.deserialize(it), sourceOperation)
                 }
             } catch (e: Exception) {}
             return@fromCallable CacheResult(sourceOperation, false)
         }
     }
-
-    private fun deserialize(it: ContentStorage.ContentStorageItem) =
-        serialization.deserialize(it.content())
 
     private fun createCacheResult(
         classes: OUTPUT,
