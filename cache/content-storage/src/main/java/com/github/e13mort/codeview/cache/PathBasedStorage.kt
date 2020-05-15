@@ -63,10 +63,9 @@ class PathBasedStorage(
 
     }
 
-    override fun putSingleItem(key: String, content: Content): PathBasedStorageItem {
+    override fun putSingleItem(key: String, content: Content) {
         registerCacheItem(key).apply {
             Files.copy(content.read(), this)
-            return PathBasedStorageItem(this)
         }
     }
 

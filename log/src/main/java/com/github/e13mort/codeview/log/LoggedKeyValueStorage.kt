@@ -23,7 +23,7 @@ import com.github.e13mort.codeview.cache.ContentStorage
 import com.github.e13mort.codeview.cache.KeyValueStorage
 
 private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage {
-    override fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem {
+    override fun putSingleItem(key: String, content: Content) {
         return source.putSingleItem(key, content).also {
             log.log("put item with key $key")
         }

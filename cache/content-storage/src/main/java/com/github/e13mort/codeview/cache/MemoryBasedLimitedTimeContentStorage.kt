@@ -28,7 +28,7 @@ private class MemoryBasedLimitedTimeContentStorage(
 
     private val timeMap = mutableMapOf<String, Long>()
 
-    override fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem {
+    override fun putSingleItem(key: String, content: Content) {
         return source.putSingleItem(key, content).also {
             timeMap[key] = time.nowMillis()
         }

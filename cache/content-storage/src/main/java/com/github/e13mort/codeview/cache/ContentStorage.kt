@@ -38,7 +38,7 @@ interface ContentStorage<T> {
 }
 
 interface KeyValueStorage {
-    fun putSingleItem(key: String, content: Content): ContentStorage.ContentStorageItem
+    fun putSingleItem(key: String, content: Content)
 
     fun searchSingleItem(key: String): ContentStorage.ContentStorageItem?
 

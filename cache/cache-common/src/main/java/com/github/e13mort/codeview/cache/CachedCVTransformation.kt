@@ -52,10 +52,9 @@ class CachedCVTransformation<INPUT, OUTPUT>(
         }
     }
 
-    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<out ContentStorage.ContentStorageItem> {
+    private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<OUTPUT> {
         return transformOperation.transform()
-            .map { serialization.serialize(it) }
-            .map { storage.putSingleItem(transformOperation.description(), it) }
+            .doOnSuccess { storage.putSingleItem(transformOperation.description(), serialization.serialize(it)) }
     }
 
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {

@@ -19,6 +19,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.asString
 import com.google.common.jimfs.Jimfs
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -126,9 +127,8 @@ class PathBasedStorageTest {
 
     @Test
     internal fun `put single content returns path to the target file`() {
-        storage.putSingleItem("key", "hello".asContent()).apply {
-            assertEquals("hello", Files.readAllLines(path())[0])
-        }
+        storage.putSingleItem("key", "hello".asContent())
+        assertEquals("hello", storage.searchSingleItem("key")!!.content().asString())
     }
 
     @Test
