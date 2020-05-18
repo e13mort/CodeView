@@ -28,7 +28,7 @@ import org.junit.jupiter.api.assertThrows
 
 internal class MemoryBasedLimitedTimeContentStorageTest {
     private val time = FkTime()
-    private val target = PathBasedStorage(
+    private val target = PathContentStorageStorage(
         Jimfs.newFileSystem().getPath("."),
         UUIDCacheName(),
         PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))

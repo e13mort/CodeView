@@ -38,7 +38,7 @@ class PathKeyValueStorage(
         folderName(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {
-                return PathBasedStorage.PathBasedStorageItem(path)
+                return PathContentStorageStorage.PathBasedStorageItem(path)
             }
         }
         return null

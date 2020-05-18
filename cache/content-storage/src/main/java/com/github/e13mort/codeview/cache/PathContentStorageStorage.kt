@@ -23,7 +23,7 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
-class PathBasedStorage(
+class PathContentStorageStorage(
     private val root: Path,
     private val cacheName: CacheName,
     private val registry: PathRegistry

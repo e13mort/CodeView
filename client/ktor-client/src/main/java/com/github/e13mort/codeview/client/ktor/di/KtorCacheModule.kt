@@ -35,14 +35,14 @@ class KtorCacheModule(private val appContext: AppContext) {
     }
 
     @Provides
-    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: DataSource) : CVInput {
+    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathContentStorageStorage, dataSource: DataSource) : CVInput {
         return CachedCVInput(dataSource, cache, AsyncWorkRunner())
     }
 
     @Provides
     @Named(DI_KEY_INPUT_STORAGE)
-    fun contentStorage() : PathBasedStorage {
-        return PathBasedStorage(
+    fun contentStorage() : PathContentStorageStorage {
+        return PathContentStorageStorage(
             appContext.sourceCachePath(),
             UUIDCacheName(),
             PathRegistry(appContext.sourceCachePath().resolve(registryFileName))

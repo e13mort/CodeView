@@ -31,9 +31,9 @@ import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
 
-class PathBasedStorageTest {
+class PathContentStorageStorageTest {
     private lateinit var memoryFileSystem: FileSystem
-    private lateinit var storage: PathBasedStorage
+    private lateinit var storage: PathContentStorageStorage
     private lateinit var root: Path
     private val cacheName = UUIDCacheName()
 
@@ -45,7 +45,7 @@ class PathBasedStorageTest {
     internal fun setUp() {
         memoryFileSystem = Jimfs.newFileSystem()
         root = memoryFileSystem.getPath(".")
-        storage = PathBasedStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
+        storage = PathContentStorageStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
     }
 
     @Test
@@ -79,7 +79,7 @@ class PathBasedStorageTest {
     @Test
     internal fun `item is found on a new file storage`() {
         putItems("key", MemoryContent())
-        val newStorage = PathBasedStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
+        val newStorage = PathContentStorageStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
         val key = "key"
         assertNotNull(newStorage.search(key))
     }
@@ -121,7 +121,7 @@ class PathBasedStorageTest {
 
     @Test
     internal fun `search returns empty result on not existing cache dir`() {
-        val newStorage = PathBasedStorage(
+        val newStorage = PathContentStorageStorage(
             root.resolve("not_existing_dir"),
             cacheName,
             PathRegistry(root.resolve("not_existing_dir").resolve(REGISTRY_NAME))

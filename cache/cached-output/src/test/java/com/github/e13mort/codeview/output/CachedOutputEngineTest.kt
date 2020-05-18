@@ -21,7 +21,7 @@ package com.github.e13mort.codeview.output
 import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.StoredObject
 import com.github.e13mort.codeview.cache.CacheName
-import com.github.e13mort.codeview.cache.PathBasedStorage
+import com.github.e13mort.codeview.cache.PathContentStorageStorage
 import com.github.e13mort.codeview.cache.PathRegistry
 import com.github.e13mort.codeview.output.engine.OutputEngine
 import com.github.e13mort.codeview.stubs.StubFrontendTransformOperation
@@ -37,13 +37,13 @@ import java.nio.charset.Charset
 internal class CachedOutputEngineTest {
 
     private lateinit var outputEngine: CachedOutputEngine
-    private lateinit var storage: PathBasedStorage
+    private lateinit var storage: PathContentStorageStorage
     private val fileSystem = Jimfs.newFileSystem()
     private val root = fileSystem.getPath(".")
 
     @BeforeEach
     internal fun setUp() {
-        storage = PathBasedStorage(root, object : CacheName {
+        storage = PathContentStorageStorage(root, object : CacheName {
             override fun createFileName(): String = "result.txt"
 
             override fun createDirName(): String = "dir"
