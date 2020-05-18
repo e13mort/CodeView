@@ -68,9 +68,6 @@ class PathContentStorageStorage(
                     .walk(path)
                     .sorted(Comparator.reverseOrder())
                     .forEach { Files.delete(it) }
-            } else { //an item was placed via `single` methods
-                Files.delete(path)
-                Files.delete(path.parent)
             }
         }
     }
