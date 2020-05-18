@@ -18,7 +18,7 @@
 
 package com.github.e13mort.codeview.datasource.git
 
-import com.github.e13mort.codeview.cache.PathContentStorageStorage
+import com.github.e13mort.codeview.cache.PathKeyValueStorage
 import com.github.e13mort.codeview.cache.PathRegistry
 import com.github.e13mort.codeview.cache.UUIDCacheName
 import com.github.e13mort.codeview.datasource.git.fake.FkRemoteRepositories
@@ -33,11 +33,13 @@ internal class CachedRemoteRepositoriesTest {
     private val remoteRepositories = FkRemoteRepositories().apply {
         add("repo1", "master", "masterHash")
     }
-    private val target = remoteRepositories.cached(PathContentStorageStorage(
-        Jimfs.newFileSystem().getPath("."),
-        UUIDCacheName(),
-        PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
-    ))
+    private val target = remoteRepositories.cached(
+        PathKeyValueStorage(
+            Jimfs.newFileSystem().getPath("."),
+            UUIDCacheName(),
+            PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
+        )
+    )
 
     @Test
     internal fun `basic remote hash method call returns valid data`() {

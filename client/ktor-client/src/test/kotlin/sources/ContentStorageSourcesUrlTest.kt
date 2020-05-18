@@ -19,7 +19,7 @@
 package sources
 
 import com.github.e13mort.codeview.cache.ConstNameUUIDBasedCacheName
-import com.github.e13mort.codeview.cache.PathContentStorageStorage
+import com.github.e13mort.codeview.cache.PathKeyValueStorage
 import com.github.e13mort.codeview.cache.PathRegistry
 import com.github.e13mort.codeview.client.ktor.sources.ContentStorageSourcesUrl
 import com.github.e13mort.codeview.stubs.StubContent
@@ -36,7 +36,7 @@ import java.util.stream.Stream
 internal class ContentStorageSourcesUrlTest {
 
     private val root = Jimfs.newFileSystem().getPath(".")
-    private val contentStorage = PathContentStorageStorage(
+    private val contentStorage = PathKeyValueStorage(
         root,
         ConstNameUUIDBasedCacheName("content.json"),
         PathRegistry(root.resolve("registry.json"))
