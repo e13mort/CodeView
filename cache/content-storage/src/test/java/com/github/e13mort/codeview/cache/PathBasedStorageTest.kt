@@ -19,7 +19,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import com.github.e13mort.codeview.asString
+import com.github.e13mort.codeview.asContent
 import com.google.common.jimfs.Jimfs
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -130,49 +130,10 @@ class PathBasedStorageTest {
     }
 
     @Test
-    internal fun `put single content returns path to the target file`() {
-        storage.putSingleItem("key", "hello".asContent())
-        assertEquals("hello", storage.searchSingleItem("key")!!.asString())
-    }
-
-    @Test
-    internal fun `search for a single not existing value returns null result`() {
-        assertNull(storage.searchSingleItem("key"))
-    }
-
-    @Test
-    internal fun `search for a single existing value returns not null result`() {
-        storage.putSingleItem("key", "hello".asContent())
-        assertNotNull(storage.searchSingleItem("key"))
-    }
-
-    @Test
-    internal fun `search for a single existing value returns a valid result`() {
-        storage.putSingleItem("key", "hello".asContent())
-        storage.searchSingleItem("key")!!.apply {
-            assertEquals("hello", asString())
-        }
-    }
-
-    @Test
-    internal fun `removing single item leads to empty result`() {
-        storage.putSingleItem("test", "hello".asContent())
-        storage.remove("test")
-        assertNull(storage.searchSingleItem("test"))
-    }
-
-    @Test
     internal fun `removing multiple items leads to empty result`() {
         putItems("key", MemoryContent())
         storage.remove("key")
         assertNull(storage.search("key"))
-    }
-
-    @Test
-    internal fun `removing single item leads to actual files removal`() {
-        storage.putSingleItem("test", "hello".asContent())
-        storage.remove("test")
-        assertEquals(0L, root.internalDirsCount())
     }
 
     @Test
@@ -196,12 +157,4 @@ class PathBasedStorageTest {
     internal class MemoryContent(private val bytes : ByteArray = byteArrayOf()) : Content {
         override fun read(): InputStream = ByteArrayInputStream(bytes)
     }
-}
-
-private fun String.asContent() : Content {
-    return PathBasedStorageTest.MemoryContent(this.toByteArray())
-}
-
-private fun Path.internalDirsCount(): Long {
-    return Files.list(this).filter { Files.isDirectory(it) }.count()
 }

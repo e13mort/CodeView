@@ -28,7 +28,7 @@ class PathBasedStorage(
     private val cacheName: CacheName,
     private val registry: PathRegistry
 ) :
-    ContentStorage<Path>, KeyValueStorage {
+    ContentStorage<Path>, KeyValueStorage, BasePathStorage(root, cacheName, registry) {
 
     override fun search(key: String): PathBasedStorageItem? {
         val folderName = folderName(key)
@@ -94,40 +94,6 @@ class PathBasedStorage(
     private fun copyFileToCache(content: Content, parent: Path): Path {
         Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
         return parent
-    }
-
-    private fun registerCacheFolder(key: String): Path {
-        ensureRootExists()
-        val folderName = cacheName.createDirName()
-        val editableRegistry = registry.edit()
-        editableRegistry.put(key, folderName)
-        val path = root.resolve(folderName)
-        Files.createDirectory(path)
-        if (Files.exists(path)) editableRegistry.close()
-        return path
-    }
-
-    private fun registerCacheItem(key: String): Path {
-        ensureRootExists()
-
-        val folderName = cacheName.createDirName()
-        val folderPath = root.resolve(folderName)
-        Files.createDirectory(folderPath)
-        val filePath = folderPath.resolve(cacheName.createFileName())
-        val relativePath = root.relativize(filePath)
-
-        registry.edit().use {
-            it.put(key, relativePath.toString())
-        }
-        return filePath
-    }
-
-    private fun ensureRootExists() {
-        if (!Files.exists(root)) Files.createDirectory(root)
-    }
-
-    private fun folderName(key: String): String? {
-        return registry.value(key)
     }
 
     class PathBasedStorageItem(private val path: Path) :
