@@ -18,6 +18,7 @@
 
 package com.github.e13mort.codeview.cache
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
 import java.nio.file.Files
@@ -69,4 +70,14 @@ class PathRegistry(private val registryPath: Path) :
             Files.write(path, listOf(mutableMap.asJson()))
         }
     }
+
+
+}
+
+@Serializable
+private data class CachedMap(val data: MutableMap<String, String>)
+
+private fun MutableMap<String, String>.asJson(): String {
+    val json = Json(configuration = JsonConfiguration.Stable)
+    return json.toJson(CachedMap.serializer(), CachedMap(this)).toString()
 }

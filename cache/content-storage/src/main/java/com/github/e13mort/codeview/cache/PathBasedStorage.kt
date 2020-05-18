@@ -19,9 +19,6 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonConfiguration
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -152,12 +149,4 @@ class PathBasedStorage(
 
     }
 
-}
-
-@Serializable
-internal data class CachedMap(val data: MutableMap<String, String>)
-
-internal fun MutableMap<String, String>.asJson(): String {
-    val json = Json(configuration = JsonConfiguration.Stable)
-    return json.toJson(CachedMap.serializer(), CachedMap(this)).toString()
 }
