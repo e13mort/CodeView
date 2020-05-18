@@ -24,7 +24,7 @@ import java.nio.file.Path
 
 class PathKeyValueStorage(
     private val root: Path,
-    private val cacheName: CacheName,
+    cacheName: CacheName,
     private val registry: PathRegistry
 ): KeyValueStorage, BasePathStorage(root, cacheName, registry) {
 

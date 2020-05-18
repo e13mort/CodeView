@@ -52,7 +52,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_BACKEND_STORAGE)
     fun backendStorage() : KeyValueStorage {
-        return PathBasedStorage(
+        return PathKeyValueStorage(
             appContext.backendCachePath(),
             ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()),
             PathRegistry(appContext.backendCachePath().resolve(registryFileName))
@@ -62,7 +62,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_FRONTEND_STORAGE)
     fun frontendStorage() : KeyValueStorage {
-        return PathBasedStorage(
+        return PathKeyValueStorage(
             appContext.frontendCachePath(),
             ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName()),
             PathRegistry(appContext.frontendCachePath().resolve(registryFileName))
@@ -72,7 +72,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_OUTPUT_STORAGE)
     fun outputStorage() : KeyValueStorage {
-        return PathBasedStorage(
+        return PathKeyValueStorage(
             appContext.outputCachePath(),
             ConstNameUUIDBasedCacheName(appContext.outputStorageItemName()),
             PathRegistry(appContext.outputCachePath().resolve(registryFileName))
@@ -82,7 +82,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_SOURCES_URL_STORAGE)
     fun sourcesUrlStorage() : KeyValueStorage {
-        return PathBasedStorage(
+        return PathKeyValueStorage(
             appContext.sourcesUrlCachePath(),
             ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()),
             PathRegistry(appContext.sourcesUrlCachePath().resolve(registryFileName))
@@ -92,7 +92,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_BRANCH_META_STORAGE)
     fun branchMetaStorage() : KeyValueStorage {
-        return PathBasedStorage(
+        return PathKeyValueStorage(
             appContext.branchMetaDirPath(),
             ConstNameUUIDBasedCacheName(appContext.branchHashItemName()),
             PathRegistry(appContext.branchMetaDirPath().resolve(registryFileName))
