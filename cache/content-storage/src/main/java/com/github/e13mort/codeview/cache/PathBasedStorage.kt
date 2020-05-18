@@ -179,9 +179,9 @@ class PathBasedStorage(
 }
 
 @Serializable
-private data class CachedMap(val data: MutableMap<String, String>)
+internal data class CachedMap(val data: MutableMap<String, String>)
 
-private fun MutableMap<String, String>.asJson(): String {
+internal fun MutableMap<String, String>.asJson(): String {
     val json = Json(configuration = JsonConfiguration.Stable)
     return json.toJson(CachedMap.serializer(), CachedMap(this)).toString()
 }
