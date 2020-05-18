@@ -28,10 +28,12 @@ import java.nio.file.Path
 
 class PathBasedStorage(
     private val root: Path,
-    private val registryFileName: String = "registry.json",
+    registryFileName: String = "registry.json",
     private val cacheName: CacheName
 ) :
     ContentStorage<Path>, KeyValueStorage {
+
+    private val registry = PathRegistry(root.resolve(registryFileName))
 
     override fun search(key: String): PathBasedStorageItem? {
         val folderName = folderName(key)
@@ -80,10 +82,7 @@ class PathBasedStorage(
 
     override fun remove(key: String) {
         folderName(key)?.apply {
-            readMap().apply {
-                remove(key)
-                saveMap(this)
-            }
+            registry.edit().apply { remove(key) }
             val path = root.resolve(this)
             if (Files.isDirectory(path)) { //items was placed via reactive methods
                 Files
@@ -105,25 +104,26 @@ class PathBasedStorage(
     private fun registerCacheFolder(key: String): Path {
         ensureRootExists()
         val folderName = cacheName.createDirName()
-        val map = readMap()
-        map[key] = folderName
+        val editableRegistry = registry.edit()
+        editableRegistry.put(key, folderName)
         val path = root.resolve(folderName)
         Files.createDirectory(path)
-        if (Files.exists(path)) saveMap(map)
+        if (Files.exists(path)) editableRegistry.close()
         return path
     }
 
     private fun registerCacheItem(key: String): Path {
         ensureRootExists()
-        val map = readMap()
 
         val folderName = cacheName.createDirName()
         val folderPath = root.resolve(folderName)
         Files.createDirectory(folderPath)
         val filePath = folderPath.resolve(cacheName.createFileName())
         val relativePath = root.relativize(filePath)
-        map[key] = relativePath.toString()
-        saveMap(map)
+
+        registry.edit().use {
+            it.put(key, relativePath.toString())
+        }
         return filePath
     }
 
@@ -131,27 +131,8 @@ class PathBasedStorage(
         if (!Files.exists(root)) Files.createDirectory(root)
     }
 
-    private fun saveMap(map: MutableMap<String, String>) =
-        Files.write(root.resolve(registryFileName), listOf(map.asJson()))
-
     private fun folderName(key: String): String? {
-        return readMap()[key]
-    }
-
-    private fun readMap(): MutableMap<String, String> {
-        val path = root.resolve(registryFileName)
-        return if (Files.exists(path)) {
-            readRegistry(path)
-        } else {
-            mutableMapOf()
-        }
-    }
-
-    private fun readRegistry(path: Path): MutableMap<String, String> {
-        val readAllLines = Files.readAllLines(path)
-        val combined = readAllLines.reduce { acc, s -> acc.plus(s) }
-        val json = Json(configuration = JsonConfiguration.Stable)
-        return json.parse(CachedMap.serializer(), combined).data
+        return registry.value(key)
     }
 
     class PathBasedStorageItem(private val path: Path) :
