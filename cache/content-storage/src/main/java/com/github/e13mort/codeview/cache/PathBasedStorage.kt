@@ -19,7 +19,6 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import io.reactivex.Single
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonConfiguration
@@ -50,7 +49,7 @@ class PathBasedStorage(
     private inner class StorageItemsImpl(private val key: String) : ContentStorage.StorageItems<Path> {
 
         private val path by lazy {
-            registerCacheFolder(key).blockingGet()
+            registerCacheFolder(key)
         }
 
         override fun put(content: Content) {
@@ -103,17 +102,15 @@ class PathBasedStorage(
         return parent
     }
 
-    private fun registerCacheFolder(key: String): Single<Path> {
-        return Single.fromCallable {
-            ensureRootExists()
-            val folderName = cacheName.createDirName()
-            val map = readMap()
-            map[key] = folderName
-            val path = root.resolve(folderName)
-            Files.createDirectory(path)
-            if (Files.exists(path)) saveMap(map)
-            path
-        }
+    private fun registerCacheFolder(key: String): Path {
+        ensureRootExists()
+        val folderName = cacheName.createDirName()
+        val map = readMap()
+        map[key] = folderName
+        val path = root.resolve(folderName)
+        Files.createDirectory(path)
+        if (Files.exists(path)) saveMap(map)
+        return path
     }
 
     private fun registerCacheItem(key: String): Path {
