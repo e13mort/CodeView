@@ -248,7 +248,7 @@ internal class CachedCVTransformationTest {
             UUIDCacheName(),
             PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
         ).apply {
-            putSingleItem("existing", TestContent())
+            put("existing", TestContent())
         }
     }
 

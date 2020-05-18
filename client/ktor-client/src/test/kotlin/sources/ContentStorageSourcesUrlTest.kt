@@ -108,6 +108,6 @@ internal class ContentStorageSourcesUrlTest {
     }
 
     private fun prepareStorage(key: String, content: String) {
-        contentStorage.putSingleItem(key, StubContent(content))
+        contentStorage.put(key, StubContent(content))
     }
 }

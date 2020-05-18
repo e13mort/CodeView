@@ -36,40 +36,40 @@ internal class MemoryBasedLimitedTimeContentStorageTest {
 
     @Test
     internal fun `existing item is returned if ttl isn't expired`() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         time.advanceSeconds(1)
-        assertNotNull(target.searchSingleItem("key"))
+        assertNotNull(target.search("key"))
     }
 
     @Test
     internal fun `existing item's ttl updated`() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         time.advanceSeconds(5)
-        target.putSingleItem("key", "value2".asContent())
+        target.put("key", "value2".asContent())
         time.advanceSeconds(7)
-        assertNotNull(target.searchSingleItem("key"))
+        assertNotNull(target.search("key"))
     }
 
     @Test
     internal fun `null is returned if ttl is expired`() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         time.advanceSeconds(11)
-        assertNull(target.searchSingleItem("key"))
+        assertNull(target.search("key"))
     }
 
     @Test
     internal fun `returned item's content is valid`() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         time.advanceSeconds(1)
-        assertEquals("value", target.searchSingleItem("key")!!.asString())
+        assertEquals("value", target.search("key")!!.asString())
     }
 
     @Test
     internal fun `returned updated item's content is valid`() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         time.advanceSeconds(5)
-        target.putSingleItem("key", "value2".asContent())
-        assertEquals("value2", target.searchSingleItem("key")!!.asString())
+        target.put("key", "value2".asContent())
+        assertEquals("value2", target.search("key")!!.asString())
     }
 
     @Test

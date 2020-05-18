@@ -21,9 +21,9 @@ package com.github.e13mort.codeview.cache
 import com.github.e13mort.codeview.Content
 
 interface KeyValueStorage {
-    fun putSingleItem(key: String, content: Content)
+    fun put(key: String, content: Content)
 
-    fun searchSingleItem(key: String): Content?
+    fun search(key: String): Content?
 
     fun remove(key: String)
 }

@@ -29,7 +29,7 @@ import kotlinx.serialization.json.contentOrNull
 class ContentStorageSourcesUrl(private val contentStorage: KeyValueStorage) : SourcesUrl {
 
     override fun parse(path: String): SourcesUrl.PathDescription? {
-        val content = contentStorage.searchSingleItem(path) ?: return null
+        val content = contentStorage.search(path) ?: return null
         val json = Json(JsonConfiguration.Stable)
 
         val data = json.parse(JsonObject.serializer(), content.asString())

@@ -28,15 +28,15 @@ private class MemoryBasedLimitedTimeContentStorage(
 
     private val timeMap = mutableMapOf<String, Long>()
 
-    override fun putSingleItem(key: String, content: Content) {
-        return source.putSingleItem(key, content).also {
+    override fun put(key: String, content: Content) {
+        return source.put(key, content).also {
             timeMap[key] = time.nowMillis()
         }
     }
 
-    override fun searchSingleItem(key: String): Content? {
+    override fun search(key: String): Content? {
         val putTime = timeMap[key] ?: return null
-        return if (putTime + ttlSeconds * 1000 > time.nowMillis()) source.searchSingleItem(key) else null
+        return if (putTime + ttlSeconds * 1000 > time.nowMillis()) source.search(key) else null
     }
 
     override fun remove(key: String) {

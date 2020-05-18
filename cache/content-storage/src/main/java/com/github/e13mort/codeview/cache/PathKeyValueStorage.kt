@@ -28,13 +28,13 @@ class PathKeyValueStorage(
     private val registry: PathRegistry
 ): KeyValueStorage, BasePathStorage(root, cacheName, registry) {
 
-    override fun putSingleItem(key: String, content: Content) {
+    override fun put(key: String, content: Content) {
         registerCacheItem(key).apply {
             Files.copy(content.read(), this)
         }
     }
 
-    override fun searchSingleItem(key: String): Content? {
+    override fun search(key: String): Content? {
         folderName(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {

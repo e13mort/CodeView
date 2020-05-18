@@ -22,14 +22,14 @@ import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.cache.KeyValueStorage
 
 private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage {
-    override fun putSingleItem(key: String, content: Content) {
-        return source.putSingleItem(key, content).also {
+    override fun put(key: String, content: Content) {
+        return source.put(key, content).also {
             log.log("put item with key $key")
         }
     }
 
-    override fun searchSingleItem(key: String): Content? {
-        return source.searchSingleItem(key).also {
+    override fun search(key: String): Content? {
+        return source.search(key).also {
             log.log("search item for key $key; result = $it")
         }
     }

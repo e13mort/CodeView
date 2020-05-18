@@ -32,21 +32,21 @@ internal class LoggedKeyValueStorageTest {
 
     @BeforeEach
     internal fun setUp() {
-        whenever(source.searchSingleItem(any())).thenReturn(mock())
+        whenever(source.search(any())).thenReturn(mock())
     }
 
     @Test
     fun putSingleItem() {
-        target.putSingleItem("key", "value".asContent())
+        target.put("key", "value".asContent())
         verify(log).log(any<String>())
-        verify(source).putSingleItem(eq("key"), any())
+        verify(source).put(eq("key"), any())
     }
 
     @Test
     fun searchSingleItem() {
-        target.searchSingleItem("key")
+        target.search("key")
         verify(log).log(any<String>())
-        verify(source).searchSingleItem("key")
+        verify(source).search("key")
     }
 
     @Test

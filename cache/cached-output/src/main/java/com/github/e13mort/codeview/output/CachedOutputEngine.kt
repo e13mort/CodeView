@@ -47,7 +47,7 @@ class CachedOutputEngine(private val source: OutputEngine, private val contentSt
                 it.onComplete()
                 return@create
             }
-            contentStorage.searchSingleItem(data.description())?.run {
+            contentStorage.search(data.description())?.run {
                 it.onSuccess(read())
                 return@create
             }
@@ -69,7 +69,7 @@ class CachedOutputEngine(private val source: OutputEngine, private val contentSt
     }
 
     private fun saveToCache(description: String, data: ByteArray) {
-        contentStorage.putSingleItem(description, MemoryContent(data))
+        contentStorage.put(description, MemoryContent(data))
     }
 
     private class MemoryContent(

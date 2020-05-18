@@ -36,39 +36,39 @@ internal class PathKeyValueStorageTest {
 
     @Test
     internal fun `put single content returns path to the target file`() {
-        storage.putSingleItem("key", "hello".asContent())
-        assertEquals("hello", storage.searchSingleItem("key")!!.asString())
+        storage.put("key", "hello".asContent())
+        assertEquals("hello", storage.search("key")!!.asString())
     }
 
     @Test
     internal fun `search for a single not existing value returns null result`() {
-        assertNull(storage.searchSingleItem("key"))
+        assertNull(storage.search("key"))
     }
 
     @Test
     internal fun `search for a single existing value returns not null result`() {
-        storage.putSingleItem("key", "hello".asContent())
-        assertNotNull(storage.searchSingleItem("key"))
+        storage.put("key", "hello".asContent())
+        assertNotNull(storage.search("key"))
     }
 
     @Test
     internal fun `search for a single existing value returns a valid result`() {
-        storage.putSingleItem("key", "hello".asContent())
-        storage.searchSingleItem("key")!!.apply {
+        storage.put("key", "hello".asContent())
+        storage.search("key")!!.apply {
             assertEquals("hello", asString())
         }
     }
 
     @Test
     internal fun `removing single item leads to empty result`() {
-        storage.putSingleItem("test", "hello".asContent())
+        storage.put("test", "hello".asContent())
         storage.remove("test")
-        assertNull(storage.searchSingleItem("test"))
+        assertNull(storage.search("test"))
     }
 
     @Test
     internal fun `removing single item leads to actual files removal`() {
-        storage.putSingleItem("test", "hello".asContent())
+        storage.put("test", "hello".asContent())
         storage.remove("test")
         assertEquals(0L, fs.getPath("data").internalDirsCount())
     }

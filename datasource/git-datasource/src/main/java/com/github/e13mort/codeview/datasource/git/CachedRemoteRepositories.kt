@@ -28,11 +28,11 @@ internal class CachedRemoteRepositories(private val source: RemoteRepositories, 
 
     override fun remoteBranchHash(pathDescription: SourcesUrl.PathDescription): String? {
         val key = calculateKey(pathDescription) ?: return null
-        storage.searchSingleItem(key)?.let {
+        storage.search(key)?.let {
             return it.asString()
         }
         return source.remoteBranchHash(pathDescription)?.also {
-            storage.putSingleItem(key, it.asContent())
+            storage.put(key, it.asContent())
         }
     }
 

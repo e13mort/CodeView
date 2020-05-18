@@ -54,13 +54,13 @@ class CachedCVTransformation<INPUT, OUTPUT>(
 
     private fun save(transformOperation: CVTransformation.TransformOperation<OUTPUT>): Single<OUTPUT> {
         return transformOperation.transform()
-            .doOnSuccess { storage.putSingleItem(transformOperation.description(), serialization.serialize(it)) }
+            .doOnSuccess { storage.put(transformOperation.description(), serialization.serialize(it)) }
     }
 
     private fun searchForItem(sourceOperation: CVTransformation.TransformOperation<OUTPUT>) : Single<CacheResult<OUTPUT>> {
         return Single.fromCallable {
             try {
-                storage.searchSingleItem(sourceOperation.description())?.let {
+                storage.search(sourceOperation.description())?.let {
                     return@fromCallable createCacheResult(serialization.deserialize(it), sourceOperation)
                 }
             } catch (e: Exception) {}
