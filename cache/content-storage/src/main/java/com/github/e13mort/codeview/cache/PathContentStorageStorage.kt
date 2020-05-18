@@ -28,7 +28,7 @@ class PathContentStorageStorage(
     private val cacheName: CacheName,
     private val registry: PathRegistry
 ) :
-    ContentStorage<Path>, KeyValueStorage, BasePathStorage(root, cacheName, registry) {
+    ContentStorage<Path>, BasePathStorage(root, cacheName, registry) {
 
     override fun search(key: String): PathBasedStorageItem? {
         val folderName = folderName(key)
@@ -57,22 +57,6 @@ class PathContentStorageStorage(
             return path
         }
 
-    }
-
-    override fun putSingleItem(key: String, content: Content) {
-        registerCacheItem(key).apply {
-            Files.copy(content.read(), this)
-        }
-    }
-
-    override fun searchSingleItem(key: String): Content? {
-        folderName(key)?.apply {
-            val path = root.resolve(this)
-            if (Files.exists(path)) {
-                return PathBasedStorageItem(path)
-            }
-        }
-        return null
     }
 
     override fun remove(key: String) {

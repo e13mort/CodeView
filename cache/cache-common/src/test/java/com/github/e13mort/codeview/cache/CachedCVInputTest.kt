@@ -62,7 +62,10 @@ internal class CachedCVInputTest {
         return CachedCVInput(
             StubDataSource(StubSources(StubSourceFile(inputStream))),
             PathContentStorageStorage(root, UUIDCacheName(), PathRegistry(root.resolve("registry.json"))).apply {
-                putSingleItem("stub", StubContent())
+                prepareStorageItems("stub").apply {
+                    put(StubContent())
+                    save()
+                }
             })
     }
 }

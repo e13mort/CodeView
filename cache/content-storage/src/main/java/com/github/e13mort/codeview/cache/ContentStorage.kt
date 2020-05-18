@@ -26,6 +26,8 @@ interface ContentStorage<T> {
 
     fun prepareStorageItems(key: String): StorageItems<T>
 
+    fun remove(key: String)
+
     interface ContentStorageItem {
         fun content(): Content
     }
