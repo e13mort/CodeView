@@ -30,6 +30,10 @@ import javax.inject.Named
 @Module
 class KtorCacheModule(private val appContext: AppContext) {
 
+    companion object {
+        const val registryFileName = "registry.json"
+    }
+
     @Provides
     fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathBasedStorage, dataSource: DataSource) : CVInput {
         return CachedCVInput(dataSource, cache, AsyncWorkRunner())
@@ -38,14 +42,20 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_INPUT_STORAGE)
     fun contentStorage() : PathBasedStorage {
-        return PathBasedStorage(appContext.sourceCachePath(), UUIDCacheName())
+        return PathBasedStorage(
+            appContext.sourceCachePath(),
+            UUIDCacheName(),
+            PathRegistry(appContext.sourceCachePath().resolve(registryFileName))
+        )
     }
 
     @Provides
     @Named(DI_KEY_BACKEND_STORAGE)
     fun backendStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.backendCachePath(),
-            ConstNameUUIDBasedCacheName(appContext.backendStorageItemName())
+        return PathBasedStorage(
+            appContext.backendCachePath(),
+            ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()),
+            PathRegistry(appContext.backendCachePath().resolve(registryFileName))
         )
     }
 
@@ -54,7 +64,8 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun frontendStorage() : KeyValueStorage {
         return PathBasedStorage(
             appContext.frontendCachePath(),
-            ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName())
+            ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName()),
+            PathRegistry(appContext.frontendCachePath().resolve(registryFileName))
         )
     }
 
@@ -63,7 +74,8 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun outputStorage() : KeyValueStorage {
         return PathBasedStorage(
             appContext.outputCachePath(),
-            ConstNameUUIDBasedCacheName(appContext.outputStorageItemName())
+            ConstNameUUIDBasedCacheName(appContext.outputStorageItemName()),
+            PathRegistry(appContext.outputCachePath().resolve(registryFileName))
         )
     }
 
@@ -72,7 +84,8 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun sourcesUrlStorage() : KeyValueStorage {
         return PathBasedStorage(
             appContext.sourcesUrlCachePath(),
-            ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName())
+            ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()),
+            PathRegistry(appContext.sourcesUrlCachePath().resolve(registryFileName))
         )
     }
 
@@ -81,7 +94,8 @@ class KtorCacheModule(private val appContext: AppContext) {
     fun branchMetaStorage() : KeyValueStorage {
         return PathBasedStorage(
             appContext.branchMetaDirPath(),
-            ConstNameUUIDBasedCacheName(appContext.branchHashItemName())
+            ConstNameUUIDBasedCacheName(appContext.branchHashItemName()),
+            PathRegistry(appContext.branchMetaDirPath().resolve(registryFileName))
         )
     }
 }

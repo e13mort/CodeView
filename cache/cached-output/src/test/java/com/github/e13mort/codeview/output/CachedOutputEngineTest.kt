@@ -22,6 +22,7 @@ import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.StoredObject
 import com.github.e13mort.codeview.cache.CacheName
 import com.github.e13mort.codeview.cache.PathBasedStorage
+import com.github.e13mort.codeview.cache.PathRegistry
 import com.github.e13mort.codeview.output.engine.OutputEngine
 import com.github.e13mort.codeview.stubs.StubFrontendTransformOperation
 import com.google.common.jimfs.Jimfs
@@ -46,7 +47,7 @@ internal class CachedOutputEngineTest {
             override fun createFileName(): String = "result.txt"
 
             override fun createDirName(): String = "dir"
-        }, "reg.json")
+        }, PathRegistry(root.resolve("reg.json")))
         outputEngine = CachedOutputEngine(FakeEngine(), storage)
     }
 

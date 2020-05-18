@@ -29,11 +29,9 @@ import java.nio.file.Path
 class PathBasedStorage(
     private val root: Path,
     private val cacheName: CacheName,
-    registryFileName: String = "registry.json"
+    private val registry: PathRegistry
 ) :
     ContentStorage<Path>, KeyValueStorage {
-
-    private val registry = PathRegistry(root.resolve(registryFileName))
 
     override fun search(key: String): PathBasedStorageItem? {
         val folderName = folderName(key)

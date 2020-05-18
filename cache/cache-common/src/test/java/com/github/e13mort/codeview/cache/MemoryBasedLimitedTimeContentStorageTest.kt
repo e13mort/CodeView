@@ -28,7 +28,11 @@ import org.junit.jupiter.api.assertThrows
 
 internal class MemoryBasedLimitedTimeContentStorageTest {
     private val time = FkTime()
-    private val target = PathBasedStorage(Jimfs.newFileSystem().getPath("."), UUIDCacheName()).withTimeLimit(10, time)
+    private val target = PathBasedStorage(
+        Jimfs.newFileSystem().getPath("."),
+        UUIDCacheName(),
+        PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
+    ).withTimeLimit(10, time)
 
     @Test
     internal fun `existing item is returned if ttl isn't expired`() {

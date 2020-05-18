@@ -66,7 +66,7 @@ class DataModule(private val rootFolder: Path) {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_BACK_NAME),
             ConstNameUUIDBasedCacheName(CACHE_FILE_BACK_NAME),
-            CACHE_REGISTRY_FILE_NAME
+            PathRegistry(rootFolder.resolve(CACHE_FOLDER_BACK_NAME).resolve(CACHE_REGISTRY_FILE_NAME))
         ).withLogs(log.withTag("backed-storage"))
     }
 
@@ -76,7 +76,7 @@ class DataModule(private val rootFolder: Path) {
         return PathBasedStorage(
             rootFolder.resolve(CACHE_FOLDER_FRONT_NAME),
             ConstNameUUIDBasedCacheName(CACHE_FILE_FRONT_NAME),
-            CACHE_REGISTRY_FILE_NAME
+            PathRegistry(rootFolder.resolve(CACHE_FOLDER_FRONT_NAME).resolve(CACHE_REGISTRY_FILE_NAME))
         ).withLogs(log.withTag("frontend-storage"))
     }
 
@@ -86,7 +86,7 @@ class DataModule(private val rootFolder: Path) {
         return PathBasedStorage(
             rootFolder.resolve("output-cache"),
             ConstNameUUIDBasedCacheName("output.png"),
-            "registry.json"
+            PathRegistry(rootFolder.resolve("output-cache").resolve("registry.json"))
         ).withLogs(log.withTag("output-storage"))
     }
 

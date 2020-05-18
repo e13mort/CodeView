@@ -19,6 +19,7 @@
 package com.github.e13mort.codeview.datasource.git
 
 import com.github.e13mort.codeview.cache.PathBasedStorage
+import com.github.e13mort.codeview.cache.PathRegistry
 import com.github.e13mort.codeview.cache.UUIDCacheName
 import com.github.e13mort.codeview.datasource.git.fake.FkRemoteRepositories
 import com.github.e13mort.githuburl.SourcesUrl
@@ -34,7 +35,8 @@ internal class CachedRemoteRepositoriesTest {
     }
     private val target = remoteRepositories.cached(PathBasedStorage(
         Jimfs.newFileSystem().getPath("."),
-        UUIDCacheName()
+        UUIDCacheName(),
+        PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
     ))
 
     @Test

@@ -45,7 +45,7 @@ class PathBasedStorageTest {
     internal fun setUp() {
         memoryFileSystem = Jimfs.newFileSystem()
         root = memoryFileSystem.getPath(".")
-        storage = PathBasedStorage(root, cacheName, REGISTRY_NAME)
+        storage = PathBasedStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
     }
 
     @Test
@@ -79,7 +79,7 @@ class PathBasedStorageTest {
     @Test
     internal fun `item is found on a new file storage`() {
         putItems("key", MemoryContent())
-        val newStorage = PathBasedStorage(root, cacheName, REGISTRY_NAME)
+        val newStorage = PathBasedStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
         val key = "key"
         assertNotNull(newStorage.search(key))
     }
@@ -121,7 +121,11 @@ class PathBasedStorageTest {
 
     @Test
     internal fun `search returns empty result on not existing cache dir`() {
-        val newStorage = PathBasedStorage(root.resolve("not_existing_dir"), cacheName, REGISTRY_NAME)
+        val newStorage = PathBasedStorage(
+            root.resolve("not_existing_dir"),
+            cacheName,
+            PathRegistry(root.resolve("not_existing_dir").resolve(REGISTRY_NAME))
+        )
         assertNull(newStorage.search("key"))
     }
 

@@ -243,7 +243,11 @@ internal class CachedCVTransformationTest {
     }
 
     private fun createTestStorage(): PathBasedStorage {
-        return PathBasedStorage(Jimfs.newFileSystem().getPath("."), UUIDCacheName()).apply {
+        return PathBasedStorage(
+            Jimfs.newFileSystem().getPath("."),
+            UUIDCacheName(),
+            PathRegistry(Jimfs.newFileSystem().getPath(".").resolve("registry.json"))
+        ).apply {
             putSingleItem("existing", TestContent())
         }
     }
