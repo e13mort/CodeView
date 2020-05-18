@@ -42,11 +42,11 @@ internal class CachedOutputEngineTest {
 
     @BeforeEach
     internal fun setUp() {
-        storage = PathBasedStorage(root, "reg.json", object : CacheName {
+        storage = PathBasedStorage(root, object : CacheName {
             override fun createFileName(): String = "result.txt"
 
             override fun createDirName(): String = "dir"
-        })
+        }, "reg.json")
         outputEngine = CachedOutputEngine(FakeEngine(), storage)
     }
 

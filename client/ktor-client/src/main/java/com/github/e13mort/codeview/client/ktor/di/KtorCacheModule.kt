@@ -38,36 +38,50 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_INPUT_STORAGE)
     fun contentStorage() : PathBasedStorage {
-        return PathBasedStorage(appContext.sourceCachePath(), cacheName = UUIDCacheName())
+        return PathBasedStorage(appContext.sourceCachePath(), UUIDCacheName())
     }
 
     @Provides
     @Named(DI_KEY_BACKEND_STORAGE)
     fun backendStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.backendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.backendStorageItemName()))
+        return PathBasedStorage(appContext.backendCachePath(),
+            ConstNameUUIDBasedCacheName(appContext.backendStorageItemName())
+        )
     }
 
     @Provides
     @Named(DI_KEY_FRONTEND_STORAGE)
     fun frontendStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.frontendCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName()))
+        return PathBasedStorage(
+            appContext.frontendCachePath(),
+            ConstNameUUIDBasedCacheName(appContext.frontendStorageItemName())
+        )
     }
 
     @Provides
     @Named(DI_KEY_OUTPUT_STORAGE)
     fun outputStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.outputCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.outputStorageItemName()))
+        return PathBasedStorage(
+            appContext.outputCachePath(),
+            ConstNameUUIDBasedCacheName(appContext.outputStorageItemName())
+        )
     }
 
     @Provides
     @Named(DI_KEY_SOURCES_URL_STORAGE)
     fun sourcesUrlStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.sourcesUrlCachePath(), cacheName = ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()))
+        return PathBasedStorage(
+            appContext.sourcesUrlCachePath(),
+            ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName())
+        )
     }
 
     @Provides
     @Named(DI_KEY_BRANCH_META_STORAGE)
     fun branchMetaStorage() : KeyValueStorage {
-        return PathBasedStorage(appContext.branchMetaDirPath(), cacheName = ConstNameUUIDBasedCacheName(appContext.branchHashItemName()))
+        return PathBasedStorage(
+            appContext.branchMetaDirPath(),
+            ConstNameUUIDBasedCacheName(appContext.branchHashItemName())
+        )
     }
 }

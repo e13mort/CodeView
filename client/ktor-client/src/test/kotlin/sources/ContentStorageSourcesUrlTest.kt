@@ -35,7 +35,7 @@ import java.util.stream.Stream
 internal class ContentStorageSourcesUrlTest {
 
     private val root = Jimfs.newFileSystem().getPath(".")
-    private val contentStorage = PathBasedStorage(root, cacheName = ConstNameUUIDBasedCacheName("content.json"))
+    private val contentStorage = PathBasedStorage(root, ConstNameUUIDBasedCacheName("content.json"))
     private val sources = ContentStorageSourcesUrl(contentStorage)
 
     @Test

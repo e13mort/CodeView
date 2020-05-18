@@ -68,8 +68,8 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     fun cache(cacheName: CacheName): PathBasedStorage {
         return PathBasedStorage(
             root.resolve(CONTENT_CACHE_FOLDER_NAME),
-            REGISTRY_FILE_NAME,
-            cacheName
+            cacheName,
+            REGISTRY_FILE_NAME
         )
 
     }

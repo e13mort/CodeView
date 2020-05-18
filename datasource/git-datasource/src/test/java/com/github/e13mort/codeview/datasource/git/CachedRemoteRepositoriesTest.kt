@@ -32,7 +32,10 @@ internal class CachedRemoteRepositoriesTest {
     private val remoteRepositories = FkRemoteRepositories().apply {
         add("repo1", "master", "masterHash")
     }
-    private val target = remoteRepositories.cached(PathBasedStorage(Jimfs.newFileSystem().getPath("."), cacheName = UUIDCacheName()))
+    private val target = remoteRepositories.cached(PathBasedStorage(
+        Jimfs.newFileSystem().getPath("."),
+        UUIDCacheName()
+    ))
 
     @Test
     internal fun `basic remote hash method call returns valid data`() {

@@ -28,8 +28,8 @@ import java.nio.file.Path
 
 class PathBasedStorage(
     private val root: Path,
-    registryFileName: String = "registry.json",
-    private val cacheName: CacheName
+    private val cacheName: CacheName,
+    registryFileName: String = "registry.json"
 ) :
     ContentStorage<Path>, KeyValueStorage {
 

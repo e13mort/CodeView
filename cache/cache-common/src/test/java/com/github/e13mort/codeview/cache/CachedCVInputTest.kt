@@ -54,14 +54,14 @@ internal class CachedCVInputTest {
     private fun createEmptyInput(inputStream: TrackedInputStream): CachedCVInput {
         return CachedCVInput(
             StubDataSource(StubSources(StubSourceFile(inputStream))),
-            PathBasedStorage(root, cacheName = UUIDCacheName())
+            PathBasedStorage(root, UUIDCacheName())
         )
     }
 
     private fun createCachedInput(inputStream: TrackedInputStream): CachedCVInput {
         return CachedCVInput(
             StubDataSource(StubSources(StubSourceFile(inputStream))),
-            PathBasedStorage(root, cacheName = UUIDCacheName()).apply {
+            PathBasedStorage(root, UUIDCacheName()).apply {
                 putSingleItem("stub", StubContent())
             })
     }
