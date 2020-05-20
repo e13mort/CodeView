@@ -89,10 +89,8 @@ class PathContentStorageStorage(
     }
 
     class PathBasedStorageItem(private val path: Path) :
-        ContentStorageItem, Content {
+        ContentStorageItem<Path>, Content {
         override fun content(): Content = this
-
-        fun path(): Path = path
 
         override fun read(): InputStream {
             if (Files.isDirectory(path)) {
@@ -100,6 +98,8 @@ class PathContentStorageStorage(
             }
             return PathBasedContent(path).read()
         }
+
+        override fun typedContent(): Path = path
     }
 
     private class PathBasedContent(private val path: Path) : Content {

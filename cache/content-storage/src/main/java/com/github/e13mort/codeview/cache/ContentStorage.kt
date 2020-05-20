@@ -22,14 +22,16 @@ import com.github.e13mort.codeview.Content
 
 interface ContentStorage<T> {
     //todo return T
-    fun search(key: String): ContentStorageItem?
+    fun search(key: String): ContentStorageItem<T>?
 
     fun prepareStorageItems(key: String): StorageItems<T>
 
     fun remove(key: String)
 
-    interface ContentStorageItem {
+    interface ContentStorageItem<T> {
         fun content(): Content
+
+        fun typedContent(): T
     }
 
     interface StorageItems<T> {

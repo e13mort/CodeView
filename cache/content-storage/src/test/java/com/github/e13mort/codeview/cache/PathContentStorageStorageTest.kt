@@ -87,13 +87,13 @@ class PathContentStorageStorageTest {
     @Test
     internal fun `directory created for a cached item`() {
         putItems("key", MemoryContent())
-        assertTrue(Files.isDirectory(storage.search("key")!!.path()))
+        assertTrue(Files.isDirectory(storage.search("key")!!.typedContent()))
     }
 
     @Test
     internal fun `source file saved to cache`() {
         putItems("key", MemoryContent())
-        assertEquals(1, Files.list(storage.search("key")!!.path()).toArray().size)
+        assertEquals(1, Files.list(storage.search("key")!!.typedContent()).toArray().size)
     }
 
     @Test

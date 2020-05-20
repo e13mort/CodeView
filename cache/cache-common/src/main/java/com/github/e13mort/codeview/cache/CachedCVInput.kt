@@ -53,7 +53,7 @@ class CachedCVInput(
                     return dataSource.sources(source)
                         .map {
                             storage.search(it.name())?.apply {
-                                return@map path()
+                                return@map typedContent()
                             }
                             return@map saveToCache(it)
                         }
@@ -72,7 +72,7 @@ class CachedCVInput(
                     }
                     if (schedule == WorkRunner.NewWorkState.PERFORMED) {
                         storage.search(sources.name())?.apply {
-                            return path()
+                            return typedContent()
                         }
                     }
                     throw CVTransformation.TransformOperation.LongOperationException()
