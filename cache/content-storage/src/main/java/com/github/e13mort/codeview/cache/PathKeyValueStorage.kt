@@ -24,9 +24,9 @@ import java.nio.file.Path
 
 class PathKeyValueStorage(
     private val root: Path,
-    cacheName: CacheName,
+    private val cacheName: CacheName,
     private val registry: PathRegistry
-): KeyValueStorage, BasePathStorage(root, cacheName, registry) {
+): KeyValueStorage {
 
     override fun put(key: String, content: Content) {
         registerCacheItem(key).apply {
@@ -35,7 +35,7 @@ class PathKeyValueStorage(
     }
 
     override fun search(key: String): Content? {
-        folderName(key)?.apply {
+        registry.value(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {
                 return PathContentStorageStorage.PathBasedStorageItem(path)
@@ -45,7 +45,7 @@ class PathKeyValueStorage(
     }
 
     override fun remove(key: String) {
-        folderName(key)?.apply {
+        registry.value(key)?.apply {
             registry.edit().apply { remove(key) }
             root.resolve(this).apply {
                 delete()
@@ -53,12 +53,19 @@ class PathKeyValueStorage(
             }
         }
     }
-}
 
-private fun Path.delete() {
-    Files.delete(this)
-}
+    private fun registerCacheItem(key: String): Path {
+        return prepareFilePath().also { filePath ->
+            registry.edit().use { editableRegistry ->
+                editableRegistry.put(key, root.relativize(filePath).toString())
+            }
+        }
+    }
 
-private fun Path.deleteParent() {
-    Files.delete(this.parent)
+    private fun prepareFilePath(): Path {
+        return root.ensureExists()
+            .resolve(cacheName.createDirName())
+            .also { Files.createDirectory(it) }
+            .resolve(cacheName.createFileName())
+    }
 }

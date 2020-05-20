@@ -19,6 +19,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.cache.ContentStorage.ContentStorageItem
 import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -28,10 +29,10 @@ class PathContentStorageStorage(
     private val cacheName: CacheName,
     private val registry: PathRegistry
 ) :
-    ContentStorage<Path>, BasePathStorage(root, cacheName, registry) {
+    ContentStorage<Path> {
 
     override fun search(key: String): PathBasedStorageItem? {
-        val folderName = folderName(key)
+        val folderName = registry.value(key)
         folderName?.let {
             val path = root.resolve(it)
             if (Files.exists(path)) return PathBasedStorageItem(path)
@@ -57,10 +58,25 @@ class PathContentStorageStorage(
             return path
         }
 
+        private fun registerCacheFolder(key: String): Path {
+            root.ensureExists()
+            val folderName = cacheName.createDirName()
+            val editableRegistry = registry.edit()
+            editableRegistry.put(key, folderName)
+            val path = root.resolve(folderName)
+            Files.createDirectory(path)
+            if (Files.exists(path)) editableRegistry.close()
+            return path
+        }
+
+        private fun copyFileToCache(content: Content, parent: Path): Path {
+            Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
+            return parent
+        }
     }
 
     override fun remove(key: String) {
-        folderName(key)?.apply {
+        registry.value(key)?.apply {
             registry.edit().apply { remove(key) }
             val path = root.resolve(this)
             if (Files.isDirectory(path)) { //items was placed via reactive methods
@@ -72,13 +88,8 @@ class PathContentStorageStorage(
         }
     }
 
-    private fun copyFileToCache(content: Content, parent: Path): Path {
-        Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
-        return parent
-    }
-
     class PathBasedStorageItem(private val path: Path) :
-        ContentStorage.ContentStorageItem, Content {
+        ContentStorageItem, Content {
         override fun content(): Content = this
 
         fun path(): Path = path
