@@ -24,9 +24,9 @@ import com.google.common.jimfs.Jimfs
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-internal class PathKeyValueStorageTest {
+internal abstract class KeyValueStorageTest<T: KeyValueStorage> {
 
-    private val fs = Jimfs.newFileSystem()
+    protected val fs = Jimfs.newFileSystem()!!
 
     private val storage = PathKeyValueStorage(
         fs.getPath("data"),
@@ -35,24 +35,27 @@ internal class PathKeyValueStorageTest {
     )
 
     @Test
-    internal fun `put single content returns path to the target file`() {
+    fun `put single content returns path to the target file`() {
+        val storage = storage()
         storage.put("key", "hello".asContent())
         assertEquals("hello", storage.search("key")!!.asString())
     }
 
     @Test
-    internal fun `search for a single not existing value returns null result`() {
-        assertNull(storage.search("key"))
+    fun `search for a single not existing value returns null result`() {
+        assertNull(storage().search("key"))
     }
 
     @Test
-    internal fun `search for a single existing value returns not null result`() {
+    fun `search for a single existing value returns not null result`() {
+        val storage = storage()
         storage.put("key", "hello".asContent())
         assertNotNull(storage.search("key"))
     }
 
     @Test
-    internal fun `search for a single existing value returns a valid result`() {
+    fun `search for a single existing value returns a valid result`() {
+        val storage = storage()
         storage.put("key", "hello".asContent())
         storage.search("key")!!.apply {
             assertEquals("hello", asString())
@@ -60,16 +63,36 @@ internal class PathKeyValueStorageTest {
     }
 
     @Test
-    internal fun `removing single item leads to empty result`() {
+    fun `removing single item leads to empty result`() {
+        val storage = storage()
         storage.put("test", "hello".asContent())
         storage.remove("test")
         assertNull(storage.search("test"))
     }
 
     @Test
-    internal fun `removing single item leads to actual files removal`() {
+    fun `removing single item leads to actual files removal`() {
+        val storage = storage()
         storage.put("test", "hello".asContent())
         storage.remove("test")
         assertEquals(0L, fs.getPath("data").internalDirsCount())
+    }
+
+    abstract fun storage() : T
+}
+
+internal class PathKeyValueStorageTest : KeyValueStorageTest<PathKeyValueStorage>() {
+    override fun storage(): PathKeyValueStorage {
+        return PathKeyValueStorage(
+            fs.getPath("data"),
+            UUIDCacheName(),
+            PathRegistry(fs.getPath("reg.json"))
+        )
+    }
+}
+
+internal class PlainFilesKeyValueStorageTest : KeyValueStorageTest<PlainFilesKeyValueStorage>() {
+    override fun storage(): PlainFilesKeyValueStorage {
+        return PlainFilesKeyValueStorage(fs.getPath("data"))
     }
 }

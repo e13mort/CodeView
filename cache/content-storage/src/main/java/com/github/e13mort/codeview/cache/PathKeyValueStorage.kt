@@ -19,7 +19,6 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -70,7 +69,4 @@ class PathKeyValueStorage(
             .resolve(cacheName.createFileName())
     }
 
-    private class PathBasedContent(private val path: Path) : Content {
-        override fun read(): InputStream = Files.newInputStream(path)
-    }
 }
