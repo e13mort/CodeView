@@ -25,7 +25,7 @@ import java.nio.file.Path
 class PathContentStorageStorage(
     private val root: Path,
     private val cacheName: CacheName,
-    private val registry: PathRegistry
+    private val registry: Registry
 ) :
     ContentStorage<Path> {
 

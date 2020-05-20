@@ -26,7 +26,7 @@ import java.nio.file.Path
 class PathKeyValueStorage(
     private val root: Path,
     private val cacheName: CacheName,
-    private val registry: PathRegistry
+    private val registry: Registry
 ): KeyValueStorage {
 
     override fun put(key: String, content: Content) {
