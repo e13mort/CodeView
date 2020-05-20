@@ -19,8 +19,6 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
-import com.github.e13mort.codeview.cache.ContentStorage.ContentStorageItem
-import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -31,11 +29,11 @@ class PathContentStorageStorage(
 ) :
     ContentStorage<Path> {
 
-    override fun search(key: String): PathBasedStorageItem? {
+    override fun search(key: String): Path? {
         val folderName = registry.value(key)
         folderName?.let {
             val path = root.resolve(it)
-            if (Files.exists(path)) return PathBasedStorageItem(path)
+            if (Files.exists(path)) return path
         }
         return null
     }
@@ -87,24 +85,4 @@ class PathContentStorageStorage(
             }
         }
     }
-
-    class PathBasedStorageItem(private val path: Path) :
-        ContentStorageItem<Path>, Content {
-        override fun content(): Content = this
-
-        override fun read(): InputStream {
-            if (Files.isDirectory(path)) {
-                return Files.list(path).findFirst().map { PathBasedContent(it) }.get().read()
-            }
-            return PathBasedContent(path).read()
-        }
-
-        override fun typedContent(): Path = path
-    }
-
-    private class PathBasedContent(private val path: Path) : Content {
-        override fun read(): InputStream = Files.newInputStream(path)
-
-    }
-
 }

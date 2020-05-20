@@ -22,7 +22,7 @@ import com.github.e13mort.codeview.cache.ContentStorage
 
 class LoggedContentStorage<T>(private val source: ContentStorage<T>, private val log: Log) : ContentStorage<T> by source {
 
-    override fun search(key: String): ContentStorage.ContentStorageItem<T>? {
+    override fun search(key: String): T? {
         log.log("item found for key $key")
         return source.search(key).also {
             log.log("item isn't found for key $key")

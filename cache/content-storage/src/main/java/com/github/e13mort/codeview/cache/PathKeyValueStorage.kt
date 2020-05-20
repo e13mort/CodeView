@@ -19,6 +19,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
+import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -38,7 +39,7 @@ class PathKeyValueStorage(
         registry.value(key)?.apply {
             val path = root.resolve(this)
             if (Files.exists(path)) {
-                return PathContentStorageStorage.PathBasedStorageItem(path)
+                return PathBasedContent(path)
             }
         }
         return null
@@ -67,5 +68,9 @@ class PathKeyValueStorage(
             .resolve(cacheName.createDirName())
             .also { Files.createDirectory(it) }
             .resolve(cacheName.createFileName())
+    }
+
+    private class PathBasedContent(private val path: Path) : Content {
+        override fun read(): InputStream = Files.newInputStream(path)
     }
 }

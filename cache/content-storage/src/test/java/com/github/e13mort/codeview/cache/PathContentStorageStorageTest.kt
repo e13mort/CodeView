@@ -87,13 +87,13 @@ class PathContentStorageStorageTest {
     @Test
     internal fun `directory created for a cached item`() {
         putItems("key", MemoryContent())
-        assertTrue(Files.isDirectory(storage.search("key")!!.typedContent()))
+        assertTrue(Files.isDirectory(storage.search("key")!!))
     }
 
     @Test
     internal fun `source file saved to cache`() {
         putItems("key", MemoryContent())
-        assertEquals(1, Files.list(storage.search("key")!!.typedContent()).toArray().size)
+        assertEquals(1, Files.list(storage.search("key")).toArray().size)
     }
 
     @Test
@@ -116,7 +116,9 @@ class PathContentStorageStorageTest {
     @Test
     internal fun `cached item is equal to the original item`() {
         putItems("key", "hello".asContent())
-        assertEquals("hello", storage.search("key")!!.content().read().reader().readText())
+        val cachedPath = storage.search("key")
+        val firstFile = Files.list(cachedPath).findFirst().get()
+        assertEquals("hello", Files.readAllLines(firstFile)[0])
     }
 
     @Test

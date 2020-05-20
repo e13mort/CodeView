@@ -52,12 +52,8 @@ class CachedCVInput(
                 override fun transform(): Single<Path> {
                     return dataSource.sources(source)
                         .map {
-                            storage.search(it.name())?.apply {
-                                return@map typedContent()
-                            }
-                            return@map saveToCache(it)
+                            return@map storage.search(it.name()) ?: saveToCache(it)
                         }
-
                 }
 
                 private fun saveToCache(sources: Sources): Path {
@@ -71,9 +67,8 @@ class CachedCVInput(
                         }
                     }
                     if (schedule == WorkRunner.NewWorkState.PERFORMED) {
-                        storage.search(sources.name())?.apply {
-                            return typedContent()
-                        }
+                        val search = storage.search(sources.name())
+                        if (search != null) return search
                     }
                     throw CVTransformation.TransformOperation.LongOperationException()
                 }
