@@ -83,11 +83,7 @@ class KtorCacheModule(private val appContext: AppContext) {
     @Provides
     @Named(DI_KEY_SOURCES_URL_STORAGE)
     fun sourcesUrlStorage() : KeyValueStorage {
-        return PathKeyValueStorage(
-            appContext.sourcesUrlCachePath(),
-            ConstNameUUIDBasedCacheName(appContext.sourceUrlItemName()),
-            PathRegistry(appContext.sourcesUrlCachePath().resolve(registryFileName))
-        )
+        return PlainFilesKeyValueStorage(appContext.sourcesUrlCachePath())
     }
 
     @Provides
