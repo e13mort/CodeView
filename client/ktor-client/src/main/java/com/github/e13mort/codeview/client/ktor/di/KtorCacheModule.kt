@@ -25,6 +25,7 @@ import com.github.e13mort.codeview.client.ktor.AppContext
 import com.github.e13mort.codeview.work.AsyncWorkRunner
 import dagger.Module
 import dagger.Provides
+import java.nio.file.Path
 import javax.inject.Named
 
 @Module
@@ -35,13 +36,13 @@ class KtorCacheModule(private val appContext: AppContext) {
     }
 
     @Provides
-    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: PathContentStorageStorage, dataSource: DataSource) : CVInput {
+    fun input(@Named(DI_KEY_INPUT_STORAGE) cache: ContentStorage<Path>, dataSource: DataSource) : CVInput {
         return CachedCVInput(dataSource, cache, AsyncWorkRunner())
     }
 
     @Provides
     @Named(DI_KEY_INPUT_STORAGE)
-    fun contentStorage() : PathContentStorageStorage {
+    fun contentStorage() : ContentStorage<Path> {
         return PathContentStorageStorage(
             appContext.sourceCachePath(),
             UUIDCacheName(),

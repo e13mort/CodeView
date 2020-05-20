@@ -27,7 +27,7 @@ import java.nio.file.Path
 
 class CachedCVInput(
     private val dataSource: DataSource,
-    private val storage: PathContentStorageStorage,
+    private val storage: ContentStorage<Path>,
     private val workRunner: WorkRunner = ImmediateWorkRunner()
 ) :
     CVInput {
