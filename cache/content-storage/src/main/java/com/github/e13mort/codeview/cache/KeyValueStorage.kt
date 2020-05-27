@@ -26,4 +26,6 @@ interface KeyValueStorage {
     fun search(key: String): Content?
 
     fun remove(key: String)
+
+    fun data(): Map<String, Content>
 }

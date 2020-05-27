@@ -42,6 +42,10 @@ private class MemoryBasedLimitedTimeContentStorage(
     override fun remove(key: String) {
         throw UnsupportedOperationException()
     }
+
+    override fun data(): Map<String, Content> {
+        return source.data()
+    }
 }
 
 fun KeyValueStorage.withTimeLimit(ttlSeconds: Long, time: Time = Time.REAL): KeyValueStorage {

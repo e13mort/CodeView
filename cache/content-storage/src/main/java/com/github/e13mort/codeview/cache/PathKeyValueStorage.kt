@@ -54,6 +54,16 @@ class PathKeyValueStorage(
         }
     }
 
+    override fun data(): Map<String, Content> {
+        return mutableMapOf<String, Content>().also { resultMap ->
+            registry.keys().forEach { key ->
+                search(key)?.let { content ->
+                    resultMap[key] = content
+                }
+            }
+        }
+    }
+
     private fun registerCacheItem(key: String): Path {
         return prepareFilePath().also { filePath ->
             registry.edit().use { editableRegistry ->

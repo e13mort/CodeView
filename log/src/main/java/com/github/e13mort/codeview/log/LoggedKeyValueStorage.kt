@@ -21,7 +21,7 @@ package com.github.e13mort.codeview.log
 import com.github.e13mort.codeview.Content
 import com.github.e13mort.codeview.cache.KeyValueStorage
 
-private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage {
+private class LoggedKeyValueStorage(private val source: KeyValueStorage, private val log: Log) : KeyValueStorage by source {
     override fun put(key: String, content: Content) {
         return source.put(key, content).also {
             log.log("put item with key $key")

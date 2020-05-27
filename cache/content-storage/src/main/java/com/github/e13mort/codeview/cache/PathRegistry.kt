@@ -38,6 +38,10 @@ class PathRegistry(private val registryPath: Path) :
         return readMap()[key]
     }
 
+    override fun keys(): Set<String> {
+        return readMap().keys
+    }
+
     private fun readMap(): MutableMap<String, String> {
         return if (Files.exists(registryPath)) {
             readRegistry(registryPath)

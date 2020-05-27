@@ -78,6 +78,38 @@ internal abstract class KeyValueStorageTest<T: KeyValueStorage> {
         assertEquals(0L, fs.getPath("data").internalDirsCount())
     }
 
+    @Test
+    fun `data method returns map with valid items count`() {
+        storage().apply {
+            put("hello", "world".asContent())
+            put("john", "galt".asContent())
+            assertEquals(2, data().size)
+        }
+    }
+
+    @Test
+    fun `data method returns map with correct keys`() {
+        storage().apply {
+            put("hello", "world".asContent())
+            put("john", "galt".asContent())
+            val data = data()
+            assertTrue(data.containsKey("hello"))
+            assertTrue(data.containsKey("john"))
+        }
+    }
+
+    @Suppress("MapGetWithNotNullAssertionOperator")
+    @Test
+    fun `data method returns map with correct values`() {
+        storage().apply {
+            put("hello", "world".asContent())
+            put("john", "galt".asContent())
+            val data = data()
+            assertEquals("world", data["hello"]!!.asString())
+            assertEquals("galt", data["john"]!!.asString())
+        }
+    }
+
     abstract fun storage() : T
 }
 

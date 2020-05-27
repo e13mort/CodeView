@@ -30,4 +30,6 @@ interface Registry {
     fun edit() : EditableRegistry
 
     fun value(key: String): String?
+
+    fun keys(): Set<String>
 }

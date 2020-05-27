@@ -19,8 +19,7 @@
 package com.github.e13mort.codeview.cache
 
 import com.google.common.jimfs.Jimfs
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 internal class PathRegistryTest {
@@ -54,6 +53,32 @@ internal class PathRegistryTest {
     internal fun `value in registry persisted across different registries`() {
         createRegistry().edit().use { it.put("key", "value") }
         assertEquals("value", createRegistry().value("key"))
+    }
+
+    @Test
+    internal fun `empty registry has empty keys`() {
+        assertEquals(0, createRegistry().keys().size)
+    }
+
+    @Test
+    internal fun `registry with two values has two keys`() {
+        createRegistry().apply {
+            edit().use {
+                it.put("key1", "value1")
+                it.put("key2", "value2")
+            }
+            assertEquals(2, keys().size)
+        }
+    }
+
+    @Test
+    internal fun `registry has a previously added key`() {
+        createRegistry().apply {
+            edit().use {
+                it.put("key1", "value1")
+            }
+            assertTrue(keys().contains("key1"))
+        }
     }
 
     private fun createRegistry() = PathRegistry(root)
