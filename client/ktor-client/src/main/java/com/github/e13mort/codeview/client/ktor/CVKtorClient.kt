@@ -47,25 +47,33 @@ fun Application.main() { init(this) }
 
 fun init(app: Application) {
     val context = EnvironmentAppContext()
+    val ktorCacheModule = KtorCacheModule(context)
     val codeView = DaggerKtorComponent.builder()
         .ktorBackendModule(KtorBackendModule())
         .ktorFrontendModule(KtorFrontendModule())
         .ktorImageOutputModule(KtorImageOutputModule())
-        .ktorCacheModule(KtorCacheModule(context))
+        .ktorCacheModule(ktorCacheModule)
         .ktorLogModule(KtorLogModule(context))
         .gitDataSourceModule(GitDataSourceModule(context.gitCachePath()))
         .ktorDataSourceModule(KtorDataSourceModule(context))
         .build().codeView()
 
+    val sourcesRepository = DaggerRepositoryComponent.builder()
+        .ktorCacheModule(ktorCacheModule)
+        .build()
+        .sourcesRepository()
+
     app.routing {
         get("/") {
             call.respondHtml {
                 body {
-                    p {
-                        +"CodeView"
-                    }
-                    img {
-                        src = "diagram/test"
+                    sourcesRepository.sources().forEach {
+                        p {
+                            +it.name
+                        }
+                        img {
+                            src = "diagram/${it.id}"
+                        }
                     }
                 }
             }
