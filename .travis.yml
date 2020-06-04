@@ -14,7 +14,7 @@ cache:
     - $HOME/.gradle
 
 install: skip
-script: ./gradlew --version
+script: deploy.sh
 
 deploy:
   provider: script
