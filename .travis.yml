@@ -13,8 +13,11 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
-script: ./gradlew test
+#script: ./gradlew test
 
 deploy:
   provider: script
   script: deploy.sh
+#remove before merge
+  on:
+    all_branches: true
