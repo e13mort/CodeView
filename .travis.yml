@@ -13,6 +13,7 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
+install: skip
 script: ./gradlew version
 
 deploy:
