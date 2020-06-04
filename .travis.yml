@@ -14,3 +14,7 @@ cache:
     - $HOME/.gradle
 
 script: ./gradlew test
+
+deploy:
+  provider: script
+  script: deploy.sh
