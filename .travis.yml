@@ -18,6 +18,7 @@ cache:
 deploy:
   provider: script
   script: deploy.sh
-#remove before merge
+  skip_cleanup: true
+  #remove before merge
   on:
     all_branches: true
