@@ -13,7 +13,7 @@ cache:
     - $HOME/.m2
     - $HOME/.gradle
 
-#script: ./gradlew test
+script: ./gradlew version
 
 deploy:
   provider: script
