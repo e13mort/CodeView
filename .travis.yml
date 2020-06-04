@@ -1,8 +1,11 @@
+sudo: required
 language: java
 
 os: linux
 dist: trusty
 jdk: oraclejdk8
+services:
+  - docker
 
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
@@ -14,7 +17,7 @@ cache:
     - $HOME/.gradle
 
 install: skip
-script: ./deploy.sh
+script: ./gradlew --version
 
 deploy:
   provider: script
