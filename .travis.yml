@@ -20,6 +20,7 @@ install: skip
 script:
   - ./gradlew test
   - ./gradlew installDist
+  - ./create-docker-image.sh
 
 deploy:
   provider: script
