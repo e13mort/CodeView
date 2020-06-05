@@ -18,8 +18,7 @@ cache:
 
 install: skip
 script:
-  - ./gradlew test
-  - ./gradlew installDist
+  - ./gradlew build
   - ./create-docker-image.sh
 
 deploy:
