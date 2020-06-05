@@ -27,3 +27,8 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
+
+notifications:
+  email:
+    on_success: never
+    on_error: always
