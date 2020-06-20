@@ -32,13 +32,15 @@ class PlainFilesKeyValueStorage(private val dataDir: Path) : KeyValueStorage {
     }
 
     override fun data(): Map<String, Content> {
-        val result = mutableMapOf<String, Content>()
-        Files.list(dataDir).map {
-            it.fileName.toString() to PathBasedContent(it)
-        }.forEach {
-            result[it.first] = it.second
+        return mutableMapOf<String, Content>().apply {
+            if (Files.exists(dataDir)) {
+                Files.list(dataDir).map {
+                    it.fileName.toString() to PathBasedContent(it)
+                }.forEach {
+                    this[it.first] = it.second
+                }
+            }
         }
-        return result
     }
 
     override fun search(key: String): Content? {
