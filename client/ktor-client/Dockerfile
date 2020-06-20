@@ -12,8 +12,7 @@ ENV SSL_KEY_STORE_FILE key.jks
 ENV KEY_ALIAS mykey
 ENV KEY_STORE_PASSWORD password
 ENV PRIVATE_KEY_PASSWORD password
-ENV logsDir logs
-ENV cacheDir cache
+ENV workDir cv_workdir
 
 RUN apk add --update --no-cache ttf-dejavu ttf-droid ttf-freefont ttf-liberation ttf-ubuntu-font-family graphviz 
 

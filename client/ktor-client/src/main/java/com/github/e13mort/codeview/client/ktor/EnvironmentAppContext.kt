@@ -23,31 +23,31 @@ import java.nio.file.Paths
 
 class EnvironmentAppContext : AppContext {
 
-    override fun logsPath(): Path = Paths.get(readEnv(LOGS_DIR_ENV_KEY))
+    override fun logsPath(): Path = workDirPath().resolve(LOGS_DIR)
 
-    override fun gitCachePath(): Path = cachePath().resolve(GIT_CACHE_DIR)
+    override fun gitCachePath(): Path = workDirPath().resolve(GIT_CACHE_DIR)
 
-    override fun sourceCachePath(): Path = cachePath().resolve(SOURCE_STORAGE_DIR_NAME)
+    override fun sourceCachePath(): Path = workDirPath().resolve(SOURCE_STORAGE_DIR_NAME)
 
-    override fun backendCachePath(): Path = cachePath().resolve(BACKEND_STORAGE_DIR_NAME)
+    override fun backendCachePath(): Path = workDirPath().resolve(BACKEND_STORAGE_DIR_NAME)
 
     override fun backendStorageItemName(): String = BACKEND_STORAGE_ITEM_NAME
 
-    override fun frontendCachePath(): Path = cachePath().resolve(FRONTEND_STORAGE_DIR_NAME)
+    override fun frontendCachePath(): Path = workDirPath().resolve(FRONTEND_STORAGE_DIR_NAME)
 
     override fun frontendStorageItemName(): String = FRONTEND_STORAGE_ITEM_NAME
 
     override fun outputStorageItemName(): String = OUTPUT_STORAGE_ITEM_NAME
 
-    override fun sourcesUrlCachePath(): Path = cachePath().resolve(SOURCE_URL_STORAGE_DIR_NAME)
+    override fun sourcesUrlCachePath(): Path = workDirPath().resolve(SOURCE_URL_STORAGE_DIR_NAME)
 
     override fun sourceUrlItemName(): String = SOURCE_URL_ITEM_NAME
 
-    override fun outputCachePath(): Path = cachePath().resolve(OUTPUT_STORAGE_DIR_NAME)
+    override fun outputCachePath(): Path = workDirPath().resolve(OUTPUT_STORAGE_DIR_NAME)
 
     override fun branchHashItemName(): String = BRANCH_HASH_ITEM_NAME
 
-    override fun branchMetaDirPath(): Path = cachePath().resolve(BRANCH_META_DIR_NAME)
+    override fun branchMetaDirPath(): Path = workDirPath().resolve(BRANCH_META_DIR_NAME)
 
     override fun branchMetaTTL(): Long = readEnv(BRANCH_META_ENV_KEY).toLongOrNull() ?: BRANCH_META_DEFAULT_TTL_SEC
 
@@ -67,7 +67,7 @@ class EnvironmentAppContext : AppContext {
         return readInt(parameter.name)
     }
 
-    private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
+    private fun workDirPath(): Path = Paths.get(readEnv(WORK_DIR_ENV_KEY))
 
     private fun readEnv(name: String): String = System.getenv(name) ?: ""
 
@@ -77,11 +77,11 @@ class EnvironmentAppContext : AppContext {
     private fun readEnvOrFail(name: String): String = System.getenv(name) ?: throw IllegalArgumentException("$name isn't found")
 }
 
-const val LOGS_DIR_ENV_KEY = "logsDir"
-const val CACHE_DIR_ENV_KEY = "cacheDir"
+const val WORK_DIR_ENV_KEY = "workDir"
 const val BRANCH_META_ENV_KEY = "branchMetaTTLSec"
 const val BRANCH_META_DEFAULT_TTL_SEC = 60L
 
+const val LOGS_DIR = "logs"
 const val GIT_CACHE_DIR = "gitRepositories"
 const val SOURCE_STORAGE_DIR_NAME = "sources"
 const val BACKEND_STORAGE_DIR_NAME = "backend"
