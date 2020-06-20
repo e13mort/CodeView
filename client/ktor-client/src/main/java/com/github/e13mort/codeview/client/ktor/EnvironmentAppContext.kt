@@ -51,10 +51,30 @@ class EnvironmentAppContext : AppContext {
 
     override fun branchMetaTTL(): Long = readEnv(BRANCH_META_ENV_KEY).toLongOrNull() ?: BRANCH_META_DEFAULT_TTL_SEC
 
+    override fun string(parameter: AppContext.CVStringParameter): String {
+        return readEnvOrFail(parameter.name)
+    }
+
+    override fun stringMaybe(parameter: AppContext.CVStringParameter): String? {
+        return System.getenv(parameter.name)
+    }
+
+    override fun int(parameter: AppContext.CVIntParameter): Int {
+        return readInt(parameter.name) ?: throw throw IllegalArgumentException("${parameter.name} isn't found")
+    }
+
+    override fun intMaybe(parameter: AppContext.CVIntParameter): Int? {
+        return readInt(parameter.name)
+    }
+
     private fun cachePath(): Path = Paths.get(readEnv(CACHE_DIR_ENV_KEY))
 
     private fun readEnv(name: String): String = System.getenv(name) ?: ""
 
+    private fun readInt(parameter: String) =
+        System.getenv(parameter)?.toIntOrNull()
+
+    private fun readEnvOrFail(name: String): String = System.getenv(name) ?: throw IllegalArgumentException("$name isn't found")
 }
 
 const val LOGS_DIR_ENV_KEY = "logsDir"

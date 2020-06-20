@@ -4,12 +4,14 @@ FROM openjdk:8-jre-alpine
 # We define the user we will use in this instance to prevent using root that even in a container, can be a security risk.
 ENV APPLICATION_USER CodeView
 
-ENV port 8000
-ENV sslPort 8001
-ENV keyStore key.jks
-ENV keyAlias mykey
-ENV keyStorePassword password
-ENV privateKeyPassword password
+#names should be synced with AppContext enums
+ENV PORT 8000
+#ssl disabled by default
+ENV SSL_PORT unknown
+ENV SSL_KEY_STORE_FILE key.jks
+ENV KEY_ALIAS mykey
+ENV KEY_STORE_PASSWORD password
+ENV PRIVATE_KEY_PASSWORD password
 ENV logsDir logs
 ENV cacheDir cache
 
@@ -33,7 +35,4 @@ CMD ["sh", "-c", "java -server \
     -XX:InitialRAMFraction=2 -XX:MinRAMFraction=2 -XX:MaxRAMFraction=2 \
     -XX:+UseG1GC -XX:MaxGCPauseMillis=100 \
     -XX:+UseStringDeduplication \
-    -jar code-view-application.jar \
-    -port=$port -sslPort=$sslPort -P:ktor.security.ssl.keyStore=$keyStore\
-    -P:ktor.security.ssl.keyAlias=$keyAlias -P:ktor.security.ssl.keyStorePassword=$keyStorePassword \
-    -P:ktor.security.ssl.privateKeyPassword=$privateKeyPassword" ]
+    -jar code-view-application.jar"]

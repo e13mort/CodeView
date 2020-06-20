@@ -48,4 +48,23 @@ interface AppContext {
     fun branchMetaDirPath(): Path
 
     fun branchMetaTTL(): Long
+
+    fun string(parameter: CVStringParameter): String
+
+    fun stringMaybe(parameter: CVStringParameter): String?
+
+    fun int(parameter: CVIntParameter): Int
+
+    fun intMaybe(parameter: CVIntParameter): Int?
+
+    enum class CVStringParameter {
+        SSL_KEY_STORE_FILE,
+        KEY_ALIAS,
+        KEY_STORE_PASSWORD,
+        PRIVATE_KEY_PASSWORD
+    }
+
+    enum class CVIntParameter {
+        PORT, SSL_PORT
+    }
 }

@@ -50,7 +50,7 @@ compileTestKotlin {
     }
 }
 
-mainClassName = 'io.ktor.server.netty.DevelopmentEngine'
+mainClassName = 'com.github.e13mort.codeview.client.ktor.CVKtorClientKt'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"

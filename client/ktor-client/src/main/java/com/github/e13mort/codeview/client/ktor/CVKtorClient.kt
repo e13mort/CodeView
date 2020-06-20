@@ -19,6 +19,8 @@
 package com.github.e13mort.codeview.client.ktor
 
 import com.github.e13mort.codeview.CVTransformation
+import com.github.e13mort.codeview.client.ktor.AppContext.CVIntParameter
+import com.github.e13mort.codeview.client.ktor.AppContext.CVStringParameter
 import com.github.e13mort.codeview.client.ktor.di.*
 import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import io.ktor.application.Application
@@ -30,23 +32,64 @@ import io.ktor.response.respondOutputStream
 import io.ktor.routing.get
 import io.ktor.routing.route
 import io.ktor.routing.routing
-import io.ktor.server.engine.embeddedServer
+import io.ktor.server.engine.*
 import io.ktor.server.netty.Netty
 import kotlinx.coroutines.rx2.await
 import kotlinx.html.body
 import kotlinx.html.img
 import kotlinx.html.p
+import java.io.File
+import java.io.FileInputStream
+import java.security.KeyStore
 
 fun main() {
-    embeddedServer(Netty) {
-        init(this)
-    }.start(wait = true)
+    val environment = applicationEngineEnvironment {
+        val context = EnvironmentAppContext()
+        module {
+            init(this, context)
+        }
+        context.intMaybe(CVIntParameter.PORT)?.let { it ->
+            connector {
+                port = it
+            }
+        }
+        context.intMaybe(CVIntParameter.SSL_PORT)?.let { sslPort ->
+            initSSL(context, sslPort)
+        }
+
+        if (connectors.isEmpty()) throw IllegalStateException("There are no connectors created")
+    }
+    embeddedServer(Netty, environment).start(wait = true)
 }
 
-fun Application.main() { init(this) }
+private fun ApplicationEngineEnvironmentBuilder.initSSL(
+    context: AppContext,
+    sslPort: Int
+) {
+    val keyStoreFileName = context.string(CVStringParameter.SSL_KEY_STORE_FILE)
+    val keyStorePassword = context.string(CVStringParameter.KEY_STORE_PASSWORD)
+    val keyAlias = context.string(CVStringParameter.KEY_ALIAS)
+    val privateKeyPassword = context.string(CVStringParameter.PRIVATE_KEY_PASSWORD)
 
-fun init(app: Application) {
-    val context = EnvironmentAppContext()
+    val keyStoreFile = File(keyStoreFileName)
+    val keyStore = KeyStore.getInstance("JKS").apply {
+        FileInputStream(keyStoreFile).use {
+            load(it, keyStorePassword.toCharArray())
+        }
+        requireNotNull(getKey(keyAlias, privateKeyPassword.toCharArray()) == null) {
+            "The specified key $keyAlias doesn't exist in the key store $keyStoreFileName"
+        }
+    }
+
+    sslConnector(keyStore, keyAlias,
+        { keyStorePassword.toCharArray() },
+        { privateKeyPassword.toCharArray() }) {
+        this.port = sslPort
+        this.keyStorePath = keyStoreFile
+    }
+}
+
+fun init(app: Application, context: AppContext) {
     val ktorCacheModule = KtorCacheModule(context)
     val codeView = DaggerKtorComponent.builder()
         .ktorBackendModule(KtorBackendModule())
