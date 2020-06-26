@@ -16,26 +16,22 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.e13mort.codeview.client.ktor.di
+package com.github.e13mort.codeview
 
-import com.github.e13mort.codeview.*
-import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
-import dagger.Component
-import javax.inject.Singleton
+import io.reactivex.Single
+import javax.inject.Inject
 
-@Singleton
-@Component(
-    modules = [
-        KtorFrontendModule::class,
-        KtorLogModule::class,
-        KtorBackendModule::class,
-        KtorImageOutputModule::class,
-        KtorCacheModule::class,
-        KtorSourcesModule::class,
-        KtorDataSourceModule::class,
-        GitDataSourceModule::class
-    ]
-)
-interface KtorComponent {
-    fun codeView(): ClassesView<KtorResult>
+class ClassesView<T> @Inject constructor(
+    private val input: CVInput,
+    private val frontend: Frontend,
+    private val backend: Backend,
+    private val output: Output<T>
+) : CodeView<T> {
+
+    override fun run(parameters: SourcePath): Single<T> {
+        return input.prepare(parameters)
+            .flatMap { backend.prepare(it) }
+            .flatMap { frontend.prepare(it) }
+            .flatMap { output.save(it) }
+    }
 }

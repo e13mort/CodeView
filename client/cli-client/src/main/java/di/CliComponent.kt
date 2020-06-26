@@ -19,9 +19,18 @@
 package di
 
 import com.github.e13mort.codeview.CodeView
+import com.github.e13mort.codeview.ClassesView
+import dagger.Binds
 import dagger.Component
+import dagger.Module
 
-@Component(modules = [DataModule::class, OutputModule::class, InputModule::class])
+@Component(modules = [DataModule::class, OutputModule::class, InputModule::class, DecisionModule::class])
 interface CliComponent {
     fun codeView() : CodeView<String>
+}
+
+@Module
+abstract class DecisionModule {
+    @Binds
+    abstract fun createCodeView(view: ClassesView<String>) : CodeView<String>
 }
