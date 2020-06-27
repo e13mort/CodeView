@@ -63,7 +63,6 @@ dependencies {
     implementation project(':backend:java-backend')
     implementation project(':frontend:pulm-frontend')
     implementation project(':datasource:common')
-    implementation project(':datasource:filesystem-datasource')
     implementation project(':datasource:git-datasource')
     implementation project(':output:engine-based-output')
     implementation project(':utils:stubs')
