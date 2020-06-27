@@ -22,7 +22,6 @@ import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.client.ktor.AppContext.CVIntParameter
 import com.github.e13mort.codeview.client.ktor.AppContext.CVStringParameter
 import com.github.e13mort.codeview.client.ktor.di.*
-import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.html.respondHtml
@@ -92,14 +91,11 @@ private fun ApplicationEngineEnvironmentBuilder.initSSL(
 fun init(app: Application, context: AppContext) {
     val ktorCacheModule = KtorCacheModule(context)
     val codeView = DaggerKtorComponent.builder()
-        .ktorBackendModule(KtorBackendModule())
-        .ktorFrontendModule(KtorFrontendModule())
-        .ktorImageOutputModule(KtorImageOutputModule())
-        .ktorCacheModule(ktorCacheModule)
-        .ktorLogModule(KtorLogModule(context))
-        .gitDataSourceModule(GitDataSourceModule(context.gitCachePath()))
-        .ktorDataSourceModule(KtorDataSourceModule(context))
-        .build().codeView()
+        .cacheModule(ktorCacheModule)
+        .context(context)
+        .dataSourceRoot(context.gitCachePath())
+        .build()
+        .codeView()
 
     val sourcesRepository = DaggerRepositoryComponent.builder()
         .ktorCacheModule(ktorCacheModule)

@@ -18,26 +18,24 @@
 
 package com.github.e13mort.codeview.datasource.git.di
 
-import com.github.e13mort.codeview.datasource.git.*
-import dagger.Module
-import dagger.Provides
+import com.github.e13mort.codeview.datasource.git.GitDataSource
+import com.github.e13mort.githuburl.SourcesUrl
+import dagger.BindsInstance
+import dagger.Component
 import java.nio.file.Path
-import javax.inject.Qualifier
 
-@Module
-class GitDataSourceModule {
+@Component(modules = [GitDataSourceModule::class])
+interface GitDataSourceComponent {
+    fun createDataSource() : GitDataSource
 
-    @Provides
-    fun remoteRepos() : RemoteRepositories {
-        return JGitRemoteRepositories()
-    }
+    @Component.Builder
+    interface Builder {
+        fun build(): GitDataSourceComponent
 
-    @Provides
-    fun localRepos(@DataSourceRoot root: Path) : LocalRepositories {
-        return FsLocalRepositories(root)
+        @BindsInstance
+        fun sourcesUrl(sourcesUrl: SourcesUrl): Builder
+
+        @BindsInstance
+        fun root(@DataSourceRoot path: Path): Builder
     }
 }
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class DataSourceRoot

@@ -19,8 +19,12 @@
 package com.github.e13mort.codeview.client.ktor.di
 
 import com.github.e13mort.codeview.*
+import com.github.e13mort.codeview.client.ktor.AppContext
+import com.github.e13mort.codeview.datasource.git.di.DataSourceRoot
 import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
+import dagger.BindsInstance
 import dagger.Component
+import java.nio.file.Path
 import javax.inject.Singleton
 
 @Singleton
@@ -38,4 +42,17 @@ import javax.inject.Singleton
 )
 interface KtorComponent {
     fun codeView(): ClassesView<KtorResult>
+
+    @Component.Builder
+    interface Builder {
+        fun build(): KtorComponent
+
+        fun cacheModule(cacheModule: KtorCacheModule): Builder
+
+        @BindsInstance
+        fun dataSourceRoot(@DataSourceRoot path: Path): Builder
+
+        @BindsInstance
+        fun context(context: AppContext): Builder
+    }
 }

@@ -39,14 +39,15 @@ class KtorSourcesModule {
 }
 
 @Module
-class KtorDataSourceModule(private val context: AppContext) {
+class KtorDataSourceModule {
     @Provides
     fun dataSource(
         remoteRepositories: RemoteRepositories,
         localRemoteRepositories: LocalRepositories,
         sourcesUrl: SourcesUrl,
         @Named(DI_KEY_BRANCH_META_STORAGE)
-        contentStorage: KeyValueStorage
+        contentStorage: KeyValueStorage,
+        context: AppContext
     ): DataSource {
         return GitDataSource(remoteRepositories.cached(contentStorage.withTimeLimit(context.branchMetaTTL())), sourcesUrl, localRemoteRepositories)
     }

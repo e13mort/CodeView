@@ -28,7 +28,7 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-class KtorLogModule(private val context: AppContext) {
+class KtorLogModule {
 
     companion object {
         const val PATH_KEY = "logFilePath"
@@ -44,7 +44,7 @@ class KtorLogModule(private val context: AppContext) {
     @Singleton
     @Provides
     @Named(PATH_KEY)
-    fun logFilePath() : Path {
+    fun logFilePath(context: AppContext) : Path {
         return context.logsPath().resolve(LOG_FILE_NAME)
     }
 }
