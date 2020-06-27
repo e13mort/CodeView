@@ -43,8 +43,8 @@ class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
     @Provides
     fun output(log: Log, @Named("output-storage") contentStorage: KeyValueStorage) : Output<String> {
         return EngineBasedOutput(
-            createEngine(factory.outputFormat).toCached(contentStorage),
-            createEngineResult(factory.outputFileName, factory.outputFormat)
+            createEngine(launchCommand.outputFormat).toCached(contentStorage),
+            createEngineResult(launchCommand.outputFileName, launchCommand.outputFormat)
         ).withLogs(log.withTag("output"))
     }
 

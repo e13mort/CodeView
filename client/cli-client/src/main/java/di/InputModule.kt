@@ -54,9 +54,9 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     }
 
     @Provides
-    fun input(@Named("input-storage") contentStorage: ContentStorage<Path>, sourcesUrl: SourcesUrl, log: Log, githubDataSource: DataSource): CVInput {
-        val (input, tag) = if (sourcesUrl.canParse(factory.sourcesPath)) {
-            CachedCVInput(githubDataSource, contentStorage) to "cached input"
+    fun input(@Named("input-storage") contentStorage: ContentStorage<Path>, sourcesUrl: SourcesUrl, log: Log, dataSource: DataSource): CVInput {
+        val (input, tag) = if (sourcesUrl.canParse(launchCommand.sourcesPath)) {
+            CachedCVInput(dataSource, contentStorage) to "cached input"
         } else {
             PlainCVInput() to "plain input"
         }
@@ -82,7 +82,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     @Provides
     @Named("raw-data-source")
     fun dataSource(sourcesUrl: SourcesUrl): DataSource {
-        return when (factory.githubClient) {
+        return when (launchCommand.githubClient) {
             GithubClient.REST -> {
                 DaggerGithubDataSourceComponent
                     .builder()
@@ -107,7 +107,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     }
 
     private fun githubToken(): String {
-        factory.githubKey?.let {
+        launchCommand.githubKey?.let {
             return it
         }
         throw IllegalStateException("Github key is null")
