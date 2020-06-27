@@ -21,12 +21,27 @@ package di
 import com.github.e13mort.codeview.CodeView
 import com.github.e13mort.codeview.ClassesView
 import dagger.Binds
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
+import factory.LaunchCommand
+import java.nio.file.Path
 
 @Component(modules = [DataModule::class, OutputModule::class, InputModule::class, DecisionModule::class])
 interface CliComponent {
     fun codeView() : CodeView<String>
+
+    @Component.Builder
+    interface Builder {
+
+        @BindsInstance
+        fun launchCommand(launchCommand: LaunchCommand): Builder
+
+        @BindsInstance
+        fun root(root: Path): Builder
+
+        fun build(): CliComponent
+    }
 }
 
 @Module

@@ -40,7 +40,7 @@ import java.nio.file.Path
 import javax.inject.Named
 
 @Module
-class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModule(factory) {
+class InputModule {
 
     companion object {
         const val REGISTRY_FILE_NAME = "registry.json"
@@ -54,7 +54,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
     }
 
     @Provides
-    fun input(@Named("input-storage") contentStorage: ContentStorage<Path>, sourcesUrl: SourcesUrl, log: Log, dataSource: DataSource): CVInput {
+    fun input(@Named("input-storage") contentStorage: ContentStorage<Path>, sourcesUrl: SourcesUrl, log: Log, dataSource: DataSource, launchCommand: LaunchCommand): CVInput {
         val (input, tag) = if (sourcesUrl.canParse(launchCommand.sourcesPath)) {
             CachedCVInput(dataSource, contentStorage) to "cached input"
         } else {
@@ -65,7 +65,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
 
     @Named("input-storage")
     @Provides
-    fun cache(cacheName: CacheName): ContentStorage<Path> {
+    fun cache(cacheName: CacheName, root: Path): ContentStorage<Path> {
         return PathContentStorageStorage(
             root.resolve(CONTENT_CACHE_FOLDER_NAME),
             cacheName,
@@ -81,12 +81,12 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
 
     @Provides
     @Named("raw-data-source")
-    fun dataSource(sourcesUrl: SourcesUrl): DataSource {
+    fun dataSource(sourcesUrl: SourcesUrl, launchCommand: LaunchCommand, root: Path): DataSource {
         return when (launchCommand.githubClient) {
             GithubClient.REST -> {
                 DaggerGithubDataSourceComponent
                     .builder()
-                    .githubDataSourceModule(GithubDataSourceModule(githubToken(), sourcesUrl, "java"))
+                    .githubDataSourceModule(GithubDataSourceModule(githubToken(launchCommand), sourcesUrl, "java"))
                     .build()
                     .dataSource()
             }
@@ -106,7 +106,7 @@ class InputModule(factory: LaunchCommand, private val root: Path) : FactoryModul
         return dataSource.withLogs(log.withTag("datasource"))
     }
 
-    private fun githubToken(): String {
+    private fun githubToken(launchCommand: LaunchCommand): String {
         launchCommand.githubKey?.let {
             return it
         }

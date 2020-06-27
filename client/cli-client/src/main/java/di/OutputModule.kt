@@ -38,10 +38,10 @@ import factory.LaunchCommand.OutputFormat.PUML
 import javax.inject.Named
 
 @Module
-class OutputModule(factory: LaunchCommand) : FactoryModule(factory) {
+class OutputModule {
 
     @Provides
-    fun output(log: Log, @Named("output-storage") contentStorage: KeyValueStorage) : Output<String> {
+    fun output(log: Log, @Named("output-storage") contentStorage: KeyValueStorage, launchCommand: LaunchCommand) : Output<String> {
         return EngineBasedOutput(
             createEngine(launchCommand.outputFormat).toCached(contentStorage),
             createEngineResult(launchCommand.outputFileName, launchCommand.outputFormat)

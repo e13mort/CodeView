@@ -33,7 +33,7 @@ import java.nio.file.Path
 import javax.inject.Named
 
 @Module
-class DataModule(private val rootFolder: Path) {
+class DataModule {
     companion object {
         const val CACHE_FILE_BACK_NAME = "classes.json"
         const val CACHE_FILE_FRONT_NAME = "classes.puml"
@@ -62,7 +62,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Named("backend-storage")
     @Provides
-    fun contentStorage(log: Log) : KeyValueStorage {
+    fun contentStorage(log: Log, rootFolder: Path) : KeyValueStorage {
         return PathKeyValueStorage(
             rootFolder.resolve(CACHE_FOLDER_BACK_NAME),
             ConstNameUUIDBasedCacheName(CACHE_FILE_BACK_NAME),
@@ -72,7 +72,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Named("frontend-storage")
     @Provides
-    fun contentStorageFront(log: Log) : KeyValueStorage {
+    fun contentStorageFront(log: Log, rootFolder: Path) : KeyValueStorage {
         return PathKeyValueStorage(
             rootFolder.resolve(CACHE_FOLDER_FRONT_NAME),
             ConstNameUUIDBasedCacheName(CACHE_FILE_FRONT_NAME),
@@ -82,7 +82,7 @@ class DataModule(private val rootFolder: Path) {
 
     @Provides
     @Named("output-storage")
-    fun outputContentStorage(log: Log): KeyValueStorage {
+    fun outputContentStorage(log: Log, rootFolder: Path): KeyValueStorage {
         return PathKeyValueStorage(
             rootFolder.resolve("output-cache"),
             ConstNameUUIDBasedCacheName("output.png"),
