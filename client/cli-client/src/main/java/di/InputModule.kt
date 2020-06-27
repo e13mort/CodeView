@@ -92,7 +92,7 @@ class InputModule {
                 DaggerGitDataSourceComponent
                     .builder()
                     .sourcesUrl(sourcesUrl)
-                    .root(root)
+                    .root(root.resolve(GIT_CACHE_FOLDER_NAME))
                     .build()
                     .createDataSource()
             }
