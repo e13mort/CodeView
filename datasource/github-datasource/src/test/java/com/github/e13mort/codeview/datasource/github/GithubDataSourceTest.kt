@@ -58,7 +58,7 @@ class GithubDataSourceTest {
 
         private fun githubDataSource(): GithubDataSource {
             return GithubDataSource(
-                GithubDataSource.DataSourceConfig("java"), prepareSingleItem(),
+                DataSourceConfig("java"), prepareSingleItem(),
                 transformation()
             )
         }
@@ -71,7 +71,7 @@ class GithubDataSourceTest {
         @Test
         internal fun multipleJavaItems() {
             val source =
-                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeItem(), transformation())
+                GithubDataSource(DataSourceConfig("java"), prepareThreeItem(), transformation())
             val test = source.testSources().test()
             test.assertValueCount(3)
         }
@@ -83,7 +83,7 @@ class GithubDataSourceTest {
         @Test
         internal fun multipleJavaItems() {
             val source =
-                GithubDataSource(GithubDataSource.DataSourceConfig("java"), prepareThreeJavaItem(), transformation())
+                GithubDataSource(DataSourceConfig("java"), prepareThreeJavaItem(), transformation())
             val test = source.testSources().test()
             test.assertValueCount(3)
         }

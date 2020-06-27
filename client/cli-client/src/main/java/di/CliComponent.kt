@@ -20,16 +20,18 @@ package di
 
 import com.github.e13mort.codeview.CodeView
 import com.github.e13mort.codeview.ClassesView
-import dagger.Binds
-import dagger.BindsInstance
-import dagger.Component
-import dagger.Module
+import com.github.e13mort.codeview.datasource.github.di.GithubModule
+import dagger.*
 import factory.LaunchCommand
 import java.nio.file.Path
 
-@Component(modules = [DataModule::class, OutputModule::class, InputModule::class, DecisionModule::class])
+@Component(
+    modules = [
+        DataModule::class, OutputModule::class, InputModule::class, DecisionModule::class, GithubModule::class, GithubDependencies::class
+    ]
+)
 interface CliComponent {
-    fun codeView() : CodeView<String>
+    fun codeView(): CodeView<String>
 
     @Component.Builder
     interface Builder {
@@ -47,5 +49,5 @@ interface CliComponent {
 @Module
 abstract class DecisionModule {
     @Binds
-    abstract fun createCodeView(view: ClassesView<String>) : CodeView<String>
+    abstract fun createCodeView(view: ClassesView<String>): CodeView<String>
 }

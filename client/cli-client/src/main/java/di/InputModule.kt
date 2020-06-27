@@ -23,8 +23,7 @@ import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.PlainCVInput
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.datasource.git.di.DaggerGitDataSourceComponent
-import com.github.e13mort.codeview.datasource.github.di.DaggerGithubDataSourceComponent
-import com.github.e13mort.codeview.datasource.github.di.GithubDataSourceModule
+import com.github.e13mort.codeview.datasource.github.GithubDataSource
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
@@ -90,14 +89,10 @@ class InputModule {
 
     @Provides
     @Named("raw-data-source")
-    fun dataSource(sourcesUrl: SourcesUrl, launchCommand: LaunchCommand, root: Path): DataSource {
+    fun dataSource(sourcesUrl: SourcesUrl, launchCommand: LaunchCommand, root: Path, githubDataSource: Provider<GithubDataSource>): DataSource {
         return when (launchCommand.githubClient) {
             GithubClient.REST -> {
-                DaggerGithubDataSourceComponent
-                    .builder()
-                    .githubDataSourceModule(GithubDataSourceModule(githubToken(launchCommand), sourcesUrl, "java"))
-                    .build()
-                    .dataSource()
+                githubDataSource.get()
             }
             GithubClient.GIT -> {
                 DaggerGitDataSourceComponent
@@ -113,12 +108,5 @@ class InputModule {
     @Provides
     fun loggedDataSource(@Named("raw-data-source") dataSource: DataSource, log: Log) : DataSource {
         return dataSource.withLogs(log.withTag("datasource"))
-    }
-
-    private fun githubToken(launchCommand: LaunchCommand): String {
-        launchCommand.githubKey?.let {
-            return it
-        }
-        throw IllegalStateException("Github key is null")
     }
 }

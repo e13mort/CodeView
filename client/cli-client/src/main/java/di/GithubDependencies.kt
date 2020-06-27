@@ -16,25 +16,24 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.e13mort.codeview.datasource.github.di
+package di
 
 import com.github.e13mort.codeview.datasource.github.DataSourceConfig
-import com.github.e13mort.codeview.datasource.github.GithubDataSource
-import com.github.e13mort.codeview.datasource.github.GithubPathPartsTransformation
-import com.github.e13mort.githuburl.SourcesUrl
-import com.jcabi.github.RtGithub
+import com.github.e13mort.codeview.datasource.github.di.GithubToken
 import dagger.Module
 import dagger.Provides
-import javax.inject.Qualifier
+import factory.LaunchCommand
 
 @Module
-class GithubModule {
+class GithubDependencies {
     @Provides
-    fun github(@GithubToken token: String, config: DataSourceConfig, sourcesUrl: SourcesUrl): GithubDataSource {
-        return GithubDataSource(config, RtGithub(token), GithubPathPartsTransformation(sourcesUrl))
+    @GithubToken
+    fun githubToken(launchCommand: LaunchCommand): String {
+        return launchCommand.githubKey ?: throw IllegalStateException("Github key is null")
+    }
+
+    @Provides
+    fun dataSourceConfig(): DataSourceConfig {
+        return DataSourceConfig("java")
     }
 }
-
-@Qualifier
-@Retention(AnnotationRetention.RUNTIME)
-annotation class GithubToken

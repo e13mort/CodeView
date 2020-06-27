@@ -19,20 +19,18 @@
 package com.github.e13mort.codeview.datasource.github
 
 import com.github.e13mort.codeview.DataSource
-import com.github.e13mort.codeview.SourcePath
 import com.github.e13mort.codeview.SourceFile
+import com.github.e13mort.codeview.SourcePath
 import com.github.e13mort.codeview.Sources
 import com.github.e13mort.githuburl.SourcesUrl
 import com.github.e13mort.githuburl.SourcesUrl.PathDescription.Kind
 import com.jcabi.github.Content
 import com.jcabi.github.Coordinates
 import com.jcabi.github.Github
-import io.reactivex.Observable
 import io.reactivex.Single
 import java.io.InputStream
-import javax.inject.Inject
 
-class GithubDataSource @Inject constructor(
+class GithubDataSource(
     private val config: DataSourceConfig,
     private val github: Github,
     private val pathPartsTransformation: PathPartsTransformation
@@ -47,10 +45,6 @@ class GithubDataSource @Inject constructor(
             .map { GithubSources(it, github, config.fileExtension)
         }
     }
-
-    data class DataSourceConfig(
-        val fileExtension: String
-    )
 }
 
 private class GithubSources(
