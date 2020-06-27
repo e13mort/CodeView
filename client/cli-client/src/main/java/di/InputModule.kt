@@ -36,6 +36,7 @@ import factory.LaunchCommand
 import factory.LaunchCommand.GithubClient
 import java.nio.file.Path
 import javax.inject.Named
+import javax.inject.Provider
 
 @Module
 class InputModule {
@@ -52,13 +53,23 @@ class InputModule {
     }
 
     @Provides
-    fun input(@Named("input-storage") contentStorage: ContentStorage<Path>, sourcesUrl: SourcesUrl, log: Log, dataSource: DataSource, launchCommand: LaunchCommand): CVInput {
+    fun input(cachedCVInput: Provider<CachedCVInput>, plainCVInput: Provider<PlainCVInput>, sourcesUrl: SourcesUrl, log: Log, launchCommand: LaunchCommand): CVInput {
         val (input, tag) = if (sourcesUrl.canParse(launchCommand.sourcesPath)) {
-            CachedCVInput(dataSource, contentStorage) to "cached input"
+            cachedCVInput.get() to "cached input"
         } else {
-            PlainCVInput() to "plain input"
+            plainCVInput.get() to "plain input"
         }
         return input.withLogs(log.withTag(tag))
+    }
+
+    @Provides
+    fun cachedInput(@Named("input-storage") contentStorage: ContentStorage<Path>, dataSource: DataSource): CachedCVInput {
+        return CachedCVInput(dataSource, contentStorage)
+    }
+
+    @Provides
+    fun plainInput(): PlainCVInput {
+        return PlainCVInput()
     }
 
     @Named("input-storage")
