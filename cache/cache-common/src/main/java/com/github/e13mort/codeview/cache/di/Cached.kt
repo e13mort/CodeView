@@ -16,26 +16,10 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.github.e13mort.codeview.datasource.git.di
+package com.github.e13mort.codeview.cache.di
 
-import com.github.e13mort.codeview.datasource.git.GitDataSource
-import com.github.e13mort.githuburl.SourcesUrl
-import dagger.BindsInstance
-import dagger.Component
-import java.nio.file.Path
+import javax.inject.Qualifier
 
-@Component(modules = [GitDataSourceModule::class])
-interface GitDataSourceComponent {
-    fun createDataSource() : GitDataSource
-
-    @Component.Builder
-    interface Builder {
-        fun build(): GitDataSourceComponent
-
-        @BindsInstance
-        fun sourcesUrl(sourcesUrl: SourcesUrl): Builder
-
-        @BindsInstance
-        fun root(@DataSourceRoot path: Path): Builder
-    }
-}
+@Qualifier
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Cached

@@ -18,10 +18,12 @@
 
 package com.github.e13mort.codeview.datasource.git
 
+import com.github.e13mort.codeview.datasource.git.di.DataSourceRoot
 import java.nio.file.Path
 import java.util.*
+import javax.inject.Inject
 
-class FsLocalRepositories(private val root: Path) : LocalRepositories {
+class FsLocalRepositories @Inject constructor(@DataSourceRoot private val root: Path) : LocalRepositories {
 
     override fun search(repoUrl: String): Path {
         return root.resolve(convertUrlToBase64(repoUrl))

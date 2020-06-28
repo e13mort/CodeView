@@ -21,7 +21,10 @@ package com.github.e13mort.codeview.client.ktor.di
 import com.github.e13mort.codeview.CVInput
 import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.cache.*
+import com.github.e13mort.codeview.cache.di.Cached
 import com.github.e13mort.codeview.client.ktor.AppContext
+import com.github.e13mort.codeview.datasource.git.RemoteRepositories
+import com.github.e13mort.codeview.datasource.git.cached
 import com.github.e13mort.codeview.work.AsyncWorkRunner
 import dagger.Module
 import dagger.Provides
@@ -94,5 +97,15 @@ class KtorCacheModule(private val appContext: AppContext) {
             ConstNameUUIDBasedCacheName(appContext.branchHashItemName()),
             PathRegistry(appContext.branchMetaDirPath().resolve(registryFileName))
         )
+    }
+
+    @Cached
+    @Provides
+    fun cachedRemoteRepos(
+        repositories: RemoteRepositories,
+        @Named(DI_KEY_BRANCH_META_STORAGE) keyValueStorage: KeyValueStorage,
+        appContext: AppContext
+    ): RemoteRepositories {
+        return repositories.cached(keyValueStorage.withTimeLimit(appContext.branchMetaTTL()))
     }
 }

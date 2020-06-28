@@ -20,6 +20,7 @@ package di
 
 import com.github.e13mort.codeview.CodeView
 import com.github.e13mort.codeview.ClassesView
+import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
 import com.github.e13mort.codeview.datasource.github.di.GithubModule
 import dagger.*
 import factory.LaunchCommand
@@ -27,7 +28,13 @@ import java.nio.file.Path
 
 @Component(
     modules = [
-        DataModule::class, OutputModule::class, InputModule::class, DecisionModule::class, GithubModule::class, GithubDependencies::class
+        DataModule::class,
+        OutputModule::class,
+        InputModule::class,
+        DecisionModule::class,
+        GithubModule::class,
+        GithubDependencies::class,
+        GitDataSourceModule::class
     ]
 )
 interface CliComponent {

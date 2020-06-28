@@ -18,24 +18,21 @@
 
 package com.github.e13mort.codeview.datasource.git.di
 
-import com.github.e13mort.codeview.datasource.git.*
+import com.github.e13mort.codeview.datasource.git.FsLocalRepositories
+import com.github.e13mort.codeview.datasource.git.JGitRemoteRepositories
+import com.github.e13mort.codeview.datasource.git.LocalRepositories
+import com.github.e13mort.codeview.datasource.git.RemoteRepositories
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
-import java.nio.file.Path
 import javax.inject.Qualifier
 
 @Module
-class GitDataSourceModule {
+abstract class GitDataSourceModule {
+    @Binds
+    abstract fun remoteRepos(repos: JGitRemoteRepositories): RemoteRepositories
 
-    @Provides
-    fun remoteRepos() : RemoteRepositories {
-        return JGitRemoteRepositories()
-    }
-
-    @Provides
-    fun localRepos(@DataSourceRoot root: Path) : LocalRepositories {
-        return FsLocalRepositories(root)
-    }
+    @Binds
+    abstract fun localRepos(repos: FsLocalRepositories): LocalRepositories
 }
 
 @Qualifier

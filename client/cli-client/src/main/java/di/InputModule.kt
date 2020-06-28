@@ -22,7 +22,8 @@ import com.github.e13mort.codeview.CVInput
 import com.github.e13mort.codeview.DataSource
 import com.github.e13mort.codeview.PlainCVInput
 import com.github.e13mort.codeview.cache.*
-import com.github.e13mort.codeview.datasource.git.di.DaggerGitDataSourceComponent
+import com.github.e13mort.codeview.datasource.git.GitDataSource
+import com.github.e13mort.codeview.datasource.git.di.DataSourceRoot
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
@@ -89,20 +90,21 @@ class InputModule {
 
     @Provides
     @Named("raw-data-source")
-    fun dataSource(sourcesUrl: SourcesUrl, launchCommand: LaunchCommand, root: Path, githubDataSource: Provider<GithubDataSource>): DataSource {
+    fun dataSource(
+        launchCommand: LaunchCommand,
+        githubDataSource: Provider<GithubDataSource>,
+        gitDataSource: Provider<GitDataSource>
+    ): DataSource {
         return when (launchCommand.githubClient) {
-            GithubClient.REST -> {
-                githubDataSource.get()
-            }
-            GithubClient.GIT -> {
-                DaggerGitDataSourceComponent
-                    .builder()
-                    .sourcesUrl(sourcesUrl)
-                    .root(root.resolve(GIT_CACHE_FOLDER_NAME))
-                    .build()
-                    .createDataSource()
-            }
+            GithubClient.REST -> githubDataSource.get()
+            GithubClient.GIT -> gitDataSource.get()
         }
+    }
+
+    @Provides
+    @DataSourceRoot
+    fun dataSourceRoot(root: Path) : Path {
+        return root.resolve(GIT_CACHE_FOLDER_NAME)
     }
 
     @Provides

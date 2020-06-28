@@ -24,9 +24,16 @@ import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.api.ResetCommand
 import java.nio.file.Files
 import java.nio.file.Path
+import javax.inject.Inject
 
-internal class JGitRemoteRepositories(private val listener: RemoteRepositoryStateListener = RemoteRepositoryStateListener.EMPTY) :
+class JGitRemoteRepositories @Inject constructor() :
     RemoteRepositories {
+    private var listener: RemoteRepositoryStateListener = RemoteRepositoryStateListener.EMPTY
+
+    internal constructor(listener: RemoteRepositoryStateListener) : this() {
+        this.listener = listener
+    }
+
     override fun remoteBranchHash(
         pathDescription: SourcesUrl.PathDescription
     ): String? {
