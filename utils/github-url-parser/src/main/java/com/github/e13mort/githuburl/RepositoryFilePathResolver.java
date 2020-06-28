@@ -43,6 +43,7 @@ class RepositoryFilePathResolver implements PathResolver {
 
     private int refDelimiter(@NotNull String path) {
         int treeDelimiter = path.indexOf(PART_TREE);
+        if (treeDelimiter == -1) treeDelimiter = path.indexOf(PART_BLOB);
         if (treeDelimiter == -1) return -1;
         return path.indexOf('/', treeDelimiter + PART_TREE.length());
     }

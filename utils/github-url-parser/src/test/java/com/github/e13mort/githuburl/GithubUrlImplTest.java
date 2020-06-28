@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GithubUrlImplTest {
 
     private static final String RETROFIT_URL = "https://github.com/square/retrofit/tree/master/retrofit/src/main/java/retrofit2";
+    private static final String RETROFIT_BLOB_URL = "https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit2";
 
     private GithubUrlImpl githubUrl;
 
@@ -56,8 +57,8 @@ class GithubUrlImplTest {
 
     @ParameterizedTest
     @MethodSource("kinds")
-    void testAllKindsParsing(Kind kind, String expected) {
-        SourcesUrl.PathDescription description = githubUrl.parse(RETROFIT_URL);
+    void testAllKindsParsing(String url, Kind kind, String expected) {
+        SourcesUrl.PathDescription description = githubUrl.parse(url);
         assertEquals(expected, description.readPart(kind));
     }
 
@@ -70,11 +71,16 @@ class GithubUrlImplTest {
 
     private static Stream<Arguments> kinds() {
         return Stream.of(
-                Arguments.of(Kind.BRANCH, "master"),
-                Arguments.of(Kind.PATH, "retrofit/src/main/java/retrofit2"),
-                Arguments.of(Kind.USER_NAME, "square"),
-                Arguments.of(Kind.PROJECT_NAME, "retrofit"),
-                Arguments.of(Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git")
+                Arguments.of(RETROFIT_URL, Kind.BRANCH, "master"),
+                Arguments.of(RETROFIT_URL, Kind.PATH, "retrofit/src/main/java/retrofit2"),
+                Arguments.of(RETROFIT_URL, Kind.USER_NAME, "square"),
+                Arguments.of(RETROFIT_URL, Kind.PROJECT_NAME, "retrofit"),
+                Arguments.of(RETROFIT_URL, Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.BRANCH, "master"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.PATH, "retrofit/src/main/java/retrofit2"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.USER_NAME, "square"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.PROJECT_NAME, "retrofit"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git")
         );
     }
 

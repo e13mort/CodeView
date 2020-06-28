@@ -40,7 +40,8 @@ class RefPathResolverTest {
             "invalid",
             "https://github.com/user/",
             "https://github.com/user/someproject/",
-            "https://github.com/user/someproject/tree/"
+            "https://github.com/user/someproject/tree/",
+            "https://github.com/user/someproject/blob/"
     })
     @ParameterizedTest
     void invalidStringCannotBeResolved(String path) {
@@ -52,7 +53,7 @@ class RefPathResolverTest {
             "https://github.com/user/someproject/tree/master/",
             "https://github.com/user/someproject/tree/master/path",
             "https://github.com/user/someproject/tree/master/path/subpath",
-            "https://github.com/user/someproject/tree/master/path/file.dat"
+            "https://github.com/user/someproject/blob/master/path/file.dat"
     })
     @ParameterizedTest
     void validStringCanBeResolved(String path) {
@@ -61,7 +62,7 @@ class RefPathResolverTest {
 
     @CsvSource({"https://github.com/user/someproject/tree/master/path,master",
             "https://github.com/user/someproject/tree/branch1/path/subpath,branch1",
-            "https://github.com/user/someproject/tree/someref/path/file.dat,someref"})
+            "https://github.com/user/someproject/blob/someref/path/file.dat,someref"})
     @ParameterizedTest
     void validResolvedPath(String path, String expected) {
         assertEquals(expected, resolver.resolve(path));

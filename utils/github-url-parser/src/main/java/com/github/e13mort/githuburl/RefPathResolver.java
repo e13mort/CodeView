@@ -41,6 +41,7 @@ class RefPathResolver implements PathResolver {
 
     private int refStart(@NotNull String path) {
         int treePart = path.indexOf(PART_TREE);
+        if (treePart == -1) treePart = path.indexOf(PART_BLOB);
         if (treePart == -1) return -1;
         int refPart = treePart + PART_TREE.length();
         return refPart != path.length() ? refPart : -1;
