@@ -22,6 +22,7 @@ import com.github.e13mort.codeview.stubs.StubContent
 import com.github.e13mort.codeview.stubs.StubDataSource
 import com.github.e13mort.codeview.stubs.StubSourceFile
 import com.github.e13mort.codeview.stubs.StubSources
+import com.github.e13mort.codeview.withName
 import com.google.common.jimfs.Jimfs
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -63,7 +64,7 @@ internal class CachedCVInputTest {
             StubDataSource(StubSources(StubSourceFile(inputStream))),
             PathContentStorageStorage(root, UUIDCacheName(), PathRegistry(root.resolve("registry.json"))).apply {
                 prepareStorageItems("stub").apply {
-                    put(StubContent())
+                    put(StubContent().withName("stub"))
                     save()
                 }
             })

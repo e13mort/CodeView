@@ -18,7 +18,7 @@
 
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.NamedContent
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -48,7 +48,7 @@ class PathContentStorageStorage(
             registerCacheFolder(key)
         }
 
-        override fun put(content: Content) {
+        override fun put(content: NamedContent) {
             copyFileToCache(content, path)
         }
 
@@ -67,8 +67,8 @@ class PathContentStorageStorage(
             return path
         }
 
-        private fun copyFileToCache(content: Content, parent: Path): Path {
-            Files.copy(content.read(), parent.resolve(cacheName.createFileName()))
+        private fun copyFileToCache(content: NamedContent, parent: Path): Path {
+            Files.copy(content.read(), parent.resolve(content.name()))
             return parent
         }
     }

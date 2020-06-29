@@ -18,7 +18,7 @@
 
 package com.github.e13mort.codeview.cache
 
-import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.NamedContent
 
 interface ContentStorage<T> {
     fun search(key: String): T?
@@ -28,7 +28,7 @@ interface ContentStorage<T> {
     fun remove(key: String)
 
     interface StorageItems<T> {
-        fun put(content: Content)
+        fun put(content: NamedContent)
 
         fun save(): T
     }

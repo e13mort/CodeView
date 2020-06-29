@@ -51,8 +51,11 @@ interface Content {
     fun read(): InputStream
 }
 
-interface SourceFile : Content {
+interface NamedContent : Content {
     fun name(): String
+}
+
+interface SourceFile : NamedContent {
 
     fun fileInfo(): FileInfo
 
@@ -68,7 +71,15 @@ interface SourceFile : Content {
 fun String.asContent(): Content {
     return object : Content {
         override fun read(): InputStream = this@asContent.toByteArray().inputStream()
+    }
+}
 
+fun Content.withName(name: String) : NamedContent {
+    val content = this
+    return object : NamedContent {
+        override fun name(): String = name
+
+        override fun read(): InputStream = content.read()
     }
 }
 

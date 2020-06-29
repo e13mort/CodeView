@@ -19,7 +19,9 @@
 package com.github.e13mort.codeview.cache
 
 import com.github.e13mort.codeview.Content
+import com.github.e13mort.codeview.NamedContent
 import com.github.e13mort.codeview.asContent
+import com.github.e13mort.codeview.withName
 import com.google.common.jimfs.Jimfs
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
@@ -55,13 +57,13 @@ class PathContentStorageStorageTest {
 
     @Test
     internal fun `registry file created after the first insertion`() {
-        putItems("some-key", MemoryContent())
+        putItems("some-key", createContent())
         assertThat(memoryFileSystem.getPath(REGISTRY_NAME)).exists()
     }
 
     @Test
     fun `registry file is not empty`() {
-        putItems("some-key", MemoryContent())
+        putItems("some-key", createContent())
         assertThat(Files.readAllLines(memoryFileSystem.getPath(REGISTRY_NAME))).isNotEmpty
     }
 
@@ -72,13 +74,13 @@ class PathContentStorageStorageTest {
 
     @Test
     internal fun `previously created item is found`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         assertNotNull(storage.search("key"))
     }
 
     @Test
     internal fun `item is found on a new file storage`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         val newStorage = PathContentStorageStorage(root, cacheName, PathRegistry(root.resolve(REGISTRY_NAME)))
         val key = "key"
         assertNotNull(newStorage.search(key))
@@ -86,36 +88,36 @@ class PathContentStorageStorageTest {
 
     @Test
     internal fun `directory created for a cached item`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         assertTrue(Files.isDirectory(storage.search("key")!!))
     }
 
     @Test
     internal fun `source file saved to cache`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         assertEquals(1, Files.list(storage.search("key")).toArray().size)
     }
 
     @Test
     fun `root folder contains folder with cache`() {
-        val item = putItems("key", MemoryContent())
+        val item = putItems("key", createContent())
         assertThat(root.resolve(item)).exists()
     }
 
     @Test
     internal fun `two files are saved without errors`() {
-        putItems("key", MemoryContent(), MemoryContent())
+        putItems("key", createContent(), createContent())
     }
 
     @Test
     internal fun `two files are exist in cache`() {
-        val item = putItems("key", MemoryContent(), MemoryContent())
+        val item = putItems("key", createContent(), createContent())
         assertEquals(2, Files.list(item).count())
     }
 
     @Test
     internal fun `cached item is equal to the original item`() {
-        putItems("key", "hello".asContent())
+        putItems("key", "hello".asContent().withName(UUIDCacheName().createFileName()))
         val cachedPath = storage.search("key")
         val firstFile = Files.list(cachedPath).findFirst().get()
         assertEquals("hello", Files.readAllLines(firstFile)[0])
@@ -133,21 +135,23 @@ class PathContentStorageStorageTest {
 
     @Test
     internal fun `removing multiple items leads to empty result`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         storage.remove("key")
         assertNull(storage.search("key"))
     }
 
     @Test
     internal fun `removing multiple items leads actual files removal`() {
-        putItems("key", MemoryContent())
+        putItems("key", createContent())
         storage.remove("key")
         assertEquals(0L, root.internalDirsCount())
     }
 
+    private fun createContent() = MemoryContent().withName(UUIDCacheName().createFileName())
+
     private fun putItems(
         key: String,
-        vararg content: Content
+        vararg content: NamedContent
     ): Path {
         return storage.prepareStorageItems(key).apply {
             content.forEach {
