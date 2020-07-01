@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GithubUrlImplTest {
 
     private static final String RETROFIT_URL = "https://github.com/square/retrofit/tree/master/retrofit/src/main/java/retrofit2";
-    private static final String RETROFIT_BLOB_URL = "https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit2";
+    private static final String RETROFIT_BLOB_URL = "https://github.com/square/retrofit/blob/master/retrofit/src/main/java/retrofit2/some.file";
 
     private GithubUrlImpl githubUrl;
 
@@ -76,11 +76,13 @@ class GithubUrlImplTest {
                 Arguments.of(RETROFIT_URL, Kind.USER_NAME, "square"),
                 Arguments.of(RETROFIT_URL, Kind.PROJECT_NAME, "retrofit"),
                 Arguments.of(RETROFIT_URL, Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git"),
+                Arguments.of(RETROFIT_URL, Kind.FILE_NAME, ""),
                 Arguments.of(RETROFIT_BLOB_URL, Kind.BRANCH, "master"),
-                Arguments.of(RETROFIT_BLOB_URL, Kind.PATH, "retrofit/src/main/java/retrofit2"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.PATH, "retrofit/src/main/java/retrofit2/some.file"),
                 Arguments.of(RETROFIT_BLOB_URL, Kind.USER_NAME, "square"),
                 Arguments.of(RETROFIT_BLOB_URL, Kind.PROJECT_NAME, "retrofit"),
-                Arguments.of(RETROFIT_BLOB_URL, Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git")
+                Arguments.of(RETROFIT_BLOB_URL, Kind.GIT_URL_HTTPS, "https://github.com/square/retrofit.git"),
+                Arguments.of(RETROFIT_BLOB_URL, Kind.FILE_NAME, "some.file")
         );
     }
 

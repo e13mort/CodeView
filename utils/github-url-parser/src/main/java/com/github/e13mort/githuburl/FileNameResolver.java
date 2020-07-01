@@ -21,23 +21,26 @@ package com.github.e13mort.githuburl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface SourcesUrl {
-
-    boolean canParse(@NotNull String path);
-
+public class FileNameResolver implements PathResolver {
     @Nullable
-    PathDescription parse(@NotNull String path);
+    @Override
+    public String resolve(@NotNull String inputPath) {
+        final int lastDot = inputPath.lastIndexOf('.');
+        boolean mayBeFile = lastDot >= 0;
+        if (!mayBeFile) return null;
+        final int lastSlash = inputPath.lastIndexOf('/');
+        boolean mayBeDirectory = lastSlash >= 0;
+        if (!mayBeDirectory) return inputPath;
+        if (lastDot < lastSlash) return null;
+        return inputPath.substring(lastSlash + 1);
+    }
 
-    interface PathDescription {
-        enum Kind {
-            PROJECT_NAME, USER_NAME, BRANCH, PATH, GIT_URL_HTTPS, FILE_NAME
-        }
-
-        String EMPTY_PART = "";
-
-        @NotNull
-        String readPart(@NotNull Kind kind);
-
-        boolean hasPart(@NotNull Kind... kind);
+    @Override
+    public boolean canResolve(@NotNull String path) {
+        final int lastDot = path.lastIndexOf('.');
+        boolean mayBeFile = lastDot >= 0;
+        if (!mayBeFile) return false;
+        final int lastSlash = path.lastIndexOf('/');
+        return lastDot > lastSlash;
     }
 }

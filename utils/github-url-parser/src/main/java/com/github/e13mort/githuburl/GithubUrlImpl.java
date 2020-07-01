@@ -47,6 +47,7 @@ public class GithubUrlImpl implements SourcesUrl {
         map.put(Kind.PROJECT_NAME, new ProjectNamePathResolver());
         map.put(Kind.USER_NAME, new UserNamePathResolver());
         map.put(Kind.GIT_URL_HTTPS, new HttpsGitResolver());
+        map.put(Kind.FILE_NAME, new FileNameResolver());
         return map;
     }
 
