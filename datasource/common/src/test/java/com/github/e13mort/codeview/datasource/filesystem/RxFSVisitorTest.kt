@@ -26,9 +26,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.util.stream.Stream
-import com.github.e13mort.codeview.datasource.filesystem.FSVisitor.Options as Opts
 
-internal class FSVisitzorTest {
+internal class FSVisitorTest {
     private val root = Jimfs.newFileSystem().getPath(".")
 
     @BeforeEach
@@ -45,18 +44,17 @@ internal class FSVisitzorTest {
     companion object {
         @JvmStatic
         fun args(): Stream<Arguments> = Stream.of(
-            Arguments.of(Opts("txt", 0), 0),
-            Arguments.of(Opts("txt", 1), 2),
-            Arguments.of(Opts("txt", 2), 4),
-            Arguments.of(Opts("doc", 1), 0)
+            Arguments.of( 0, 0),
+            Arguments.of( 1, 2),
+            Arguments.of( 2, 4)
         )
 
     }
 
     @ParameterizedTest(name = "params {0} -> expected count: {1}")
     @MethodSource("args")
-    internal fun test(options: Opts, expectedCount: Int) {
-        val test = FSVisitor().visitFolder(root, options)
+    internal fun test(depth: Int, expectedCount: Int) {
+        val test = FSVisitor().visitFolder(root, depth)
         assertEquals(expectedCount, test.size)
     }
 }

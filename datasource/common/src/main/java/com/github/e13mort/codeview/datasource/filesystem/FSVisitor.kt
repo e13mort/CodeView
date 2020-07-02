@@ -23,17 +23,12 @@ import java.nio.file.Path
 import kotlin.streams.toList
 
 class FSVisitor {
-    fun visitFolder(folder: Path, options: Options): List<Path> {
+    fun visitFolder(folder: Path, depth: Int): List<Path> {
         return Files
-            .walk(folder, options.depth)
-            .filter { isValidName(it, options) }
+            .walk(folder, depth)
+            .filter { isValidName(it) }
             .toList()
     }
 
-    private fun isValidName(
-        it: Path,
-        options: Options
-    ) = !Files.isDirectory(it) && it.fileName.toString().endsWith(".${options.fileExtension}")
-
-    data class Options(val fileExtension: String, val depth: Int)
+    private fun isValidName(path: Path) = !Files.isDirectory(path)
 }

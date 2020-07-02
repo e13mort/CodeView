@@ -36,7 +36,9 @@ sourceCompatibility = 1.8
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'javax.inject:javax.inject:1'
     implementation project(':codeview')
+    testImplementation project(':utils:stubs')
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.4.2'
     testImplementation 'com.google.jimfs:jimfs:1.1'

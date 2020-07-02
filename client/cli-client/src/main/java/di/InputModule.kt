@@ -18,10 +18,11 @@
 
 package di
 
-import com.github.e13mort.codeview.CVInput
-import com.github.e13mort.codeview.DataSource
-import com.github.e13mort.codeview.PlainCVInput
+import com.github.e13mort.codeview.client.cli.DataSourceModeResolver
+import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.cache.*
+import com.github.e13mort.codeview.datasource.Filtered
+import com.github.e13mort.codeview.datasource.filteredByFileName
 import com.github.e13mort.codeview.datasource.git.GitDataSource
 import com.github.e13mort.codeview.datasource.git.di.DataSourceRoot
 import com.github.e13mort.codeview.datasource.github.GithubDataSource
@@ -107,8 +108,17 @@ class InputModule {
         return root.resolve(GIT_CACHE_FOLDER_NAME)
     }
 
+    @Filtered
     @Provides
-    fun loggedDataSource(@Named("raw-data-source") dataSource: DataSource, log: Log) : DataSource {
+    fun filteredDataSource(@Named("raw-data-source") dataSource: DataSource, dataSourceModeResolver: DataSourceModeResolver, launchCommand: LaunchCommand) : DataSource {
+        return when(val type = dataSourceModeResolver.resolve(launchCommand.sourcesPath)) {
+            DataSourceModeResolver.DataSourceMode.Folder -> dataSource
+            is DataSourceModeResolver.DataSourceMode.File -> dataSource.filteredByFileName(type.fileName)
+        }
+    }
+
+    @Provides
+    fun loggedDataSource(@Filtered dataSource: DataSource, log: Log) : DataSource {
         return dataSource.withLogs(log.withTag("datasource"))
     }
 }

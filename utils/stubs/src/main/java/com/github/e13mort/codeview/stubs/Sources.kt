@@ -19,10 +19,11 @@
 package com.github.e13mort.codeview.stubs
 
 import com.github.e13mort.codeview.*
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream
 import io.reactivex.Single
 import java.io.InputStream
 
-class StubSourceFile(private val stream: InputStream) : SourceFile {
+class StubSourceFile(private val stream: InputStream = ByteInputStream()) : SourceFile {
     override fun name(): String = "stub.file"
 
     override fun fileInfo(): SourceFile.FileInfo = SourceFile.FileInfo.EMPTY

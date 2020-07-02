@@ -43,7 +43,7 @@ class GitDataSource @Inject constructor(
     override fun sources(path: SourcePath): Single<Sources> {
         return Single.fromCallable {
             sourcesDescription(path)?.let {
-                return@fromCallable GitSources(it, remoteRepositories, localRepositories)
+                return@fromCallable GitSources(it, remoteRepositories, localRepositories, 1)
             }
             val pathDescription = sourcesUrl.parse(path) ?: throw IllegalArgumentException("path $path can not be parsed")
             throw IllegalArgumentException("invalid target branch ${pathDescription.readPart(Kind.BRANCH)}")
@@ -68,11 +68,11 @@ class GitDataSource @Inject constructor(
     private class GitSources(
         private val description: SourcesDescription,
         private val remoteRepositories: RemoteRepositories,
-        private val localRepositories: LocalRepositories
+        private val localRepositories: LocalRepositories,
+        private val depth: Int
     ) : Sources {
 
         private val fsVisitor = FSVisitor()
-        private val options = FSVisitor.Options("java", 1)
 
         override fun sources(): List<SourceFile> {
             clonedRepo(searchForLocalRepository()).let {
@@ -92,7 +92,7 @@ class GitDataSource @Inject constructor(
         }
 
         private fun visitFolder(it: Path): List<Path> {
-            return fsVisitor.visitFolder(it, options)
+            return fsVisitor.visitFolder(it, depth)
         }
 
         private fun resolveSourceFolder(it: RemoteRepositories.ClonedRepo) = it.path().resolve(description.sourcesFolder)
