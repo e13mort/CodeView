@@ -26,6 +26,7 @@ dependencies {
     api "io.reactivex.rxjava2:rxjava:2.2.10"
     testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
     testImplementation project(':utils:stubs')
+    testImplementation 'com.google.jimfs:jimfs:1.1'
 }
 
 sourceCompatibility = "8"

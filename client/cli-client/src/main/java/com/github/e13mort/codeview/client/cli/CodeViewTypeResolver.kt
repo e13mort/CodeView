@@ -16,33 +16,24 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
+package com.github.e13mort.codeview.client.cli
+
+import com.github.e13mort.githuburl.SourcesUrl
+import javax.inject.Inject
+
+internal const val PUML_EXTENSION = ".puml"
+
+class CodeViewTypeResolver @Inject constructor(private val sourcesUrl: SourcesUrl) {
+    enum class CodeViewType { CLASSES, PUML }
+
+    fun resolve(path: String): CodeViewType {
+        sourcesUrl.parse(path)?.let {
+            if (it.hasPart(SourcesUrl.PathDescription.Kind.FILE_NAME)) {
+                if (it.readPart(SourcesUrl.PathDescription.Kind.FILE_NAME).endsWith(PUML_EXTENSION)) {
+                    return CodeViewType.PUML
+                }
+            }
+        }
+        return CodeViewType.CLASSES
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-plugins {
-    id 'java'
-    id 'kotlin'
-}
-
-sourceCompatibility = 1.8
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation project(':codeview')
-    implementation 'com.google.dagger:dagger:2.23.2'
-    testImplementation project(':utils:stubs')
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }

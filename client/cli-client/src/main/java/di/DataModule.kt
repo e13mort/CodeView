@@ -18,8 +18,7 @@
 
 package di
 
-import com.github.e13mort.codeview.Backend
-import com.github.e13mort.codeview.Frontend
+import com.github.e13mort.codeview.*
 import com.github.e13mort.codeview.backend.java.JavaBackend
 import com.github.e13mort.codeview.cache.*
 import com.github.e13mort.codeview.frontend.pulm.PulmFrontend
@@ -93,5 +92,10 @@ class DataModule {
     @Provides
     fun log() : Log {
         return ConsoleLog()
+    }
+
+    @Provides
+    fun pathToStoredObjectTransformation(): CVTransformation<CVTransformation.TransformOperation<Path>, StoredObject> {
+        return PathToStoredObjectTransformation()
     }
 }

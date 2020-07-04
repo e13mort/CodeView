@@ -20,10 +20,10 @@ package com.github.e13mort.codeview.log
 
 import com.github.e13mort.codeview.CVTransformation
 import com.github.e13mort.codeview.ProxyCVTransformation
+import com.github.e13mort.codeview.asTransformOperation
 import com.github.e13mort.codeview.stubs.ErrorTransformOperation
 import com.github.e13mort.codeview.stubs.ErrorTransformation
 import com.nhaarman.mockitokotlin2.*
-import io.reactivex.Single
 import org.junit.jupiter.api.Test
 
 internal class LoggedTransformationTest {
@@ -66,19 +66,5 @@ internal class LoggedTransformationTest {
             .test()
         verify(log, times(1)).log(anyOrNull<Exception>())
         verify(log, times(0)).log(anyOrNull<String>())
-    }
-}
-
-private fun String.asTransformOperation(): CVTransformation.TransformOperation<String> {
-    val source = this
-    return object : CVTransformation.TransformOperation<String> {
-        override fun description(): String {
-            return source
-        }
-
-        override fun transform(): Single<String> {
-            return Single.just(source)
-        }
-
     }
 }

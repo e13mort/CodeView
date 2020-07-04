@@ -16,33 +16,20 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
+package com.github.e13mort.codeview
+
+import io.reactivex.Single
+import java.nio.file.Path
+import javax.inject.Inject
+
+class PUMLView<T> @Inject constructor(
+    private val input: CVTransformation<SourcePath, Path>,
+    private val transformation: CVTransformation<CVTransformation.TransformOperation<Path>, StoredObject>,
+    private val output: Output<T>
+) : CodeView<T> {
+    override fun run(parameters: SourcePath): Single<T> {
+        return input.prepare(parameters)
+            .flatMap(transformation::prepare)
+            .flatMap(output::save)
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-plugins {
-    id 'java'
-    id 'kotlin'
-}
-
-sourceCompatibility = 1.8
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation project(':codeview')
-    implementation 'com.google.dagger:dagger:2.23.2'
-    testImplementation project(':utils:stubs')
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }

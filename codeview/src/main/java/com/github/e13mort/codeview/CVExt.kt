@@ -16,33 +16,20 @@
  * along with CodeView.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-buildscript {
-    repositories {
-        mavenCentral()
+package com.github.e13mort.codeview
+
+import io.reactivex.Single
+
+fun <T> T.asTransformOperation(description: String = "description"): CVTransformation.TransformOperation<T> {
+    val source = this
+    return object : CVTransformation.TransformOperation<T> {
+        override fun description(): String {
+            return description
+        }
+
+        override fun transform(): Single<T> {
+            return Single.just(source)
+        }
+
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-plugins {
-    id 'java'
-    id 'kotlin'
-}
-
-sourceCompatibility = 1.8
-
-dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    implementation project(':codeview')
-    implementation 'com.google.dagger:dagger:2.23.2'
-    testImplementation project(':utils:stubs')
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
-    testImplementation 'net.sourceforge.plantuml:plantuml:1.2019.6'
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }

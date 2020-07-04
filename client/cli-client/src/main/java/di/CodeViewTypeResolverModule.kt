@@ -18,36 +18,27 @@
 
 package di
 
+import com.github.e13mort.codeview.ClassesView
 import com.github.e13mort.codeview.CodeView
-import com.github.e13mort.codeview.datasource.git.di.GitDataSourceModule
-import com.github.e13mort.codeview.datasource.github.di.GithubModule
-import dagger.*
+import com.github.e13mort.codeview.PUMLView
+import com.github.e13mort.codeview.client.cli.CodeViewTypeResolver
+import dagger.Module
+import dagger.Provides
 import factory.LaunchCommand
-import java.nio.file.Path
+import javax.inject.Provider
 
-@Component(
-    modules = [
-        DataModule::class,
-        OutputModule::class,
-        InputModule::class,
-        GithubModule::class,
-        GithubDependencies::class,
-        GitDataSourceModule::class,
-        CodeViewTypeResolverModule::class
-    ]
-)
-interface CliComponent {
-    fun codeView(): CodeView<String>
-
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun launchCommand(launchCommand: LaunchCommand): Builder
-
-        @BindsInstance
-        fun root(root: Path): Builder
-
-        fun build(): CliComponent
+@Module
+class CodeViewTypeResolverModule {
+    @Provides
+    fun createCodeView(
+        classesView: Provider<ClassesView<String>>,
+        pumlView: Provider<PUMLView<String>>,
+        codeViewTypeResolver: CodeViewTypeResolver,
+        launchCommand: LaunchCommand
+    ): CodeView<String> {
+        return when (codeViewTypeResolver.resolve(launchCommand.sourcesPath)) {
+            CodeViewTypeResolver.CodeViewType.CLASSES -> classesView.get()
+            CodeViewTypeResolver.CodeViewType.PUML -> pumlView.get()
+        }
     }
 }
