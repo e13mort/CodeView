@@ -39,16 +39,25 @@ class LaunchCommand : NoRunCliktCommand(
         }
     }
 
-    enum class OutputFormat {PUML, PNG}
+    enum class OutputFormat { PUML, PNG }
 
-    enum class GithubClient {REST, GIT}
+    enum class GithubClient { REST, GIT }
 
-    val sourcesPath: String by argument("sources", help = "Path to sources root").default(BuildConfig.DEFAULT_SOURCE_ROOT_PATH)
+    val sourcesPath: String by argument(
+        "sources",
+        help = "Path to sources root"
+    ).default(BuildConfig.DEFAULT_SOURCE_ROOT_PATH)
 
-    val outputFileName: String by option("--out-name", help = "Output file name").default(BuildConfig.DEFAULT_OUTPUT_FILE_NAME)
+    val outputFileName: String by option(
+        "--out-name",
+        help = "Output file name"
+    ).default(BuildConfig.DEFAULT_OUTPUT_FILE_NAME)
 
     val outputFormat: OutputFormat by argument("format", help = "Output format")
-        .choice(OutputFormat.PNG.name.toLowerCase() to OutputFormat.PNG, OutputFormat.PUML.name.toLowerCase() to OutputFormat.PUML)
+        .choice(
+            OutputFormat.PNG.name.toLowerCase() to OutputFormat.PNG,
+            OutputFormat.PUML.name.toLowerCase() to OutputFormat.PUML
+        )
         .default(OutputFormat.PNG)
 
     val githubKey by option()
@@ -56,7 +65,8 @@ class LaunchCommand : NoRunCliktCommand(
     val githubClient: GithubClient by option("--github-client", help = "Github client type")
         .choice(
             GithubClient.GIT.name.toLowerCase() to GithubClient.GIT,
-            GithubClient.REST.name.toLowerCase() to GithubClient.REST)
+            GithubClient.REST.name.toLowerCase() to GithubClient.REST
+        )
         .default(GithubClient.GIT)
 
     val verbose by option("-v", "--verbose", help = "Verbose mode").flag()
