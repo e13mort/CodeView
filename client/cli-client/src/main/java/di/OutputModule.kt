@@ -41,15 +41,18 @@ import javax.inject.Named
 class OutputModule {
 
     @Provides
-    fun output(log: Log, @Named("output-storage") contentStorage: KeyValueStorage, launchCommand: LaunchCommand) : Output<String> {
-        return EngineBasedOutput(
-            createEngine(launchCommand.outputFormat).toCached(contentStorage),
-            createEngineResult(launchCommand.outputFileName, launchCommand.outputFormat)
-        ).withLogs(log.withTag("output"))
+    fun output(log: Log, engine: OutputEngine, target: Target<String>) : Output<String> {
+        return EngineBasedOutput(engine, target).withLogs(log.withTag("output"))
     }
 
-    private fun createEngineResult(outputFileName: String, outputFormat: OutputFormat): Target<String> {
-        return FileOutputResult("$outputFileName.${extension(outputFormat)}")
+    @Provides
+    fun engine(launchCommand: LaunchCommand, @Named("output-storage") contentStorage: KeyValueStorage): OutputEngine {
+        return createEngine(launchCommand.outputFormat).toCached(contentStorage)
+    }
+
+    @Provides
+    fun createEngineResult(launchCommand: LaunchCommand): Target<String> {
+        return FileOutputResult("${launchCommand.outputFileName}.${extension(launchCommand.outputFormat)}")
     }
 
     private fun extension(outputFormat: OutputFormat) = outputFormat.name.toLowerCase()
