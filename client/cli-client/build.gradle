@@ -69,6 +69,7 @@ dependencies {
     implementation project(':output:engine-based-output')
     implementation 'com.github.ajalt:clikt:2.0.0'
     implementation 'com.google.dagger:dagger:2.23.2'
+    implementation 'org.slf4j:slf4j-nop:1.7.2'
     kapt 'com.google.dagger:dagger-compiler:2.23.2'
 
     if (JavaVersion.current().isJava9Compatible()) {

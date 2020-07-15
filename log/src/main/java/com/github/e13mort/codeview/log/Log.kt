@@ -22,4 +22,10 @@ interface Log {
     fun log(string: String)
 
     fun log(throwable: Throwable)
+
+    companion object EMPTY : Log {
+        override fun log(string: String) = Unit
+
+        override fun log(throwable: Throwable) = Unit
+    }
 }

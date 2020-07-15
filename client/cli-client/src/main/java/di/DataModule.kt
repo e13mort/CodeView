@@ -28,6 +28,7 @@ import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
 import dagger.Module
 import dagger.Provides
+import factory.LaunchCommand
 import java.nio.file.Path
 import javax.inject.Named
 
@@ -90,8 +91,8 @@ class DataModule {
     }
 
     @Provides
-    fun log() : Log {
-        return ConsoleLog()
+    fun log(launchCommand: LaunchCommand) : Log {
+        return if (launchCommand.verbose) ConsoleLog() else Log.EMPTY
     }
 
     @Provides

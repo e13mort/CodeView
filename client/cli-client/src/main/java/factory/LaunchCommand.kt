@@ -23,6 +23,7 @@ import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.parameters.arguments.argument
 import com.github.ajalt.clikt.parameters.arguments.default
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.types.choice
 import com.github.e13mort.codeview.cli.BuildConfig
@@ -57,5 +58,7 @@ class LaunchCommand : NoRunCliktCommand(
             GithubClient.GIT.name.toLowerCase() to GithubClient.GIT,
             GithubClient.REST.name.toLowerCase() to GithubClient.REST)
         .default(GithubClient.GIT)
+
+    val verbose by option("-v", "--verbose", help = "Verbose mode").flag()
 
 }
