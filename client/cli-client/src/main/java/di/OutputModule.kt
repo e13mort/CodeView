@@ -20,6 +20,9 @@ package di
 
 import com.github.e13mort.codeview.Output
 import com.github.e13mort.codeview.cache.KeyValueStorage
+import com.github.e13mort.codeview.cli.BuildConfig
+import com.github.e13mort.codeview.client.cli.OutputFileName
+import com.github.e13mort.codeview.client.cli.OutputFilenameResolver
 import com.github.e13mort.codeview.log.Log
 import com.github.e13mort.codeview.log.withLogs
 import com.github.e13mort.codeview.log.withTag
@@ -51,9 +54,20 @@ class OutputModule {
     }
 
     @Provides
-    fun createEngineResult(launchCommand: LaunchCommand): Target<String> {
-        return FileOutputResult("${launchCommand.outputFileName}.${extension(launchCommand.outputFormat)}")
+    fun createEngineResult(launchCommand: LaunchCommand, fileNameResolver: OutputFilenameResolver): Target<String> {
+        return FileOutputResult(
+            createFileName(
+                launchCommand.outputFileName ?: fileNameResolver.resolveFileName(launchCommand.sourcesPath),
+                extension(launchCommand.outputFormat)
+            )
+        )
     }
+
+    @Provides
+    @OutputFileName
+    fun forcedOutputFileName() = BuildConfig.DEFAULT_OUTPUT_FILE_NAME
+
+    private fun createFileName(name: String, extension: String) = "$name.$extension"
 
     private fun extension(outputFormat: OutputFormat) = outputFormat.name.toLowerCase()
 

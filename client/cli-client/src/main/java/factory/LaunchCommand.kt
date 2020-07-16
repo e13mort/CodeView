@@ -48,10 +48,10 @@ class LaunchCommand : NoRunCliktCommand(
         help = "Path to sources root"
     ).default(BuildConfig.DEFAULT_SOURCE_ROOT_PATH)
 
-    val outputFileName: String by option(
+    val outputFileName: String? by option(
         "--out-name",
         help = "Output file name"
-    ).default(BuildConfig.DEFAULT_OUTPUT_FILE_NAME)
+    )
 
     val outputFormat: OutputFormat by argument("format", help = "Output format")
         .choice(
